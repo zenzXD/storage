@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portofolio Fahriza</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 20px;
+      color: #ff0057;
+    }
+    .menu-toggle {
+      font-size: 28px;
+      cursor: pointer;
+      color: #fff;
+    }
+    nav {
+      position: fixed;
+      top: 0; right: -250px;
+      width: 250px; height: 100%;
+      background: rgba(20,20,20,0.95);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.5);
+      transition: 0.3s;
+      padding-top: 60px;
+      z-index: 999;
+    }
+    nav a {
+      display: block;
+      padding: 15px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      background: #ff0057;
+    }
+    nav.active {
+      right: 0;
+    }
+    .hero {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+    .hero h2 {
+      font-size: 40px;
+    }
+    .typed {
+      color: #ff0057;
+      font-weight: bold;
+    }
+    .section {
+      padding: 100px 20px;
+      text-align: center;
+    }
+    /* Bidang Saya */
+    .cards {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: #1a1a1a;
+      border: 2px solid #ff0057;
+      border-radius: 15px;
+      padding: 20px;
+      width: 220px;
+      transition: 0.3s;
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: 0.6s ease;
+    }
+    .card:hover {
+      box-shadow: 0 0 20px #ff0057;
+      transform: scale(1.05);
+    }
+    .card h3 {
+      margin-top: 10px;
+      color: #ff0057;
+    }
+    /* Contact */
+    .contact button {
+      margin: 10px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px;
+      background: #ff0057;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .contact button:hover {
+      background: #e6004c;
+    }
+    /* Dev Section */
+    @keyframes neonGlow {
+      0% { text-shadow: 0 0 5px #ff0057, 0 0 10px #ff0057, 0 0 20px #ff3380; }
+      50% { text-shadow: 0 0 10px #ff3380, 0 0 20px #ff66a3, 0 0 40px #ff99c2; }
+      100% { text-shadow: 0 0 5px #ff0057, 0 0 10px #ff0057, 0 0 20px #ff3380; }
+    }
+    .dev-section h3 {
+      color: #ff0057;
+      font-size: 28px;
+      animation: neonGlow 2s infinite alternate;
+    }
+    .dev-text {
+      opacity: 0;
+      display: inline-block;
+    }
+    /* Chatbot */
+    .chatbot {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      width: 300px;
+      background: #1a1a1a;
+      border: 2px solid #ff0057;
+      border-radius: 15px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    .chatbot-header {
+      background: #ff0057;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .chatbot-messages {
+      height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+      text-align: left;
+    }
+    .chatbot-input {
+      display: flex;
+    }
+    .chatbot-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+    .chatbot-input button {
+      padding: 10px;
+      border: none;
+      background: #ff0057;
+      color: #fff;
+      cursor: pointer;
+    }
+    .chatbot-toggle {
+      position: fixed;
+      bottom: 20px; left: 20px;
+      background: #ff0057;
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Portofolio</h1>
+    <div class="menu-toggle">☰</div>
+  </header>
+
+  <nav>
+    <a href="#hero">Dasbor</a>
+    <a href="#bidang">Bidang Saya</a>
+    <a href="#dev" onclick="enterDev(event)">Dev</a>
+    <a href="#contact">Kontak</a>
+  </nav>
+
+  <section class="hero" id="hero">
+    <h2>Halo, saya <span class="typed"></span></h2>
+    <p>Selamat datang di portofolio saya!</p>
+  </section>
+
+  <section class="section" id="bidang">
+    <h2>Bidang Saya</h2>
+    <div class="cards">
+      <div class="card"><h3>💻 Web Dev</h3><p>Membangun website modern.</p></div>
+      <div class="card"><h3>🎮 Game Dev</h3><p>Menciptakan game kreatif.</p></div>
+      <div class="card"><h3>⚙️ Automation</h3><p>Otomatisasi dengan script.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="dev" style="display:none;">
+    <div class="dev-section">
+      <h3>👨‍💻 Developer Mode</h3>
+      <p id="devText"></p>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact">
+    <h2>Kontak</h2>
+    <button onclick="window.open('https://wa.me/628123456789')">WhatsApp</button>
+    <button onclick="window.location='mailto:fahriza@email.com'">Email</button>
+  </section>
+
+  <!-- Chatbot -->
+  <div class="chatbot" id="chatbot">
+    <div class="chatbot-header">Chatbot</div>
+    <div class="chatbot-messages" id="chatbotMessages"></div>
+    <div class="chatbot-input">
+      <input type="text" id="chatInput" placeholder="Tulis pesan...">
+      <button onclick="sendMessage()">Kirim</button>
+    </div>
+  </div>
+  <button class="chatbot-toggle" onclick="toggleChat()">💬</button>
+
+  <script>
+    // Menu
+    document.querySelector(".menu-toggle").addEventListener("click", () => {
+      document.querySelector("nav").classList.toggle("active");
+    });
+
+    // Hero Typing Effect
+    const words = ["Fahriza", "Programmer", "Creator"];
+    let i = 0, j = 0, currentWord = "", isDeleting = false;
+    function type() {
+      currentWord = words[i];
+      document.querySelector(".typed").textContent = currentWord.substring(0, j);
+      if(!isDeleting && j < currentWord.length) j++;
+      else if(isDeleting && j > 0) j--;
+      else if(!isDeleting && j === currentWord.length){ isDeleting = true; setTimeout(type, 1000); return; }
+      else if(isDeleting && j === 0){ isDeleting = false; i = (i+1)%words.length; }
+      setTimeout(type, isDeleting ? 100 : 200);
+    }
+    type();
+
+    // Card animation on scroll
+    const cards = document.querySelectorAll(".card");
+    window.addEventListener("scroll", () => {
+      const trigger = window.innerHeight / 1.2;
+      cards.forEach(card => {
+        const top = card.getBoundingClientRect().top;
+        if(top < trigger) card.classList.add("visible");
+      });
+    });
+
+    // Dev Page Access
+    function enterDev(e){
+      e.preventDefault();
+      const pass = prompt("Masukkan password untuk masuk Developer Mode:");
+      if(pass === "faa123"){
+        alert("Selamat datang di Developer Mode!");
+        document.getElementById("dev").style.display = "block";
+        document.getElementById("dev").scrollIntoView({behavior:"smooth"});
+        typeDevText("Halo, saya Fahriza, seorang programmer muda yang gemar mempelajari dunia teknologi, khususnya web development dan game creation. Saya percaya setiap baris kode dapat membuka peluang baru untuk karya yang bermanfaat.");
+      } else {
+        alert("Password salah!");
+      }
+    }
+
+    // Developer text typewriter
+    function typeDevText(text){
+      const el = document.getElementById("devText");
+      el.textContent = "";
+      let i = 0;
+      function typing(){
+        if(i < text.length){
+          el.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, 50);
+        }
+      }
+      typing();
+    }
+
+    // Chatbot
+    function toggleChat(){ document.getElementById("chatbot").style.display =
+      document.getElementById("chatbot").style.display === "flex" ? "none":"flex"; }
+    function sendMessage(){
+      const input = document.getElementById("chatInput");
+      const msg = input.value.trim();
+      if(msg){
+        addMessage("Kamu: "+msg);
+        if(msg.toLowerCase().includes("halo")) addMessage("Bot: Halo juga! 😊");
+        else if(msg.toLowerCase().includes("siapa")) addMessage("Bot: Saya asisten virtualmu!");
+        else if(msg.toLowerCase().includes("dev")) addMessage("Bot: Untuk masuk Dev, gunakan password rahasia 😉");
+        else addMessage("Bot: Aku belum paham, coba kata lain.");
+        input.value="";
+      }
+    }
+    function addMessage(text){
+      const box = document.getElementById("chatbotMessages");
+      const div = document.createElement("div");
+      div.textContent = text;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+  </script>
+</body>
+</html>
