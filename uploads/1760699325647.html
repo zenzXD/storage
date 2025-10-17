@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar dengan Latar Futuristik</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Latar belakang futuristik */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(18, 16, 54, 0.8) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(18, 16, 54, 0.8) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(103, 58, 183, 0.4) 0%, rgba(103, 58, 183, 0) 70%);
+            filter: blur(20px);
+            animation: pulse 8s infinite alternate;
+        }
+
+        .glow:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            background: radial-gradient(circle, rgba(33, 150, 243, 0.4) 0%, rgba(33, 150, 243, 0) 70%);
+        }
+
+        .glow:nth-child(2) {
+            top: 60%;
+            left: 80%;
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.4) 0%, rgba(0, 188, 212, 0) 70%);
+            animation-delay: -4s;
+        }
+
+        .glow:nth-child(3) {
+            top: 80%;
+            left: 20%;
+            background: radial-gradient(circle, rgba(156, 39, 176, 0.4) 0%, rgba(156, 39, 176, 0) 70%);
+            animation-delay: -2s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        /* Konten utama */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #00bcd4, #673ab7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a8a8e6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Kartu pembelajaran */
+        .learning-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00bcd4, #673ab7);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00bcd4;
+        }
+
+        .card p {
+            color: #b8b8e6;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(90deg, #00bcd4, #673ab7);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.5);
+        }
+
+        /* Panel interaktif */
+        .interactive-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 3rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            color: #00bcd4;
+        }
+
+        .code-editor {
+            background: #1e1e3f;
+            border-radius: 10px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            margin-bottom: 0.5rem;
+            color: #f8f8f2;
+        }
+
+        .code-comment {
+            color: #6272a4;
+        }
+
+        .code-keyword {
+            color: #ff79c6;
+        }
+
+        .code-string {
+            color: #f1fa8c;
+        }
+
+        .code-function {
+            color: #50fa7b;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #a8a8e6;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .learning-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .panel-title {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Latar belakang futuristik -->
+    <div class="background">
+        <div class="grid"></div>
+        <div class="particles" id="particles"></div>
+        <div class="glow"></div>
+        <div class="glow"></div>
+        <div class="glow"></div>
+    </div>
+
+    <!-- Konten utama -->
+    <div class="container">
+        <header>
+            <h1>Zona Belajar Futuristik</h1>
+            <p class="subtitle">Tingkatkan pengetahuan Anda dengan pengalaman belajar yang imersif dan teknologi terkini</p>
+        </header>
+
+        <section class="learning-cards">
+            <div class="card">
+                <h2>Pemrograman Modern</h2>
+                <p>Pelajari bahasa pemrograman terkini seperti Python, JavaScript, dan Rust dengan pendekatan yang interaktif dan menyenangkan.</p>
+                <a href="#" class="btn">Mulai Belajar</a>
+            </div>
+            <div class="card">
+                <h2>Kecerdasan Buatan</h2>
+                <p>Jelajahi dunia AI dan machine learning dengan proyek-proyek praktis yang akan membawa Anda ke masa depan teknologi.</p>
+                <a href="#" class="btn">Jelajahi AI</a>
+            </div>
+            <div class="card">
+                <h2>Pengembangan Web</h2>
+                <p>Kuasai teknologi web modern seperti React, Vue, dan teknologi full-stack untuk membangun aplikasi web yang powerful.</p>
+                <a href="#" class="btn">Bangun Website</a>
+            </div>
+        </section>
+
+        <section class="interactive-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Editor Kode Interaktif</h2>
+                <a href="#" class="btn">Jalankan Kode</a>
+            </div>
+            <div class="code-editor">
+                <div class="code-line"><span class="code-keyword">function</span> <span class="code-function">sambutanFuturistik</span>() {</div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">const</span> pesan = <span class="code-string">"Selamat datang di dunia pembelajaran masa depan!"</span>;</div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">return</span> pesan;</div>
+                <div class="code-line">}</div>
+                <div class="code-line">&nbsp;</div>
+                <div class="code-line"><span class="code-comment">// Teknologi akan membawa kita ke tempat yang tak terbayangkan</span></div>
+                <div class="code-line"><span class="code-keyword">console</span>.<span class="code-function">log</span>(<span class="code-function">sambutanFuturistik</span>());</div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2023 Zona Belajar Futuristik. Semua hak dilindungi.</p>
+            <p>Dibuat dengan ❤️ untuk masa depan pendidikan</p>
+        </footer>
+    </div>
+
+    <script>
+        // Membuat partikel untuk latar belakang
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Ukuran acak
+                const size = Math.random() * 4 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Posisi acak
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Animasi dengan durasi acak
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+            
+            // Efek interaktif pada kartu
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const angleY = (x - centerX) / 25;
+                    const angleX = (centerY - y) / 25;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateY(-10px)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(-10px)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
