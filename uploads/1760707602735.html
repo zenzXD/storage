@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika - 10 Soal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .soal {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .soal-number {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .soal-text {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .message {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .correct {
+            color: #28a745;
+        }
+
+        .incorrect {
+            color: #dc3545;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Kuis Matematika</h1>
+            <p>Jawablah 10 soal matematika berikut dengan benar!</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <form id="quizForm">
+            <!-- Soal 1: Penjumlahan -->
+            <div class="soal">
+                <div class="soal-number">Soal 1</div>
+                <div class="soal-text">Berapakah hasil dari 27 + 15?</div>
+                <input type="number" id="soal1" required>
+                <div class="feedback" id="feedback1"></div>
+            </div>
+
+            <!-- Soal 2: Pengurangan -->
+            <div class="soal">
+                <div class="soal-number">Soal 2</div>
+                <div class="soal-text">Berapakah hasil dari 84 - 29?</div>
+                <input type="number" id="soal2" required>
+                <div class="feedback" id="feedback2"></div>
+            </div>
+
+            <!-- Soal 3: Perkalian -->
+            <div class="soal">
+                <div class="soal-number">Soal 3</div>
+                <div class="soal-text">Berapakah hasil dari 8 × 7?</div>
+                <input type="number" id="soal3" required>
+                <div class="feedback" id="feedback3"></div>
+            </div>
+
+            <!-- Soal 4: Pembagian -->
+            <div class="soal">
+                <div class="soal-number">Soal 4</div>
+                <div class="soal-text">Berapakah hasil dari 72 ÷ 8?</div>
+                <input type="number" id="soal4" required>
+                <div class="feedback" id="feedback4"></div>
+            </div>
+
+            <!-- Soal 5: Operasi Campuran -->
+            <div class="soal">
+                <div class="soal-number">Soal 5</div>
+                <div class="soal-text">Berapakah hasil dari (12 + 8) × 3?</div>
+                <input type="number" id="soal5" required>
+                <div class="feedback" id="feedback5"></div>
+            </div>
+
+            <!-- Soal 6: Pangkat -->
+            <div class="soal">
+                <div class="soal-number">Soal 6</div>
+                <div class="soal-text">Berapakah hasil dari 5² (5 pangkat 2)?</div>
+                <input type="number" id="soal6" required>
+                <div class="feedback" id="feedback6"></div>
+            </div>
+
+            <!-- Soal 7: Pecahan -->
+            <div class="soal">
+                <div class="soal-number">Soal 7</div>
+                <div class="soal-text">Berapakah hasil dari 3/4 + 1/2? (Jawaban dalam desimal)</div>
+                <input type="number" step="0.01" id="soal7" required>
+                <div class="feedback" id="feedback7"></div>
+            </div>
+
+            <!-- Soal 8: Bilangan Negatif -->
+            <div class="soal">
+                <div class="soal-number">Soal 8</div>
+                <div class="soal-text">Berapakah hasil dari 15 - 25?</div>
+                <input type="number" id="soal8" required>
+                <div class="feedback" id="feedback8"></div>
+            </div>
+
+            <!-- Soal 9: Kelipatan -->
+            <div class="soal">
+                <div class="soal-number">Soal 9</div>
+                <div class="soal-text">Berapakah hasil dari 6 × 9?</div>
+                <input type="number" id="soal9" required>
+                <div class="feedback" id="feedback9"></div>
+            </div>
+
+            <!-- Soal 10: Soal Cerita -->
+            <div class="soal">
+                <div class="soal-number">Soal 10</div>
+                <div class="soal-text">Andi memiliki 15 apel. Dia memberikan 7 apel kepada Budi. Berapa apel yang tersisa?</div>
+                <input type="number" id="soal10" required>
+                <div class="feedback" id="feedback10"></div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit">Periksa Jawaban</button>
+            </div>
+        </form>
+
+        <div class="result" id="result">
+            <h2>Hasil Kuis Matematika</h2>
+            <div class="score" id="score">0/10</div>
+            <div class="message" id="message"></div>
+            <button onclick="resetQuiz()">Coba Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        // Jawaban yang benar
+        const correctAnswers = {
+            soal1: 42,
+            soal2: 55,
+            soal3: 56,
+            soal4: 9,
+            soal5: 60,
+            soal6: 25,
+            soal7: 1.25,
+            soal8: -10,
+            soal9: 54,
+            soal10: 8
+        };
+
+        // Update progress bar
+        function updateProgress() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            let filled = 0;
+            inputs.forEach(input => {
+                if (input.value !== '') filled++;
+            });
+            const progress = (filled / inputs.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        // Event listener untuk input
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+
+        // Handle form submission
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            checkAnswers();
+        });
+
+        // Fungsi untuk memeriksa jawaban
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = 10;
+
+            // Reset semua feedback
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`feedback${i}`).innerHTML = '';
+                document.getElementById(`feedback${i}`).className = 'feedback';
+            }
+
+            // Periksa setiap jawaban
+            for (let i = 1; i <= totalQuestions; i++) {
+                const userAnswer = parseFloat(document.getElementById(`soal${i}`).value);
+                const correctAnswer = correctAnswers[`soal${i}`];
+                const feedback = document.getElementById(`feedback${i}`);
+
+                if (userAnswer === correctAnswer) {
+                    score++;
+                    feedback.innerHTML = '✅ Benar!';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.innerHTML = `❌ Salah! Jawaban yang benar: ${correctAnswer}`;
+                    feedback.className = 'feedback incorrect';
+                }
+            }
+
+            // Tampilkan hasil
+            showResult(score, totalQuestions);
+        }
+
+        // Fungsi untuk menampilkan hasil
+        function showResult(score, total) {
+            const percentage = (score / total) * 100;
+            const scoreElement = document.getElementById('score');
+            const messageElement = document.getElementById('message');
+            const resultElement = document.getElementById('result');
+
+            scoreElement.textContent = `${score}/${total}`;
+
+            if (percentage === 100) {
+                messageElement.textContent = '🎉 Excellent! Nilai sempurna!';
+            } else if (percentage >= 80) {
+                messageElement.textContent = '👍 Bagus sekali!';
+            } else if (percentage >= 60) {
+                messageElement.textContent = '😊 Lumayan baik!';
+            } else if (percentage >= 40) {
+                messageElement.textContent = '🤔 Perlu belajar lagi!';
+            } else {
+                messageElement.textContent = '📚 Ayo semangat belajar!';
+            }
+
+            resultElement.style.display = 'block';
+            resultElement.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Fungsi untuk reset kuis
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.getElementById('result').style.display = 'none';
+            
+            // Reset feedback
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById(`feedback${i}`).innerHTML = '';
+                document.getElementById(`feedback${i}`).className = 'feedback';
+            }
+            
+            // Reset progress bar
+            document.getElementById('progress').style.width = '0%';
+            
+            // Scroll ke atas
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
