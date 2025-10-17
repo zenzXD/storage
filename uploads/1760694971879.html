@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Tic Tac Toe by Ditzz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ff;
+            --bg-color: #00101a;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-color);
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 3.5em;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--neon-blue);
+            animation: titleGlow 2s infinite alternate;
+        }
+
+        .game-container {
+            position: relative;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(0, 32, 48, 0.5);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 43, 61, 0.8);
+            border: 3px solid var(--neon-blue);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: transparent;
+            text-shadow: 0 0 20px;
+        }
+
+        .cell.x { color: var(--neon-blue); }
+        .cell.o { color: var(--neon-pink); }
+
+        .cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        .cell:active { transform: scale(0.95); }
+
+        .result {
+            color: var(--neon-blue);
+            font-size: 24px;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        button:hover {
+            background: var(--neon-blue);
+            color: var(--bg-color);
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        .difficulty {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .difficulty-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: rgba(0, 43, 61, 0.8);
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn.active {
+            background: var(--neon-blue);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 10px var(--neon-blue); }
+            to { text-shadow: 0 0 30px var(--neon-blue), 0 0 20px var(--neon-pink); }
+        }
+
+        .win { animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">TIC TAC TOE<br><span style="font-size: 0.4em">BY DITZZ</span></h1>
+    </div>
+
+    <div class="game-container">
+        <div class="grid" id="grid">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div class="result" id="result"></div>
+        <div class="difficulty">
+            <button class="difficulty-btn active" data-level="easy">EASY</button>
+            <button class="difficulty-btn" data-level="medium">MEDIUM</button>
+            <button class="difficulty-btn" data-level="hard">HARD</button>
+        </div>
+        <button onclick="resetGame()">RESTART GAME</button>
+    </div>
+
+    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2865/2865.wav"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/2761/2761.wav"></audio>
+    <audio id="drawSound" src="https://assets.mixkit.co/active_storage/sfx/2763/2763.wav"></audio>
+    <audio id="bgMusic" loop src="https://assets.mixkit.co/music/preview/mixkit-chill-out-melodic-techno-501.mp3"></audio>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const result = document.getElementById('result');
+        const [clickSound, winSound, drawSound, bgMusic] = 
+            ['clickSound', 'winSound', 'drawSound', 'bgMusic'].map(id => document.getElementById(id));
+        
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let currentDifficulty = 'easy';
+        let gameState = Array(9).fill('');
+        const winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+        // Initialize Game
+        bgMusic.volume = 0.3;
+        bgMusic.play();
+
+        // Event Listeners
+        cells.forEach(cell => cell.addEventListener('click', handleClick));
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentDifficulty = btn.dataset.level;
+                resetGame();
+            });
+        });
+
+        // Game Logic
+        function handleClick(e) {
+            if (!gameActive || currentPlayer !== 'X') return;
+            
+            const cell = e.target;
+            const index = cell.dataset.index;
+            
+            if (gameState[index]) return;
+            
+            makeMove(cell, index);
+            playSound(clickSound);
+            
+            if (checkWin()) endGame(`PLAYER ${currentPlayer} WINS!`, winSound);
+            else if (checkDraw()) endGame("GAME DRAW!", drawSound);
+            else setTimeout(aiMove, 800);
+        }
+
+        function aiMove() {
+            let index;
+            switch(currentDifficulty) {
+                case 'hard': index = getBestMove(); break;
+                case 'medium': index = getMediumMove(); break;
+                default: index = getRandomMove();
+            }
+            
+            const cell = cells[index];
+            makeMove(cell, index);
+            playSound(clickSound);
+            
+            if (checkWin()) endGame(`AI WINS!`, winSound);
+            else if (checkDraw()) endGame("GAME DRAW!", drawSound);
+        }
+
+        // AI Algorithms
+        function getRandomMove() {
+            const empty = gameState.map((v,i) => v === '' ? i : null).filter(v => v !== null);
+            return empty[Math.floor(Math.random() * empty.length)];
+        }
+
+        function getMediumMove() {
+            const check = (player) => winCombos.find(combo => 
+                combo.filter(i => gameState[i] === player).length === 2 && 
+                combo.some(i => gameState[i] === '')
+            );
+            
+            return (check('O') || check('X') || getRandomMove());
+        }
+
+        function getBestMove() {
+            let bestScore = -Infinity;
+            let bestMove;
+            
+            gameState.forEach((cell, i) => {
+                if (!cell) {
+                    gameState[i] = 'O';
+                    let score = minimax(false);
+                    gameState[i] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = i;
+                    }
+                }
+            });
+            return bestMove;
+        }
+
+        function minimax(isMax) {
+            const result = checkGameResult();
+            if (result !== null) return result === 'O' ? 1 : result === 'X' ? -1 : 0;
+            
+            let bestScore = isMax ? -Infinity : Infinity;
+            
+            gameState.forEach((cell, i) => {
+                if (!cell) {
+                    gameState[i] = isMax ? 'O' : 'X';
+                    let score = minimax(!isMax);
+                    gameState[i] = '';
+                    bestScore = isMax ? Math.max(score, bestScore) : Math.min(score, bestScore);
+                }
+            });
+            return bestScore;
+        }
+
+        // Helper Functions
+        function makeMove(cell, index) {
+            gameState[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        function checkWin() {
+            return winCombos.some(combo => 
+                combo.every(i => gameState[i] === (currentPlayer === 'X' ? 'O' : 'X'))
+            );
+        }
+
+        function checkDraw() { return gameState.every(cell => cell); }
+        function checkGameResult() {
+            const winner = winCombos.find(combo => 
+                combo.every(i => gameState[i] === 'O') || combo.every(i => gameState[i] === 'X')
+            );
+            return winner ? gameState[winner[0]] : gameState.includes('') ? null : 'draw';
+        }
+
+        function endGame(message, sound) {
+            gameActive = false;
+            result.textContent = message;
+            playSound(sound);
+            if (message.includes('WINS')) highlightWinner();
+        }
+
+        function highlightWinner() {
+            winCombos.forEach(combo => {
+                if (combo.every(i => gameState[i] && 
+                    gameState[combo[0]] === gameState[combo[1]] && 
+                    gameState[combo[1]] === gameState[combo[2]])) {
+                    combo.forEach(i => cells[i].classList.add('win'));
+                }
+            });
+        }
+
+        function resetGame() {
+            gameState = Array(9).fill('');
+            currentPlayer = 'X';
+            gameActive = true;
+            result.textContent = '';
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('win');
+            });
+            bgMusic.play();
+        }
+
+        function playSound(sound) {
+            sound.currentTime = 0;
+            sound.play();
+        }
+    </script>
+</body>
+</html>
