@@ -1,0 +1,3884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>TugasKu3 - Manajemen Tugas Modern</title>
+  <meta name="app-version" content="3.3.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="my-icon.png">
+  <style>
+    /* CSS Variables & Base Styles */
+    :root {
+      --primary: #8B5CF6;
+      --primary-600: #7C3AED;
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --card: #1e293b;
+      --muted: #94a3b8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --glass: rgba(30, 41, 59, 0.6);
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+      --priority-high: #ef4444;
+      --priority-medium: #f59e0b;
+      --priority-low: #10b981;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* TEMA TERANG NORMAL */
+    .light-mode {
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --glass: rgba(255,255,255,0.7);
+      color-scheme: light;
+      color: #0f1724;
+    }
+    
+    /* TEMA GELAP PROFESIONAL */
+    .dark-pro-mode {
+      --primary: #00c8ff;
+      --primary-600: #00a8d6;
+      --bg: linear-gradient(180deg, #0b0f16, #121821);
+      --bg-card: #1c2430;
+      --card: #1c2430;
+      --muted: #a0aec0;
+      --glass: rgba(28, 36, 48, 0.7);
+      color: #e8edf2;
+      --shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    /* TEMA GELAP PROFESIONAL SHIFT (BARU) */
+    .dark-pro-shift-mode {
+      --primary: #8B5CF6;
+      --primary-600: #7C3AED;
+      --bg: linear-gradient(135deg, #0f172a, #1e1b4b);
+      --bg-card: #1e293b;
+      --card: #1e293b;
+      --muted: #94a3b8;
+      --glass: rgba(30, 41, 59, 0.6);
+      color: #e8edf2;
+      --shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    /* Efek Glow untuk Tema Gelap Profesional */
+    .dark-pro-mode .card,
+    .dark-pro-mode .task-card,
+    .dark-pro-mode .schedule-item,
+    .dark-pro-mode .note-card,
+    .dark-pro-mode .stat-card,
+    .dark-pro-mode .form-section,
+    .dark-pro-mode .about-section,
+    .dark-pro-mode .stats-section,
+    .dark-pro-mode header {
+      box-shadow: 
+        0 0 10px rgba(0,200,255,0.15),
+        inset 0 0 5px rgba(0,200,255,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .dark-pro-mode .card:hover,
+    .dark-pro-mode .task-card:hover,
+    .dark-pro-mode .schedule-item:hover,
+    .dark-pro-mode .note-card:hover,
+    .dark-pro-mode .stat-card:hover,
+    .dark-pro-mode .form-section:hover,
+    .dark-pro-mode .about-section:hover,
+    .dark-pro-mode .stats-section:hover {
+      box-shadow: 
+        0 0 20px rgba(0,200,255,0.3),
+        inset 0 0 10px rgba(0,200,255,0.1);
+    }
+    
+    .dark-pro-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(0,200,255,0.4),
+        0 0 15px rgba(0,200,255,0.2);
+    }
+    
+    .dark-pro-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(0,200,255,0.6),
+        0 0 20px rgba(0,200,255,0.3);
+    }
+    
+    .dark-pro-mode .btn,
+    .dark-pro-mode .filter-btn.active,
+    .dark-pro-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(0,200,255,0.3);
+    }
+    
+    .dark-pro-mode .btn:hover,
+    .dark-pro-mode .filter-btn.active:hover,
+    .dark-pro-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(0,200,255,0.4);
+    }
+    
+    /* Efek Glow untuk Tema Gelap Profesional Shift */
+    .dark-pro-shift-mode .card,
+    .dark-pro-shift-mode .task-card,
+    .dark-pro-shift-mode .schedule-item,
+    .dark-pro-shift-mode .note-card,
+    .dark-pro-shift-mode .stat-card,
+    .dark-pro-shift-mode .form-section,
+    .dark-pro-shift-mode .about-section,
+    .dark-pro-shift-mode .stats-section,
+    .dark-pro-shift-mode header {
+      box-shadow: 
+        0 0 10px rgba(139,92,246,0.15),
+        inset 0 0 5px rgba(139,92,246,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .dark-pro-shift-mode .card:hover,
+    .dark-pro-shift-mode .task-card:hover,
+    .dark-pro-shift-mode .schedule-item:hover,
+    .dark-pro-shift-mode .note-card:hover,
+    .dark-pro-shift-mode .stat-card:hover,
+    .dark-pro-shift-mode .form-section:hover,
+    .dark-pro-shift-mode .about-section:hover,
+    .dark-pro-shift-mode .stats-section:hover {
+      box-shadow: 
+        0 0 20px rgba(139,92,246,0.3),
+        inset 0 0 10px rgba(139,92,246,0.1);
+    }
+    
+    .dark-pro-shift-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(139,92,246,0.4),
+        0 0 15px rgba(139,92,246,0.2);
+    }
+    
+    .dark-pro-shift-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(139,92,246,0.6),
+        0 0 20px rgba(139,92,246,0.3);
+    }
+    
+    .dark-pro-shift-mode .btn,
+    .dark-pro-shift-mode .filter-btn.active,
+    .dark-pro-shift-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    
+    .dark-pro-shift-mode .btn:hover,
+    .dark-pro-shift-mode .filter-btn.active:hover,
+    .dark-pro-shift-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(139,92,246,0.4);
+    }
+    
+    /* Logo baru dengan efek neon */
+    .logo-neon {
+      background: linear-gradient(135deg, #00c8ff, #8B5CF6);
+      box-shadow: 0 0 10px rgba(0,200,255,0.5);
+      animation: neon-pulse 3s infinite;
+    }
+    
+    @keyframes neon-pulse {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(0,200,255,0.5);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(0,200,255,0.8), 0 0 30px rgba(0,200,255,0.6);
+      }
+    }
+    
+    /* Transisi halus untuk semua elemen */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.4s, color 0.4s, box-shadow 0.4s, border-color 0.4s;
+    }
+    
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+    
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      color: #e6eef8;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .light-mode input,
+    .light-mode textarea,
+    .light-mode select {
+      color: #0f1724;
+      border-color: rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.02);
+    }
+    
+    /* Container */
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 12px;
+      width: 100%;
+      flex: 1;
+      padding-bottom: 80px;
+    }
+    
+    /* Header Styles dengan Optimasi Blur */
+    header {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      margin-bottom: 18px;
+      background: linear-gradient(180deg, rgba(30,41,59,0.85), rgba(30,41,59,0.70));
+      backdrop-filter: blur(12px) saturate(180%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+      animation: slideDown 0.5s ease-out;
+      transition: backdrop-filter 0.3s ease;
+    }
+    
+    .header-scrolling {
+      backdrop-filter: none;
+    }
+    
+    .light-mode header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.70));
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+    
+    .logo .app-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+    
+    .brand h1 {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .light-mode .brand h1 {
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .dark-pro-mode .brand h1 {
+      background: linear-gradient(135deg, #00c8ff, #0095ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .dark-pro-shift-mode .brand h1 {
+      background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .light-mode .icon-btn {
+      border-color: rgba(0,0,0,0.08);
+      background: var(--card);
+    }
+    
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+    
+    /* Menu Drawer */
+    .menu-drawer {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 85%;
+      max-width: 320px;
+      height: 100%;
+      background: var(--bg-card);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+      backdrop-filter: blur(10px);
+    }
+    
+    .menu-drawer.open {
+      right: 0;
+      animation: slideInRight 0.3s ease-out;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        right: -100%;
+        opacity: 0;
+      }
+      to {
+        right: 0;
+        opacity: 1;
+      }
+    }
+    
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .light-mode .menu-header {
+      border-bottom-color: rgba(0,0,0,0.1);
+    }
+    
+    .menu-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 8px;
+      font-weight: 500;
+      animation: fadeIn 0.5s ease-out;
+      animation-fill-mode: both;
+    }
+    
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.15s; }
+    .menu-item:nth-child(3) { animation-delay: 0.2s; }
+    .menu-item:nth-child(4) { animation-delay: 0.25s; }
+    .menu-item:nth-child(5) { animation-delay: 0.3s; }
+    .menu-item:nth-child(6) { animation-delay: 0.35s; }
+    .menu-item:nth-child(7) { animation-delay: 0.4s; }
+    .menu-item:nth-child(8) { animation-delay: 0.45s; }
+    .menu-item:nth-child(9) { animation-delay: 0.5s; }
+    
+    .menu-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .light-mode .menu-item:hover {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    /* Menu Item untuk Web Utama (Lebih Mencolok) */
+    .menu-item-highlight {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    
+    .menu-item-highlight:hover {
+      background: var(--primary-600);
+      box-shadow: 0 6px 15px rgba(139,92,246,0.4);
+    }
+    
+    .dark-pro-mode .menu-item-highlight {
+      box-shadow: 0 4px 12px rgba(0,200,255,0.3);
+    }
+    
+    .dark-pro-mode .menu-item-highlight:hover {
+      box-shadow: 0 6px 15px rgba(0,200,255,0.4);
+    }
+    
+    .menu-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 16px 0;
+    }
+    
+    .light-mode .menu-divider {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    /* Profile Section in Menu */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 20px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .light-mode .profile-section {
+      background: rgba(0,0,0,0.05);
+      border-bottom-color: rgba(0,0,0,0.1);
+    }
+    
+    .profile-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .profile-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    /* Tab Navigation */
+    .tab-navigation {
+      display: flex;
+      background: rgba(255,255,255,0.05);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .light-mode .tab-navigation {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      color: var(--muted);
+    }
+    
+    .tab-btn.active {
+      background: var(--card);
+      box-shadow: var(--shadow);
+      color: white;
+    }
+    
+    .light-mode .tab-btn.active {
+      color: #0f1724;
+    }
+    
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    /* Form & Field Styles */
+    .form-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(10px);
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .field {
+      margin-bottom: 16px;
+      position: relative;
+    }
+    
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--glass);
+      font-family: inherit;
+      font-size: 15px;
+      outline: 0;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: inherit;
+    }
+    
+    .light-mode .field input,
+    .light-mode .field textarea,
+    .light-mode .field select {
+      border-color: rgba(0,0,0,0.1);
+    }
+    
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+    }
+    
+    .dark-pro-mode .field input:focus,
+    .dark-pro-mode .field textarea:focus,
+    .dark-pro-mode .field select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,200,255,0.2);
+    }
+    
+    .dark-pro-shift-mode .field input:focus,
+    .dark-pro-shift-mode .field textarea:focus,
+    .dark-pro-shift-mode .field select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+    }
+    
+    /* Filter Section */
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .filter-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--muted);
+    }
+    
+    .light-mode .filter-btn {
+      border-color: rgba(0,0,0,0.1);
+    }
+    
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    
+    .dark-pro-mode .filter-btn.active,
+    .dark-pro-mode .filter-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .dark-pro-shift-mode .filter-btn.active,
+    .dark-pro-shift-mode .filter-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    /* Task Card */
+    .task-card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      position: relative;
+      border-left: 4px solid transparent;
+      transition: all 0.2s ease;
+      overflow: hidden;
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(5px);
+    }
+    
+    .task-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    }
+    
+    .task-title {
+      font-weight: 700;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    
+    /* Priority indicator (new) */
+    .priority-indicator {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      margin-right: 8px;
+      line-height: 14px;
+      text-align: center;
+      font-size: 12px;
+    }
+    
+    .priority-high-indicator { background: var(--priority-high); }
+    .priority-medium-indicator { background: var(--priority-medium); }
+    .priority-low-indicator { background: var(--priority-low); }
+    
+    .task-title .title-text {
+      display: inline-block;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+      flex: 1;
+    }
+    
+    .task-detail {
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    
+    .task-detail .long-text {
+      max-height: 120px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .light-mode .task-actions {
+      border-top-color: rgba(0,0,0,0.05);
+    }
+    
+    .status-pill {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 12px;
+      z-index: 30;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    
+    /* Priority and deadline classes */
+    .priority-high { border-left-color: var(--priority-high); }
+    .priority-medium { border-left-color: var(--priority-medium); }
+    .priority-low { border-left-color: var(--priority-low); }
+    .dl-ok { border-left-color: var(--success); }
+    .dl-soon { border-left-color: var(--warning); }
+    .dl-urgent { border-left-color: var(--danger); }
+    .dl-overdue { border-left-color: #6b7280; opacity: 0.85; }
+    
+    /* Priority badge kept for compatibility but not used visually by default */
+    .priority-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: auto;
+    }
+    
+    .priority-high-badge { background-color: var(--priority-high); color: white; }
+    .priority-medium-badge { background-color: var(--priority-medium); color: white; }
+    .priority-low-badge { background-color: var(--priority-low); color: white; }
+    
+    /* FAB */
+    .fab {
+      position: fixed;
+      right: 20px;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+      box-shadow: 0 18px 40px rgba(139,92,246,0.3);
+      cursor: pointer;
+      border: 0;
+      z-index: 60;
+      transition: all 0.2s ease;
+      animation: pulse 2s infinite;
+    }
+    
+    .dark-pro-mode .fab {
+      background: linear-gradient(135deg, #00c8ff, #0095ff);
+      box-shadow: 0 18px 40px rgba(0,200,255,0.4);
+    }
+    
+    .dark-pro-shift-mode .fab {
+      background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      box-shadow: 0 18px 40px rgba(139,92,246,0.4);
+    }
+    
+    .fab:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 45px rgba(139,92,246,0.4);
+    }
+    
+    .dark-pro-mode .fab:hover {
+      box-shadow: 0 20px 45px rgba(0,200,255,0.6);
+    }
+    
+    .dark-pro-shift-mode .fab:hover {
+      box-shadow: 0 20px 45px rgba(139,92,246,0.6);
+    }
+    
+    .fab:active {
+      transform: scale(0.95);
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 100px;
+      background: var(--card);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+      z-index: 80;
+      font-size: 14px;
+      text-align: center;
+      max-width: 80%;
+      box-shadow: var(--shadow);
+    }
+    
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    /* Watermark */
+    .watermark {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 70;
+      background: transparent;
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+    
+    .light-mode .watermark {
+      opacity: 0.18;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .empty-state h3 {
+      margin-bottom: 8px;
+    }
+    
+    /* Button Styles */
+    .btn {
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 0;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    
+    .dark-pro-mode .btn {
+      background: linear-gradient(135deg, #00c8ff, #0095ff);
+      box-shadow: 0 4px 12px rgba(0,200,255,0.3);
+    }
+    
+    .dark-pro-shift-mode .btn {
+      background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(139,92,246,0.4);
+    }
+    
+    .dark-pro-mode .btn:hover {
+      box-shadow: 0 6px 15px rgba(0,200,255,0.4);
+    }
+    
+    .dark-pro-shift-mode .btn:hover {
+      box-shadow: 0 6px 15px rgba(139,92,246,0.4);
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+    }
+    
+    /* Schedule styles */
+    .schedule-day {
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .schedule-header {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .light-mode .schedule-header {
+      border-bottom-color: rgba(0,0,0,0.06);
+    }
+    
+    .schedule-item {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    
+    .schedule-item:hover {
+      transform: translateY(-2px);
+    }
+    
+    .schedule-time {
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 80px;
+    }
+    
+    .schedule-subject {
+      font-weight: 600;
+      flex: 1;
+      margin: 0 12px;
+    }
+    
+    /* About page styles */
+    .about-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    
+    .about-logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .about-logo .logo {
+      width: 80px;
+      height: 80px;
+      font-size: 36px;
+      margin: 0 auto 16px;
+      padding: 6px;
+    }
+    
+    .about-logo .logo .app-icon {
+      border-radius: 12px;
+    }
+    
+    .feature-list {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
+    
+    .feature-list li {
+      margin-bottom: 8px;
+    }
+    
+    .version-info {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .light-mode .version-info {
+      border-top-color: rgba(0,0,0,0.06);
+    }
+    
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 90%;
+      width: 400px;
+      max-height: 80%;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      animation: modalSlideIn 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: transform 0.2s;
+    }
+    
+    .modal-close:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Badge for task count */
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--danger);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow: 0 4px 10px rgba(239,68,68,0.18);
+    }
+    
+    /* Theme Selection Modal */
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+    
+    .theme-option:hover {
+      background: rgba(255,255,255,0.05);
+      transform: translateX(5px);
+    }
+    
+    .light-mode .theme-option:hover {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .theme-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    
+    /* Notes styles */
+    .note-card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .note-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    }
+    
+    .note-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    
+    .note-content {
+      font-size: 14px;
+      margin-bottom: 12px;
+      word-break: break-word;
+      white-space: pre-wrap;
+      color: var(--muted);
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    
+    .note-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    
+    .note-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
+    /* Stats Modal Styles */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+      backdrop-filter: blur(5px);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    /* Chart container */
+    .chart-wrap {
+      margin-top: 12px;
+      background: transparent;
+    }
+    
+    .chart-canvas {
+      width: 100% !important;
+      height: 220px !important;
+    }
+    
+    /* Stats Section on Home */
+    .stats-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(5px);
+    }
+    
+    .stats-section h3 {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Profile Modal Styles */
+    .profile-modal .avatar-options {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    
+    .avatar-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    
+    .avatar-option:hover {
+      transform: scale(1.1);
+    }
+    
+    .avatar-option.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+    }
+    
+    .profile-modal .upload-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 16px 0;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .light-mode .profile-modal .upload-btn {
+      background: rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.2);
+    }
+    
+    .profile-modal .upload-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .light-mode .profile-modal .upload-btn:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    .profile-modal .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .profile-modal .actions .btn {
+      flex: 1;
+    }
+    
+    /* Crop Modal Styles - Redesigned */
+    .crop-modal .crop-container {
+      width: 100%;
+      height: 300px;
+      margin: 16px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .crop-modal .crop-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 16px auto;
+      overflow: hidden;
+      border: 2px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    
+    .crop-modal .crop-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .crop-modal .crop-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    
+    .crop-modal .crop-controls .btn {
+      flex: 1;
+    }
+    
+    .crop-modal .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    .crop-modal .zoom-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.1);
+      outline: none;
+    }
+    
+    .crop-modal .zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+    }
+    
+    .crop-modal .zoom-value {
+      min-width: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    /* Animations */
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translate(-50%, 20px);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-actions {
+        position: relative;
+      }
+      
+      .brand h1 {
+        font-size: 18px;
+      }
+      
+      .logo {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .btn, .filter-btn {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      
+      .task-title {
+        font-size: 16px;
+      }
+      
+      .task-detail {
+        font-size: 13px;
+      }
+      
+      .fab {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+        bottom: 80px;
+      }
+      
+      .priority-badge {
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+      
+      .task-actions {
+        flex-wrap: wrap;
+      }
+      
+      .menu-drawer {
+        width: 85%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .brand {
+        gap: 8px;
+      }
+      
+      .header-actions {
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 8px;
+      }
+      
+      .controls {
+        justify-content: space-between;
+        width: 100%;
+      }
+      
+      .filter-section {
+        gap: 6px;
+      }
+      
+      .filter-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+      
+      .schedule-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .schedule-time {
+        min-width: auto;
+      }
+      
+      .task-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      
+      .priority-badge {
+        margin-left: 0;
+      }
+      
+      .task-detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      
+      .note-title, .note-content {
+        word-break: break-word;
+      }
+      
+      .chart-canvas {
+        height: 180px !important;
+      }
+      
+      .menu-drawer {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div id="splash" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;">
+    <img src="splash.png" alt="Splash" style="width:100%;height:100%;object-fit:cover;">
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainContent" style="display:none;">
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <div class="logo logo-neon">
+            <img src="my-icon.png" alt="App Icon" class="app-icon">
+          </div>
+          <h1>TugasKu3</h1>
+        </div>
+        <div class="header-actions">
+          <!-- Notifikasi -->
+          <button class="icon-btn" id="notifBtn" title="Notifikasi" aria-label="Notifikasi">
+            🔔
+            <span class="badge" id="notifBadge" style="display:none;">0</span>
+          </button>
+          <!-- Statistik -->
+          <button class="icon-btn" id="statsBtn" title="Statistik" aria-label="Statistik">📊</button>
+          <!-- Menu Hamburger -->
+          <button class="icon-btn" id="menuBtn" title="Menu" aria-label="Menu">☰</button>
+        </div>
+      </header>
+      
+      <!-- Menu Drawer -->
+      <div class="menu-drawer" id="menuDrawer">
+        <div class="menu-header">
+          <h3>Menu</h3>
+          <button class="menu-close" id="menuClose">&times;</button>
+        </div>
+        
+        <!-- Profile Section -->
+        <div class="profile-section" id="profileSection">
+          <div class="profile-avatar" id="profileAvatar">👤</div>
+          <div class="profile-info">
+            <div class="profile-name" id="profileName">Pengguna TugasKu</div>
+            <div class="profile-desc" id="profileDesc">Pelajar Aktif</div>
+          </div>
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <!-- Menu Items - Web Utama dipindah ke sini dengan gaya mencolok -->
+        <div class="menu-item menu-item-highlight" data-action="portfolio">
+          <span>🌐</span> Kunjungi Web Utama
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-item" data-action="profile">
+          <span>👤</span> Profil Saya
+        </div>
+        <div class="menu-item" data-action="settings">
+          <span>⚙️</span> Pengaturan
+        </div>
+        <div class="menu-item" data-action="tips">
+          <span>💡</span> Tips & Panduan
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-item" data-action="export">
+          <span>📤</span> Ekspor Data
+        </div>
+        <div class="menu-item" data-action="import">
+          <span>📥</span> Impor Data
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-item" data-action="theme">
+          <span>🎨</span> Pilih Tema
+        </div>
+        <div class="menu-item" data-action="about">
+          <span>ℹ️</span> Tentang Aplikasi
+        </div>
+        <div class="menu-item" data-action="reset">
+          <span>🔄</span> Reset Data
+        </div>
+      </div>
+      
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="tasks">Tugas</button>
+        <button class="tab-btn" data-tab="schedule">Jadwal</button>
+        <button class="tab-btn" data-tab="notes">Catatan</button>
+      </div>
+      
+      <!-- Tab Content: Tugas -->
+      <div class="tab-content active" id="tasksTab">
+        <!-- Stats Section -->
+        <section class="stats-section">
+          <h3>📊 Statistik Tugas</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalTasksHome">0</div>
+              <div class="stat-label">Total Tugas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="completedTasksHome">0</div>
+              <div class="stat-label">Selesai</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="pendingTasksHome">0</div>
+              <div class="stat-label">Belum Selesai</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="overdueTasksHome">0</div>
+              <div class="stat-label">Terlambat</div>
+            </div>
+          </div>
+        </section>
+        
+        <section class="form-section" aria-labelledby="formTitle">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
+            <strong id="formTitle" style="font-size:18px;">Tambah Tugas</strong>
+            <div class="controls">
+              <button id="openFormBtn" class="btn" aria-expanded="false">➕ Tambah</button>
+              <button id="clearAll" class="filter-btn" title="Hapus semua tugas">🗑️ Hapus Semua</button>
+            </div>
+          </div>
+          <form id="taskForm" style="display:none" aria-hidden="true" novalidate>
+            <div class="field">
+              <label for="taskSubject">Mata Pelajaran</label>
+              <input type="text" id="taskSubject" placeholder="e.g. Matematika" required>
+            </div>
+            <div class="field">
+              <label for="taskName">Nama Tugas</label>
+              <input type="text" id="taskName" placeholder="e.g. PR Halaman 10" required>
+            </div>
+            <div class="field">
+              <label for="taskDeadline">Deadline</label>
+              <input type="date" id="taskDeadline" required>
+            </div>
+            <div class="field">
+              <label for="taskNotes">Catatan (Opsional)</label>
+              <textarea id="taskNotes" placeholder="Catatan tambahan..."></textarea>
+            </div>
+            <div class="field">
+              <label for="taskPriority">Prioritas</label>
+              <select id="taskPriority">
+                <option value="low">Rendah</option>
+                <option value="medium" selected>Sedang</option>
+                <option value="high">Tinggi</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+              <button type="submit" class="btn">💾 Simpan</button>
+              <button type="button" id="cancelForm" class="filter-btn">❌ Batal</button>
+            </div>
+          </form>
+        </section>
+        <div class="filter-section" role="region" aria-label="Filter tugas">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="new">Baru</button>
+          <button class="filter-btn" data-filter="active">Belum Selesai</button>
+          <button class="filter-btn" data-filter="done">Selesai</button>
+          <button class="filter-btn" data-filter="today">Hari Ini</button>
+          <button class="filter-btn" data-filter="tomorrow">Besok</button>
+          <button class="filter-btn" data-filter="week">Minggu Ini</button>
+          <button class="filter-btn" data-filter="overdue">Terlambat</button>
+        </div>
+        <div id="taskList">
+          <!-- Task cards will be rendered here -->
+        </div>
+      </div>
+      
+      <!-- Tab Content: Jadwal -->
+      <div class="tab-content" id="scheduleTab">
+        <section class="form-section" aria-labelledby="scheduleFormTitle">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
+            <strong id="scheduleFormTitle" style="font-size:18px;">Tambah Jadwal</strong>
+            <div class="controls">
+              <button id="addScheduleBtn" class="btn">➕ Tambah</button>
+            </div>
+          </div>
+          <form id="scheduleForm" style="display:none" aria-hidden="true" novalidate>
+            <div class="field">
+              <label for="scheduleSubject">Mata Pelajaran</label>
+              <input type="text" id="scheduleSubject" placeholder="e.g. Matematika" required>
+            </div>
+            <div class="field">
+              <label for="scheduleDay">Hari</label>
+              <select id="scheduleDay" required>
+                <option value="">Pilih Hari</option>
+                <option value="senin">Senin</option>
+                <option value="selasa">Selasa</option>
+                <option value="rabu">Rabu</option>
+                <option value="kamis">Kamis</option>
+                <option value="jumat">Jumat</option>
+                <option value="sabtu">Sabtu</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="scheduleTime">Waktu</label>
+              <input type="time" id="scheduleTime" required>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+              <button type="submit" class="btn">💾 Simpan</button>
+              <button type="button" id="cancelScheduleForm" class="filter-btn">❌ Batal</button>
+            </div>
+          </form>
+        </section>
+        <div id="scheduleContainer">
+          <!-- Schedule items will be rendered here -->
+        </div>
+      </div>
+      
+      <!-- Tab Content: Catatan -->
+      <div class="tab-content" id="notesTab">
+        <section class="form-section" aria-labelledby="notesFormTitle">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
+            <strong id="notesFormTitle" style="font-size:18px;">Tambah Catatan</strong>
+            <div class="controls">
+              <button id="addNoteBtn" class="btn">➕ Tambah</button>
+            </div>
+          </div>
+          <form id="noteForm" style="display:none" aria-hidden="true" novalidate>
+            <div class="field">
+              <label for="noteTitle">Judul Catatan</label>
+              <input type="text" id="noteTitle" placeholder="Judul catatan..." required>
+            </div>
+            <div class="field">
+              <label for="noteContent">Isi Catatan</label>
+              <textarea id="noteContent" placeholder="Tulis catatan Anda di sini..." rows="6" required></textarea>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+              <button type="submit" class="btn">💾 Simpan</button>
+              <button type="button" id="cancelNoteForm" class="filter-btn">❌ Batal</button>
+            </div>
+          </form>
+        </section>
+        <div id="notesList">
+          <!-- Notes will be rendered here -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <button class="fab" id="fab" title="Tambah Tugas/Jadwal/Catatan" aria-label="Tambah Tugas/Jadwal/Catatan">+</button>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- Watermark -->
+    <div class="watermark">by : Rahmat - v3.3.0</div>
+  </div>
+
+  <!-- Modal About -->
+  <div class="modal-overlay" id="aboutModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tentang TugasKu3</h3>
+        <button class="modal-close" id="closeAboutModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <div class="about-logo">
+          <div class="logo logo-neon">
+            <img src="my-icon.png" alt="App Icon" class="app-icon">
+          </div>
+          <h2>TugasKu3</h2>
+          <p>Aplikasi Manajemen Tugas Modern</p>
+        </div>
+        <h3>Fitur Utama</h3>
+        <ul class="feature-list">
+          <li>📝 Tambah dan kelola tugas harian</li>
+          <li>📅 Jadwal pelajaran mingguan</li>
+          <li>📝 Catatan pribadi</li>
+          <li>🏷️ Filter tugas berdasarkan status dan deadline</li>
+          <li>🎨 Pilihan tema yang beragam</li>
+          <li>💾 Data tersimpan di browser (localStorage)</li>
+          <li>📱 Responsif untuk mobile dan desktop</li>
+          <li>📊 Statistik tugas visual</li>
+          <li>📤📥 Ekspor/Impor data</li>
+          <li>👤 Profil pengguna personal dengan crop foto</li>
+        </ul>
+        <h3 style="margin-top: 16px;">Versi: 3.3.0</h3>
+        <p style="margin-top: 8px;">Tanggal rilis: 30 Agustus 2025</p>
+        <p style="margin-top: 8px;">Pengembang: Rahmat, pelajar MA kelas 11</p>
+        <p style="margin-top: 8px;">Dibuat sepenuhnya menggunakan Mobile (hp)</p>
+        <p style="margin-top: 8px;">📩 Kontak: <a href="mailto:rohmatulloh.3609@gmail.com" style="color: var(--primary);">rohmatulloh.3609@gmail.com</a></p>
+        <h3 style="margin-top: 24px;">Deskripsi</h3>
+        <p>TugasKu3 adalah aplikasi manajemen tugas modern yang dirancang untuk membantu siswa mengatur tugas sekolah mereka dengan mudah. Dengan antarmuka yang bersih dan fitur yang lengkap, pengguna dapat dengan cepat menambahkan, melihat, dan mengelola tugas, jadwal pelajaran, serta catatan pribadi mereka.</p>
+        <h3 style="margin-top: 24px;">Pesan dari developer</h3>
+        <p>Aplikasi ini sepenuhnya dikembangkan menggunakan perangkat mobile "Oppo A3s", sehingga dioptimalkan untuk performa di perangkat dengan spesifikasi terbatas. Mohon dimaklumi jika ada kekurangan. Saya selaku developer mengucapkan terima kasih telah menggunakan aplikasi ini. Jika ditemukan bug yang signifikan, silakan hubungi saya melalui email yang tertera di atas.</p>
+        <div class="version-info">
+          <p>© 2025 TugasKu3. Hak Cipta Dilindungi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Theme Selection Modal -->
+  <div class="modal-overlay" id="themeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Pilih Tema</h3>
+        <button class="modal-close" id="closeThemeModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <div class="theme-option" data-theme="light-mode">
+          <div class="theme-preview" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">☀️</div>
+          <div>
+            <div style="font-weight: 600;">Light Mode</div>
+            <div style="font-size: 12px; color: var(--muted);">Tema terang standar</div>
+          </div>
+        </div>
+        <div class="theme-option" data-theme="dark-pro-mode">
+          <div class="theme-preview" style="background: linear-gradient(135deg, #0b0f16, #121821);">🌙</div>
+          <div>
+            <div style="font-weight: 600;">Dark Pro Mode</div>
+            <div style="font-size: 12px; color: var(--muted);">Tema gelap modern dengan efek glow</div>
+          </div>
+        </div>
+        <div class="theme-option" data-theme="dark-pro-shift-mode">
+          <div class="theme-preview" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);">🌌</div>
+          <div>
+            <div style="font-weight: 600;">Dark Pro Shift</div>
+            <div style="font-size: 12px; color: var(--muted);">Biru gelap bergradasi ke ungu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tips Modal -->
+  <div class="modal-overlay" id="tipsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tips & Panduan Singkat</h3>
+        <button class="modal-close" id="closeTipsModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <h4>Indikator Prioritas</h4>
+        <p>Setiap tugas memiliki indikator prioritas berbentuk lingkaran berwarna di kiri judul:</p>
+        <ul>
+          <li><strong style="color:var(--priority-high)">●</strong> Merah = Prioritas Tinggi</li>
+          <li><strong style="color:var(--priority-medium)">●</strong> Kuning = Prioritas Sedang</li>
+          <li><strong style="color:var(--priority-low)">●</strong> Hijau = Prioritas Rendah</li>
+        </ul>
+        <h4>Teks Panjang</h4>
+        <p>Nama tugas dan catatan kini dapat membungkus dan memiliki scrollbar bila sangat panjang. Arahkan kursor untuk melihat tooltip jika teks dipotong.</p>
+        <h4>Filter & Notifikasi</h4>
+        <p>Gunakan filter untuk melihat tugas berdasarkan status atau tanggal. Ikon notifikasi menampilkan jumlah tugas terlambat.</p>
+        <h4>Tambah & Edit</h4>
+        <p>Gunakan tombol ➕ atau FAB untuk menambah Tugas/Jadwal/Catatan. Untuk mengedit tugas, klik tombol ✏️ pada kartu tugas.</p>
+        <h4>Menu Baru</h4>
+        <p>Gunakan menu hamburger (☰) untuk mengakses fitur tambahan seperti Ekspor/Impor data, pengaturan tema, dan lainnya.</p>
+        <h4>Profil Pengguna</h4>
+        <p>Kini Anda dapat mengatur profil pribadi dengan foto, nama, dan bio singkat. Klik bagian profil di menu untuk mengaturnya.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Stats Modal -->
+  <div class="modal-overlay" id="statsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Statistik Tugas</h3>
+        <button class="modal-close" id="closeStatsModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <!-- Charts: Status & Priority -->
+        <div class="chart-wrap">
+          <canvas id="statusChart" class="chart-canvas"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="priorityChart" class="chart-canvas"></canvas>
+        </div>
+        <!-- Numeric summary (kept below charts for quick glance) -->
+        <div style="margin-top: 12px;">
+          <h4>Ringkasan</h4>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalTasks">0</div>
+              <div class="stat-label">Total Tugas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="completedTasks">0</div>
+              <div class="stat-label">Selesai</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="pendingTasks">0</div>
+              <div class="stat-label">Belum Selesai</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="overdueTasks">0</div>
+              <div class="stat-label">Terlambat</div>
+            </div>
+          </div>
+          <div style="margin-top: 24px;">
+            <h4>Prioritas Tugas</h4>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value" id="highPriorityTasks">0</div>
+                <div class="stat-label">Tinggi</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="mediumPriorityTasks">0</div>
+                <div class="stat-label">Sedang</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="lowPriorityTasks">0</div>
+                <div class="stat-label">Rendah</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import/Export Modal -->
+  <div class="modal-overlay" id="importExportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="importExportTitle">Ekspor Data</h3>
+        <button class="modal-close" id="closeImportExportModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <div id="exportSection">
+          <p>Ekspor semua data aplikasi Anda ke file JSON untuk cadangan atau transfer ke perangkat lain.</p>
+          <div style="margin-top: 16px;">
+            <button class="btn" id="exportDataBtn" style="width: 100%;">📥 Ekspor Data</button>
+          </div>
+        </div>
+        <div id="importSection" style="display: none;">
+          <p>Impor data dari file JSON. Perhatian: ini akan menggantikan data yang sudah ada.</p>
+          <div class="field" style="margin-top: 16px;">
+            <label for="importFile">Pilih File JSON</label>
+            <input type="file" id="importFile" accept=".json">
+          </div>
+          <div style="margin-top: 16px; display: flex; gap: 10px;">
+            <button class="btn" id="importDataBtn" style="flex: 1;">📤 Impor Data</button>
+            <button class="filter-btn" id="cancelImportBtn" style="flex: 1;">❌ Batal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal - Redesigned -->
+  <div class="modal-overlay profile-modal" id="profileModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Profil Saya</h3>
+        <button class="modal-close" id="closeProfileModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <div class="field">
+          <label for="profileNameInput">Nama</label>
+          <input type="text" id="profileNameInput" placeholder="Nama Anda">
+        </div>
+        <div class="field">
+          <label for="profileBioInput">Bio Singkat</label>
+          <textarea id="profileBioInput" placeholder="Tentang Anda..." rows="2"></textarea>
+        </div>
+        
+        <div class="avatar-options">
+          <div class="avatar-option" data-avatar="👤" style="background: #8B5CF6;">👤</div>
+          <div class="avatar-option" data-avatar="😊" style="background: #10b981;">😊</div>
+          <div class="avatar-option" data-avatar="🌟" style="background: #f59e0b;">🌟</div>
+        </div>
+        
+        <div class="upload-btn" id="uploadAvatarBtn">
+          📷 Upload Foto Profil
+        </div>
+        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+        
+        <div class="actions">
+          <button class="btn" id="saveProfileBtn">💾 Simpan Profil</button>
+          <button class="filter-btn" id="resetProfileBtn">🔄 Reset Profil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crop Modal - Redesigned -->
+  <div class="modal-overlay crop-modal" id="cropModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Foto Profil</h3>
+        <button class="modal-close" id="closeCropModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <div class="crop-container" id="cropContainer">
+          <canvas id="cropCanvas"></canvas>
+        </div>
+        <div class="crop-preview" id="cropPreview"></div>
+        <div class="zoom-controls">
+          <span>🔍</span>
+          <input type="range" class="zoom-slider" id="zoomSlider" min="0.5" max="2" step="0.1" value="1">
+          <span class="zoom-value" id="zoomValue">100%</span>
+        </div>
+        <div class="crop-controls">
+          <button class="btn" id="applyCropBtn">💾 Terapkan</button>
+          <button class="filter-btn" id="cancelCropBtn">❌ Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Pengaturan</h3>
+        <button class="modal-close" id="closeSettingsModal">&times;</button>
+      </div>
+      <div class="about-section">
+        <h4>Tampilan</h4>
+        <div class="field">
+          <label for="animationsToggle">
+            <input type="checkbox" id="animationsToggle" checked> Animasi
+          </label>
+        </div>
+        <div class="field">
+          <label for="notificationsToggle">
+            <input type="checkbox" id="notificationsToggle" checked> Notifikasi
+          </label>
+        </div>
+        <h4 style="margin-top: 20px;">Integrasi</h4>
+        <div class="field">
+          <label for="portfolioLink">Link Portofolio</label>
+          <input type="text" id="portfolioLink" value="https://rahmat-369.github.io/Portofolio-/">
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="btn" id="saveSettingsBtn" style="width: 100%;">💾 Simpan Pengaturan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script untuk splash screen -->
+  <script>
+    // Hilangkan splash setelah 2.5 detik
+    setTimeout(() => {
+      const splash = document.getElementById('splash');
+      const mainContent = document.getElementById('mainContent');
+      if (splash) splash.style.display = 'none';
+      if (mainContent) mainContent.style.display = 'block';
+    }, 2500);
+  </script>
+
+  <!-- Chart.js CDN (simple, lightweight) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Main Application Script -->
+  <script>
+    // Optimized application code dengan 3 tema profesional dan fitur crop yang ditingkatkan
+    (function(){
+      // State management
+      let tasks = [];
+      let schedules = [];
+      let notes = [];
+      let currentFilter = 'all';
+      let searchQuery = '';
+      let currentTab = 'tasks';
+      let currentTheme = localStorage.getItem('theme') || 'dark-pro-mode';
+      let profile = {
+        name: 'Pengguna TugasKu',
+        bio: 'Pelajar Aktif',
+        avatar: '👤',
+        avatarImage: null
+      };
+      
+      // Settings
+      let settings = {
+        animations: true,
+        notifications: true,
+        portfolioLink: 'https://rahmat-369.github.io/Portofolio-/'
+      };
+      
+      const STORAGE_KEYS = {
+        TASKS: 'pr_tasks_v3',
+        SCHEDULES: 'pr_schedules_v1',
+        NOTES: 'pr_notes_v1',
+        SETTINGS: 'pr_settings_v1',
+        PROFILE: 'pr_profile_v1'
+      };
+      
+      // DOM elements
+      const taskForm = document.getElementById('taskForm');
+      const scheduleForm = document.getElementById('scheduleForm');
+      const noteForm = document.getElementById('noteForm');
+      const openFormBtn = document.getElementById('openFormBtn');
+      const addScheduleBtn = document.getElementById('addScheduleBtn');
+      const addNoteBtn = document.getElementById('addNoteBtn');
+      const cancelFormBtn = document.getElementById('cancelForm');
+      const cancelScheduleFormBtn = document.getElementById('cancelScheduleForm');
+      const cancelNoteFormBtn = document.getElementById('cancelNoteForm');
+      const clearAllBtn = document.getElementById('clearAll');
+      const taskList = document.getElementById('taskList');
+      const scheduleContainer = document.getElementById('scheduleContainer');
+      const notesList = document.getElementById('notesList');
+      const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const fab = document.getElementById('fab');
+      const toastEl = document.getElementById('toast');
+      const notifBtn = document.getElementById('notifBtn');
+      const notifBadge = document.getElementById('notifBadge');
+      const statsBtn = document.getElementById('statsBtn');
+      const statsModal = document.getElementById('statsModal');
+      const closeStatsModal = document.getElementById('closeStatsModal');
+      const totalTasksEl = document.getElementById('totalTasks');
+      const completedTasksEl = document.getElementById('completedTasks');
+      const pendingTasksEl = document.getElementById('pendingTasks');
+      const overdueTasksEl = document.getElementById('overdueTasks');
+      const highPriorityTasksEl = document.getElementById('highPriorityTasks');
+      const mediumPriorityTasksEl = document.getElementById('mediumPriorityTasks');
+      const lowPriorityTasksEl = document.getElementById('lowPriorityTasks');
+      
+      // New elements for redesign
+      const menuBtn = document.getElementById('menuBtn');
+      const menuDrawer = document.getElementById('menuDrawer');
+      const menuClose = document.getElementById('menuClose');
+      const menuItems = document.querySelectorAll('.menu-item');
+      const aboutModal = document.getElementById('aboutModal');
+      const closeAboutModal = document.getElementById('closeAboutModal');
+      const themeModal = document.getElementById('themeModal');
+      const closeThemeModal = document.getElementById('closeThemeModal');
+      const themeOptions = document.querySelectorAll('.theme-option');
+      const tipsModal = document.getElementById('tipsModal');
+      const closeTipsModal = document.getElementById('closeTipsModal');
+      const importExportModal = document.getElementById('importExportModal');
+      const closeImportExportModal = document.getElementById('closeImportExportModal');
+      const exportDataBtn = document.getElementById('exportDataBtn');
+      const importDataBtn = document.getElementById('importDataBtn');
+      const cancelImportBtn = document.getElementById('cancelImportBtn');
+      const importFile = document.getElementById('importFile');
+      const importExportTitle = document.getElementById('importExportTitle');
+      const exportSection = document.getElementById('exportSection');
+      const importSection = document.getElementById('importSection');
+      
+      // Profile elements
+      const profileSection = document.getElementById('profileSection');
+      const profileAvatar = document.getElementById('profileAvatar');
+      const profileName = document.getElementById('profileName');
+      const profileDesc = document.getElementById('profileDesc');
+      const profileModal = document.getElementById('profileModal');
+      const closeProfileModal = document.getElementById('closeProfileModal');
+      const profileNameInput = document.getElementById('profileNameInput');
+      const profileBioInput = document.getElementById('profileBioInput');
+      const avatarOptions = document.querySelectorAll('.avatar-option');
+      const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+      const avatarUpload = document.getElementById('avatarUpload');
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+      const resetProfileBtn = document.getElementById('resetProfileBtn');
+      
+      // Crop elements
+      const cropModal = document.getElementById('cropModal');
+      const closeCropModal = document.getElementById('closeCropModal');
+      const cropCanvas = document.getElementById('cropCanvas');
+      const cropContainer = document.getElementById('cropContainer');
+      const cropPreview = document.getElementById('cropPreview');
+      const applyCropBtn = document.getElementById('applyCropBtn');
+      const cancelCropBtn = document.getElementById('cancelCropBtn');
+      const zoomSlider = document.getElementById('zoomSlider');
+      const zoomValue = document.getElementById('zoomValue');
+      
+      // Settings elements
+      const settingsModal = document.getElementById('settingsModal');
+      const closeSettingsModal = document.getElementById('closeSettingsModal');
+      const animationsToggle = document.getElementById('animationsToggle');
+      const notificationsToggle = document.getElementById('notificationsToggle');
+      const portfolioLink = document.getElementById('portfolioLink');
+      const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+      
+      // Home stats elements
+      const totalTasksHome = document.getElementById('totalTasksHome');
+      const completedTasksHome = document.getElementById('completedTasksHome');
+      const pendingTasksHome = document.getElementById('pendingTasksHome');
+      const overdueTasksHome = document.getElementById('overdueTasksHome');
+      
+      // Chart instances
+      let statusChart = null;
+      let priorityChart = null;
+      
+      // Crop variables
+      let cropImage = null;
+      let cropCtx = null;
+      let cropScale = 1;
+      let cropOffsetX = 0;
+      let cropOffsetY = 0;
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      
+      // Scroll optimization variables
+      let scrollTimeout = null;
+      const header = document.querySelector('header');
+      
+      // Initialize min date for deadline input
+      function setMinDeadline() {
+        const today = new Date().toISOString().split('T')[0];
+        const el = document.getElementById('taskDeadline');
+        if (el) el.min = today;
+      }
+      
+      // Initialize theme
+      function initTheme() {
+        document.body.className = currentTheme;
+      }
+      
+      // Save theme preference
+      function saveTheme() {
+        localStorage.setItem('theme', currentTheme);
+      }
+      
+      // Set theme
+      function setTheme(theme) {
+        currentTheme = theme;
+        initTheme();
+        saveTheme();
+        showToast('Tema diubah');
+      }
+      
+      // Load settings from localStorage
+      function loadSettings() {
+        try {
+          const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+          if (storedSettings) {
+            settings = JSON.parse(storedSettings);
+            applySettings();
+          }
+        } catch (error) {
+          console.error('Error loading settings:', error);
+        }
+      }
+      
+      // Save settings to localStorage
+      function saveSettings() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+        } catch (error) {
+          console.error('Error saving settings:', error);
+        }
+      }
+      
+      // Apply settings
+      function applySettings() {
+        animationsToggle.checked = settings.animations;
+        notificationsToggle.checked = settings.notifications;
+        portfolioLink.value = settings.portfolioLink;
+        
+        // Apply animation setting
+        if (!settings.animations) {
+          document.body.classList.add('no-animations');
+        } else {
+          document.body.classList.remove('no-animations');
+        }
+      }
+      
+      // Show settings modal
+      function showSettingsModal() {
+        settingsModal.classList.add('show');
+        toggleMenuDrawer(false);
+      }
+      
+      // Close settings modal
+      function closeSettingsModalFunc() {
+        settingsModal.classList.remove('show');
+      }
+      
+      // Save settings
+      function saveSettingsFunc() {
+        settings.animations = animationsToggle.checked;
+        settings.notifications = notificationsToggle.checked;
+        settings.portfolioLink = portfolioLink.value;
+        
+        saveSettings();
+        applySettings();
+        closeSettingsModalFunc();
+        showToast('Pengaturan disimpan');
+      }
+      
+      // Load profile from localStorage
+      function loadProfile() {
+        try {
+          const storedProfile = localStorage.getItem(STORAGE_KEYS.PROFILE);
+          if (storedProfile) {
+            profile = JSON.parse(storedProfile);
+            updateProfileUI();
+          }
+        } catch (error) {
+          console.error('Error loading profile:', error);
+        }
+      }
+      
+      // Save profile to localStorage
+      function saveProfile() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
+        } catch (error) {
+          console.error('Error saving profile:', error);
+          showToast('Gagal menyimpan profil');
+        }
+      }
+      
+      // Update profile UI
+      function updateProfileUI() {
+        profileName.textContent = profile.name;
+        profileDesc.textContent = profile.bio;
+        
+        if (profile.avatarImage) {
+          profileAvatar.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = profile.avatarImage;
+          img.alt = 'Foto Profil';
+          profileAvatar.appendChild(img);
+        } else {
+          profileAvatar.textContent = profile.avatar;
+          profileAvatar.style.backgroundColor = getAvatarColor(profile.avatar);
+        }
+      }
+      
+      // Get avatar color based on avatar type
+      function getAvatarColor(avatar) {
+        switch(avatar) {
+          case '👤': return '#8B5CF6';
+          case '😊': return '#10b981';
+          case '🌟': return '#f59e0b';
+          default: return '#8B5CF6';
+        }
+      }
+      
+      // Show profile modal
+      function showProfileModal() {
+        profileNameInput.value = profile.name;
+        profileBioInput.value = profile.bio;
+        
+        // Set selected avatar
+        avatarOptions.forEach(option => {
+          if (option.dataset.avatar === profile.avatar) {
+            option.classList.add('selected');
+          } else {
+            option.classList.remove('selected');
+          }
+        });
+        
+        profileModal.classList.add('show');
+        toggleMenuDrawer(false);
+      }
+      
+      // Close profile modal
+      function closeProfileModalFunc() {
+        profileModal.classList.remove('show');
+      }
+      
+      // Save profile
+      function saveProfileFunc() {
+        profile.name = profileNameInput.value.trim() || 'Pengguna TugasKu';
+        profile.bio = profileBioInput.value.trim() || 'Pelajar Aktif';
+        
+        // Get selected avatar
+        const selectedAvatar = document.querySelector('.avatar-option.selected');
+        if (selectedAvatar) {
+          profile.avatar = selectedAvatar.dataset.avatar;
+        }
+        
+        saveProfile();
+        updateProfileUI();
+        closeProfileModalFunc();
+        showToast('Profil disimpan');
+      }
+      
+      // Reset profile
+      function resetProfileFunc() {
+        if (confirm('Apakah Anda yakin ingin mereset profil?')) {
+          profile = {
+            name: 'Pengguna TugasKu',
+            bio: 'Pelajar Aktif',
+            avatar: '👤',
+            avatarImage: null
+          };
+          saveProfile();
+          updateProfileUI();
+          closeProfileModalFunc();
+          showToast('Profil direset');
+        }
+      }
+      
+      // Handle avatar upload
+      function handleAvatarUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        if (!file.type.match('image.*')) {
+          showToast('Hanya file gambar yang diizinkan');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          cropImage = new Image();
+          cropImage.onload = function() {
+            showCropModal();
+          };
+          cropImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+      
+      // Show crop modal
+      function showCropModal() {
+        initCropCanvas();
+        cropModal.classList.add('show');
+      }
+      
+      // Close crop modal
+      function closeCropModalFunc() {
+        cropModal.classList.remove('show');
+        cropImage = null;
+      }
+      
+      // Initialize crop canvas
+      function initCropCanvas() {
+        const containerWidth = cropContainer.offsetWidth;
+        const containerHeight = cropContainer.offsetHeight;
+        
+        cropCanvas.width = containerWidth;
+        cropCanvas.height = containerHeight;
+        
+        cropCtx = cropCanvas.getContext('2d');
+        
+        // Calculate initial scale to fit image in container
+        const scaleX = containerWidth / cropImage.width;
+        const scaleY = containerHeight / cropImage.height;
+        cropScale = Math.min(scaleX, scaleY) * 0.8; // Slightly smaller to allow movement
+        
+        // Center image
+        cropOffsetX = (containerWidth - cropImage.width * cropScale) / 2;
+        cropOffsetY = (containerHeight - cropImage.height * cropScale) / 2;
+        
+        // Update zoom slider
+        zoomSlider.value = cropScale;
+        zoomValue.textContent = Math.round(cropScale * 100) + '%';
+        
+        drawCropImage();
+        updateCropPreview();
+        
+        // Add event listeners for dragging
+        cropCanvas.addEventListener('mousedown', startDrag);
+        cropCanvas.addEventListener('touchstart', startDrag);
+        document.addEventListener('mousemove', doDrag);
+        document.addEventListener('touchmove', doDrag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
+        
+        // Add event listener for zoom
+        zoomSlider.addEventListener('input', handleZoom);
+      }
+      
+      // Handle zoom
+      function handleZoom(e) {
+        cropScale = parseFloat(e.target.value);
+        zoomValue.textContent = Math.round(cropScale * 100) + '%';
+        
+        // Re-center image after zoom
+        const containerWidth = cropContainer.offsetWidth;
+        const containerHeight = cropContainer.offsetHeight;
+        
+        cropOffsetX = (containerWidth - cropImage.width * cropScale) / 2;
+        cropOffsetY = (containerHeight - cropImage.height * cropScale) / 2;
+        
+        drawCropImage();
+        updateCropPreview();
+      }
+      
+      // Draw image on crop canvas
+      function drawCropImage() {
+        cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+        
+        // Draw image
+        cropCtx.drawImage(
+          cropImage,
+          cropOffsetX, cropOffsetY,
+          cropImage.width * cropScale,
+          cropImage.height * cropScale
+        );
+        
+        // Draw crop area (circle)
+        const centerX = cropCanvas.width / 2;
+        const centerY = cropCanvas.height / 2;
+        const radius = Math.min(centerX, centerY) * 0.8;
+        
+        // Create clipping path for circular crop
+        cropCtx.save();
+        cropCtx.beginPath();
+        cropCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        cropCtx.clip();
+        
+        // Draw image again with clipping
+        cropCtx.drawImage(
+          cropImage,
+          cropOffsetX, cropOffsetY,
+          cropImage.width * cropScale,
+          cropImage.height * cropScale
+        );
+        
+        cropCtx.restore();
+        
+        // Draw crop circle outline
+        cropCtx.beginPath();
+        cropCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        cropCtx.strokeStyle = '#fff';
+        cropCtx.lineWidth = 2;
+        cropCtx.stroke();
+        
+        // Draw crosshair
+        cropCtx.beginPath();
+        cropCtx.moveTo(centerX - 10, centerY);
+        cropCtx.lineTo(centerX + 10, centerY);
+        cropCtx.moveTo(centerX, centerY - 10);
+        cropCtx.lineTo(centerX, centerY + 10);
+        cropCtx.strokeStyle = '#fff';
+        cropCtx.lineWidth = 1;
+        cropCtx.stroke();
+      }
+      
+      // Update crop preview
+      function updateCropPreview() {
+        const previewCtx = cropPreview.getContext('2d');
+        const previewSize = cropPreview.offsetWidth;
+        
+        cropPreview.width = previewSize;
+        cropPreview.height = previewSize;
+        
+        // Calculate crop area
+        const centerX = cropCanvas.width / 2;
+        const centerY = cropCanvas.height / 2;
+        const radius = Math.min(centerX, centerY) * 0.8;
+        
+        const srcX = (centerX - radius - cropOffsetX) / cropScale;
+        const srcY = (centerY - radius - cropOffsetY) / cropScale;
+        const srcSize = (radius * 2) / cropScale;
+        
+        // Draw cropped image to preview
+        previewCtx.clearRect(0, 0, previewSize, previewSize);
+        previewCtx.save();
+        previewCtx.beginPath();
+        previewCtx.arc(previewSize / 2, previewSize / 2, previewSize / 2, 0, Math.PI * 2);
+        previewCtx.clip();
+        previewCtx.drawImage(
+          cropImage,
+          srcX, srcY, srcSize, srcSize,
+          0, 0, previewSize, previewSize
+        );
+        previewCtx.restore();
+      }
+      
+      // Start dragging
+      function startDrag(e) {
+        isDragging = true;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        
+        dragStartX = clientX - cropOffsetX;
+        dragStartY = clientY - cropOffsetY;
+        
+        e.preventDefault();
+      }
+      
+      // Do dragging
+      function doDrag(e) {
+        if (!isDragging) return;
+        
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        
+        cropOffsetX = clientX - dragStartX;
+        cropOffsetY = clientY - dragStartY;
+        
+        // Constrain movement to keep crop area within image
+        const minX = cropCanvas.width - cropImage.width * cropScale;
+        const minY = cropCanvas.height - cropImage.height * cropScale;
+        
+        cropOffsetX = Math.max(minX, Math.min(0, cropOffsetX));
+        cropOffsetY = Math.max(minY, Math.min(0, cropOffsetY));
+        
+        drawCropImage();
+        updateCropPreview();
+        
+        e.preventDefault();
+      }
+      
+      // Stop dragging
+      function stopDrag() {
+        isDragging = false;
+      }
+      
+      // Apply crop
+      function applyCrop() {
+        const previewSize = cropPreview.offsetWidth;
+        const previewCanvas = document.createElement('canvas');
+        previewCanvas.width = previewSize;
+        previewCanvas.height = previewSize;
+        const previewCtx = previewCanvas.getContext('2d');
+        
+        // Draw circular cropped image
+        previewCtx.save();
+        previewCtx.beginPath();
+        previewCtx.arc(previewSize / 2, previewSize / 2, previewSize / 2, 0, Math.PI * 2);
+        previewCtx.clip();
+        previewCtx.drawImage(cropPreview, 0, 0);
+        previewCtx.restore();
+        
+        profile.avatarImage = previewCanvas.toDataURL('image/png');
+        profile.avatar = null;
+        
+        saveProfile();
+        updateProfileUI();
+        closeCropModalFunc();
+        showToast('Foto profil diperbarui');
+      }
+      
+      // Toggle menu drawer
+      function toggleMenuDrawer(show) {
+        const isVisible = menuDrawer.classList.contains('open');
+        const shouldShow = typeof show === 'boolean' ? show : !isVisible;
+        
+        if (shouldShow) {
+          menuDrawer.classList.add('open');
+        } else {
+          menuDrawer.classList.remove('open');
+        }
+      }
+      
+      // Close menu drawer if clicked outside
+      function closeMenuDrawer(e) {
+        if (!menuBtn.contains(e.target) && !menuDrawer.contains(e.target)) {
+          menuDrawer.classList.remove('open');
+        }
+      }
+      
+      // Show about modal
+      function showAboutModal() {
+        aboutModal.classList.add('show');
+        toggleMenuDrawer(false);
+      }
+      
+      // Close about modal
+      function closeAboutModalFunc() {
+        aboutModal.classList.remove('show');
+      }
+      
+      // Show theme modal
+      function showThemeModal() {
+        themeModal.classList.add('show');
+        toggleMenuDrawer(false);
+      }
+      
+      // Close theme modal
+      function closeThemeModalFunc() {
+        themeModal.classList.remove('show');
+      }
+      
+      // Show tips modal
+      function showTipsModal() {
+        tipsModal.classList.add('show');
+        toggleMenuDrawer(false);
+      }
+      
+      // Close tips modal
+      function closeTipsModalFunc() {
+        tipsModal.classList.remove('show');
+      }
+      
+      // Show import/export modal
+      function showImportExportModal(mode) {
+        if (mode === 'export') {
+          importExportTitle.textContent = 'Ekspor Data';
+          exportSection.style.display = 'block';
+          importSection.style.display = 'none';
+        } else {
+          importExportTitle.textContent = 'Impor Data';
+          exportSection.style.display = 'none';
+          importSection.style.display = 'block';
+        }
+        importExportModal.classList.add('show');
+        toggleMenuDrawer(false);
+      }
+      
+      // Close import/export modal
+      function closeImportExportModalFunc() {
+        importExportModal.classList.remove('show');
+        importFile.value = '';
+      }
+      
+      // Export data function
+      function exportData() {
+        const data = {
+          tasks: tasks,
+          schedules: schedules,
+          notes: notes,
+          profile: profile,
+          settings: settings,
+          exportDate: new Date().toISOString(),
+          version: '3.3.0'
+        };
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        
+        const url = URL.createObjectURL(dataBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tugasku-backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Data berhasil diekspor');
+        closeImportExportModalFunc();
+      }
+      
+      // Import data function
+      function importData() {
+        const file = importFile.files[0];
+        if (!file) {
+          showToast('Pilih file terlebih dahulu');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = JSON.parse(e.target.result);
+            
+            if (confirm('Impor data akan menggantikan semua data yang ada. Lanjutkan?')) {
+              if (data.tasks) tasks = data.tasks;
+              if (data.schedules) schedules = data.schedules;
+              if (data.notes) notes = data.notes;
+              if (data.profile) profile = data.profile;
+              if (data.settings) settings = data.settings;
+              
+              saveTasks();
+              saveSchedules();
+              saveNotes();
+              saveProfile();
+              saveSettings();
+              
+              renderTasks();
+              renderSchedules();
+              renderNotes();
+              updateProfileUI();
+              updateHomeStats();
+              updateNotifBadge();
+              applySettings();
+              
+              showToast('Data berhasil diimpor');
+              closeImportExportModalFunc();
+            }
+          } catch (error) {
+            console.error('Error importing data:', error);
+            showToast('Gagal mengimpor data. Format file tidak valid.');
+          }
+        };
+        reader.readAsText(file);
+      }
+      
+      // Helper to read theme-aware colors from computed styles
+      function getThemeColors() {
+        const computed = getComputedStyle(document.body);
+        const primary = computed.getPropertyValue('--primary').trim() || '#8B5CF6';
+        const success = computed.getPropertyValue('--success').trim() || '#10b981';
+        const warning = computed.getPropertyValue('--warning').trim() || '#f59e0b';
+        const danger = computed.getPropertyValue('--danger').trim() || '#ef4444';
+        const pHigh = computed.getPropertyValue('--priority-high').trim() || danger;
+        const pMed = computed.getPropertyValue('--priority-medium').trim() || warning;
+        const pLow = computed.getPropertyValue('--priority-low').trim() || success;
+        return { primary, success, warning, danger, pHigh, pMed, pLow };
+      }
+      
+      // Create or update Chart.js charts
+      function createOrUpdateCharts() {
+        // Gather data
+        const totalTasks = tasks.length;
+        const completed = tasks.filter(t => t.status === 'done').length;
+        const pending = tasks.filter(t => t.status !== 'done').length;
+        const overdue = tasks.filter(t => isOverdue(t.deadline) && t.status !== 'done').length;
+        const highPriority = tasks.filter(t => t.priority === 'high').length;
+        const mediumPriority = tasks.filter(t => t.priority === 'medium').length;
+        const lowPriority = tasks.filter(t => t.priority === 'low').length;
+        
+        // Colors based on active theme
+        const colors = getThemeColors();
+        
+        // Status Chart (Total / Selesai / Belum Selesai / Terlambat)
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        if (statusChart) statusChart.destroy();
+        statusChart = new Chart(statusCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Selesai', 'Belum Selesai', 'Terlambat'],
+            datasets: [{
+              data: [completed, pending, overdue],
+              backgroundColor: [
+                colors.success,
+                colors.warning,
+                colors.danger
+              ],
+              borderWidth: 0,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+              duration: 700,
+              easing: 'easeOutQuart'
+            },
+            plugins: {
+              legend: { 
+                position: 'bottom',
+                labels: { color: getComputedStyle(document.body).getPropertyValue('--muted').trim() || '#94a3b8' }
+              },
+              tooltip: { enabled: true }
+            },
+            cutout: '60%'
+          }
+        });
+        
+        // Priority Chart (High / Medium / Low)
+        const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+        if (priorityChart) priorityChart.destroy();
+        priorityChart = new Chart(priorityCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Tinggi', 'Sedang', 'Rendah'],
+            datasets: [{
+              label: 'Jumlah',
+              data: [highPriority, mediumPriority, lowPriority],
+              backgroundColor: [colors.pHigh, colors.pMed, colors.pLow],
+              borderRadius: 8,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+              duration: 700,
+              easing: 'easeOutQuart'
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: true }
+            },
+            scales: {
+              x: {
+                ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted').trim() || '#94a3b8' },
+                grid: { display: false }
+              },
+              y: {
+                beginAtZero: true,
+                ticks: { precision:0, color: getComputedStyle(document.body).getPropertyValue('--muted').trim() || '#94a3b8' },
+                grid: { color: 'rgba(255,255,255,0.04)' }
+              }
+            }
+          }
+        });
+      }
+      
+      // Update stats values
+      function updateStats() {
+        const totalTasks = tasks.length;
+        const completedTasks = tasks.filter(task => task.status === 'done').length;
+        const pendingTasks = totalTasks - completedTasks;
+        const overdueTasks = tasks.filter(task => isOverdue(task.deadline) && task.status !== 'done').length;
+        const highPriorityTasks = tasks.filter(task => task.priority === 'high').length;
+        const mediumPriorityTasks = tasks.filter(task => task.priority === 'medium').length;
+        const lowPriorityTasks = tasks.filter(task => task.priority === 'low').length;
+        
+        totalTasksEl.textContent = totalTasks;
+        completedTasksEl.textContent = completedTasks;
+        pendingTasksEl.textContent = pendingTasks;
+        overdueTasksEl.textContent = overdueTasks;
+        highPriorityTasksEl.textContent = highPriorityTasks;
+        mediumPriorityTasksEl.textContent = mediumPriorityTasks;
+        lowPriorityTasksEl.textContent = lowPriorityTasks;
+        
+        // Update charts if they exist (so stats update live when modal open)
+        if (statsModal.classList.contains('show')) {
+          createOrUpdateCharts();
+        }
+      }
+      
+      // Update home stats
+      function updateHomeStats() {
+        const totalTasks = tasks.length;
+        const completedTasks = tasks.filter(task => task.status === 'done').length;
+        const pendingTasks = totalTasks - completedTasks;
+        const overdueTasks = tasks.filter(task => isOverdue(task.deadline) && task.status !== 'done').length;
+        
+        totalTasksHome.textContent = totalTasks;
+        completedTasksHome.textContent = completedTasks;
+        pendingTasksHome.textContent = pendingTasks;
+        overdueTasksHome.textContent = overdueTasks;
+      }
+      
+      // Update notification badge
+      function updateNotifBadge() {
+        const overdueCount = tasks.filter(task => isOverdue(task.deadline) && task.status !== 'done').length;
+        if (overdueCount > 0) {
+            notifBadge.textContent = overdueCount;
+            notifBadge.style.display = 'flex';
+        } else {
+            notifBadge.style.display = 'none';
+        }
+      }
+      
+      // Handle menu actions
+      function handleMenuAction(action) {
+        switch(action) {
+          case 'about':
+            showAboutModal();
+            break;
+          case 'theme':
+            showThemeModal();
+            break;
+          case 'tips':
+            showTipsModal();
+            break;
+          case 'profile':
+            showProfileModal();
+            break;
+          case 'settings':
+            showSettingsModal();
+            break;
+          case 'export':
+            showImportExportModal('export');
+            break;
+          case 'import':
+            showImportExportModal('import');
+            break;
+          case 'portfolio':
+            window.open(settings.portfolioLink, '_blank');
+            toggleMenuDrawer(false);
+            break;
+          case 'reset':
+            if (confirm('Apakah Anda yakin ingin mereset semua data?')) {
+              localStorage.removeItem(STORAGE_KEYS.TASKS);
+              localStorage.removeItem(STORAGE_KEYS.SCHEDULES);
+              localStorage.removeItem(STORAGE_KEYS.NOTES);
+              tasks = [];
+              schedules = [];
+              notes = [];
+              renderTasks();
+              renderSchedules();
+              renderNotes();
+              updateHomeStats();
+              updateNotifBadge();
+              showToast('Data telah direset');
+            }
+            toggleMenuDrawer(false);
+            break;
+        }
+      }
+      
+      // Toggle task form visibility
+      function toggleForm(show) {
+        const isVisible = taskForm.style.display !== 'none';
+        const shouldShow = typeof show === 'boolean' ? show : !isVisible;
+        taskForm.style.display = shouldShow ? 'block' : 'none';
+        openFormBtn.setAttribute('aria-expanded', shouldShow);
+        taskForm.setAttribute('aria-hidden', !shouldShow);
+        if (!shouldShow) {
+          taskForm.reset();
+        }
+      }
+      
+      // Toggle schedule form visibility
+      function toggleScheduleForm(show) {
+        const isVisible = scheduleForm.style.display !== 'none';
+        const shouldShow = typeof show === 'boolean' ? show : !isVisible;
+        scheduleForm.style.display = shouldShow ? 'block' : 'none';
+        addScheduleBtn.setAttribute('aria-expanded', shouldShow);
+        scheduleForm.setAttribute('aria-hidden', !shouldShow);
+        if (!shouldShow) {
+          scheduleForm.reset();
+        }
+      }
+      
+      // Toggle note form visibility
+      function toggleNoteForm(show) {
+        const isVisible = noteForm.style.display !== 'none';
+        const shouldShow = typeof show === 'boolean' ? show : !isVisible;
+        noteForm.style.display = shouldShow ? 'block' : 'none';
+        addNoteBtn.setAttribute('aria-expanded', shouldShow);
+        noteForm.setAttribute('aria-hidden', !shouldShow);
+        if (!shouldShow) {
+          noteForm.reset();
+        }
+      }
+      
+      // Switch tabs
+      function switchTab(tabName) {
+        tabButtons.forEach(btn => {
+          if (btn.dataset.tab === tabName) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        
+        document.querySelectorAll('.tab-content').forEach(content => {
+          if (content.id === `${tabName}Tab`) {
+            content.classList.add('active');
+          } else {
+            content.classList.remove('active');
+          }
+        });
+        
+        currentTab = tabName;
+        fab.style.display = 'flex';
+      }
+      
+      // Update badge count
+      function updateBadge() {
+        const activeTasks = tasks.filter(task => task.status !== 'done').length;
+        const badge = document.querySelector('.badge');
+        if (badge && badge.id !== 'notifBadge') {
+          badge.textContent = activeTasks;
+          badge.style.display = activeTasks > 0 ? 'flex' : 'none';
+        }
+      }
+      
+      // Format date to human readable
+      function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        if (isNaN(date)) return dateStr;
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        if (date.getDate() === today.getDate() &&
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear()) {
+          return 'Hari Ini';
+        }
+        
+        if (date.getDate() === tomorrow.getDate() &&
+            date.getMonth() === tomorrow.getMonth() &&
+            date.getFullYear() === tomorrow.getFullYear()) {
+          return 'Besok';
+        }
+        
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+      
+      // Get relative time text
+      function getRelativeTime(dateStr) {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diffTime = date - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) return 'Terlambat';
+        if (diffDays === 0) return 'Hari Ini';
+        if (diffDays === 1) return 'Besok';
+        return `${diffDays} hari lagi`;
+      }
+      
+      // Format timestamp for notes
+      function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleString('id-ID', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      
+      // Check if date is today
+      function isToday(dateStr) {
+        const date = new Date(dateStr);
+        const today = new Date();
+        return date.getDate() === today.getDate() &&
+               date.getMonth() === today.getMonth() &&
+               date.getFullYear() === today.getFullYear();
+      }
+      
+      // Check if date is tomorrow
+      function isTomorrow(dateStr) {
+        const date = new Date(dateStr);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return date.getDate() === tomorrow.getDate() &&
+               date.getMonth() === tomorrow.getMonth() &&
+               date.getFullYear() === tomorrow.getFullYear();
+      }
+      
+      // Check if date is this week
+      function isThisWeek(dateStr) {
+        const date = new Date(dateStr);
+        const today = new Date();
+        const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+        firstDayOfWeek.setHours(0,0,0,0);
+        const lastDayOfWeek = new Date(firstDayOfWeek);
+        lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+        lastDayOfWeek.setHours(23,59,59,999);
+        return date >= firstDayOfWeek && date <= lastDayOfWeek;
+      }
+      
+      // Check if task is overdue
+      function isOverdue(dateStr) {
+        const date = new Date(dateStr);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date < today;
+      }
+      
+      // Filter tasks based on current filter
+      function filterTasks() {
+        return tasks.filter(task => {
+          switch(currentFilter) {
+            case 'all':
+              return true;
+            case 'new':
+              return task.status === 'new';
+            case 'active':
+              return task.status !== 'done';
+            case 'done':
+              return task.status === 'done';
+            case 'today': {
+              return isToday(task.deadline) && task.status !== 'done';
+            }
+            case 'tomorrow': {
+              return isTomorrow(task.deadline) && task.status !== 'done';
+            }
+            case 'week': {
+              return isThisWeek(task.deadline) && task.status !== 'done';
+            }
+            case 'overdue':
+              return isOverdue(task.deadline) && task.status !== 'done';
+            default:
+              return true;
+          }
+        });
+      }
+      
+      // Render tasks with priority indicator (visual) and improved text wrapping
+      function renderTasks() {
+        const filteredTasks = filterTasks();
+        
+        // Sort tasks: priority (high > medium > low) then by deadline
+        filteredTasks.sort((a, b) => {
+          const priorityOrder = { high: 0, medium: 1, low: 2 };
+          if ((priorityOrder[a.priority] || 2) !== (priorityOrder[b.priority] || 2)) {
+            return (priorityOrder[a.priority] || 2) - (priorityOrder[b.priority] || 2);
+          }
+          return new Date(a.deadline) - new Date(b.deadline);
+        });
+        
+        if (filteredTasks.length === 0) {
+          taskList.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size:48px;margin-bottom:16px;">📋</div>
+              <h3>Tidak ada tugas</h3>
+              <p>Tambahkan tugas baru untuk memulai</p>
+            </div>
+          `;
+          updateBadge();
+          updateNotifBadge();
+          updateHomeStats();
+          return;
+        }
+        
+        taskList.innerHTML = filteredTasks.map(task => {
+          // Determine status text and color
+          let statusText = '';
+          let statusColor = '';
+          switch (task.status) {
+            case 'new':
+              statusText = 'Baru';
+              statusColor = 'var(--warning)';
+              break;
+            case 'opened':
+              statusText = 'Dibaca';
+              statusColor = 'var(--primary)';
+              break;
+            case 'done':
+              statusText = 'Selesai';
+              statusColor = 'var(--success)';
+              break;
+            default:
+              statusText = 'Baru';
+              statusColor = 'var(--warning)';
+          }
+          
+          // Priority indicator classes and tooltip
+          let indicatorClass = 'priority-low-indicator';
+          let indicatorTitle = 'Prioritas: Rendah';
+          switch (task.priority) {
+            case 'high':
+              indicatorClass = 'priority-high-indicator';
+              indicatorTitle = 'Prioritas: Tinggi';
+              break;
+            case 'medium':
+              indicatorClass = 'priority-medium-indicator';
+              indicatorTitle = 'Prioritas: Sedang';
+              break;
+            case 'low':
+            default:
+              indicatorClass = 'priority-low-indicator';
+              indicatorTitle = 'Prioritas: Rendah';
+          }
+          
+          // Determine deadline class
+          let deadlineClass = '';
+          if (task.status === 'done') {
+            deadlineClass = 'dl-ok';
+          } else if (isOverdue(task.deadline)) {
+            deadlineClass = 'dl-overdue';
+          } else {
+            const daysDiff = Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+            if (daysDiff < 0) {
+              deadlineClass = 'dl-overdue';
+            } else if (daysDiff === 0) {
+              deadlineClass = 'dl-urgent';
+            } else if (daysDiff === 1) {
+              deadlineClass = 'dl-soon';
+            } else if (daysDiff <= 3) {
+              deadlineClass = 'dl-soon';
+            } else {
+              deadlineClass = 'dl-ok';
+            }
+          }
+          
+          // Use title attribute for tooltip when truncated
+          const titleAttr = `${task.subject} - ${task.name}`.replace(/"/g, '&quot;');
+          
+          // Notes handling (long content scroll)
+          const notesHtml = task.notes ? `<div class="task-detail"><div class="long-text" title="${(task.notes||'').replace(/"/g,'&quot;')}">📝 ${task.notes}</div></div>` : '';
+          
+          return `
+            <div class="task-card ${deadlineClass} priority-${task.priority}" data-id="${task.id}">
+              <div class="task-title">
+                <span class="priority-indicator ${indicatorClass}" title="${indicatorTitle}" aria-hidden="true"></span>
+                <span class="title-text" title="${titleAttr}">${task.subject} - ${task.name}</span>
+              </div>
+              <div class="task-detail">
+                <span title="${formatDate(task.deadline)}">📅 ${formatDate(task.deadline)}</span>
+                <span title="${getRelativeTime(task.deadline)}">⏰ ${getRelativeTime(task.deadline)}</span>
+              </div>
+              ${notesHtml}
+              <div class="status-pill" style="background:${statusColor};color:#fff">${statusText}</div>
+              <div class="task-actions">
+                <button class="filter-btn" onclick="handleTaskAction('${task.id}', 'toggle')" aria-label="${task.status === 'done' ? 'Batalkan tugas' : 'Tandai selesai'}">
+                  ${task.status === 'done' ? '↩️ Batal' : '✅ Selesai'}
+                </button>
+                <button class="filter-btn" onclick="handleTaskAction('${task.id}', 'edit')" aria-label="Edit tugas">✏️ Edit</button>
+                <button class="filter-btn" onclick="handleTaskAction('${task.id}', 'delete')" aria-label="Hapus tugas">🗑️ Hapus</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        updateBadge();
+        updateNotifBadge();
+        updateHomeStats();
+      }
+      
+      // Render schedules
+      function renderSchedules() {
+        if (schedules.length === 0) {
+          scheduleContainer.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size:48px;margin-bottom:16px;">📅</div>
+              <h3>Belum ada jadwal</h3>
+              <p>Tambahkan jadwal pelajaran Anda</p>
+            </div>
+          `;
+          return;
+        }
+        
+        const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
+        const schedulesByDay = {};
+        days.forEach(day => {
+          schedulesByDay[day] = schedules.filter(schedule => schedule.day === day);
+        });
+        
+        days.forEach(day => {
+          schedulesByDay[day].sort((a, b) => a.time.localeCompare(b.time));
+        });
+        
+        scheduleContainer.innerHTML = days.map(day => {
+          if (!schedulesByDay[day] || schedulesByDay[day].length === 0) return '';
+          
+          const dayNames = { 'senin': 'Senin', 'selasa': 'Selasa', 'rabu': 'Rabu', 'kamis': 'Kamis', 'jumat': 'Jumat', 'sabtu': 'Sabtu' };
+          return `
+            <div class="schedule-day">
+              <div class="schedule-header">${dayNames[day]}</div>
+              ${schedulesByDay[day].map(schedule => `
+                <div class="schedule-item">
+                  <div class="schedule-time">${schedule.time}</div>
+                  <div class="schedule-subject">${schedule.subject}</div>
+                  <div>
+                    <button class="filter-btn" onclick="handleScheduleAction('${schedule.id}', 'edit')" aria-label="Edit jadwal">✏️</button>
+                    <button class="filter-btn" onclick="handleScheduleAction('${schedule.id}', 'delete')" aria-label="Hapus jadwal">🗑️</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }).join('');
+      }
+      
+      // Render notes
+      function renderNotes() {
+        if (notes.length === 0) {
+          notesList.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size:48px;margin-bottom:16px;">📝</div>
+              <h3>Belum ada catatan</h3>
+              <p>Tambahkan catatan baru untuk memulai</p>
+            </div>
+          `;
+          return;
+        }
+        
+        notes.sort((a, b) => b.updatedAt - a.updatedAt);
+        notesList.innerHTML = notes.map(note => `
+          <div class="note-card" data-id="${note.id}">
+            <div class="note-title">${note.title}</div>
+            <div class="note-content">${note.content}</div>
+            <div class="note-meta">
+              Dibuat: ${formatTimestamp(note.createdAt)}<br>
+              Diupdate: ${formatTimestamp(note.updatedAt)}
+            </div>
+            <div class="note-actions">
+              <button class="filter-btn" onclick="handleNoteAction('${note.id}', 'edit')" aria-label="Edit catatan">✏️ Edit</button>
+              <button class="filter-btn" onclick="handleNoteAction('${note.id}', 'delete')" aria-label="Hapus catatan">🗑️ Hapus</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Handle task actions (toggle, edit, delete)
+      function handleTaskAction(taskId, action) {
+        const taskIndex = tasks.findIndex(t => t.id == taskId);
+        if (taskIndex === -1) return;
+        
+        const task = tasks[taskIndex];
+        switch(action) {
+          case 'toggle':
+            task.status = task.status === 'done' ? 'active' : 'done';
+            saveTasks();
+            renderTasks();
+            showToast(task.status === 'done' ? 'Tugas selesai!' : 'Tugas dibatalkan');
+            break;
+          case 'edit':
+            document.getElementById('taskSubject').value = task.subject;
+            document.getElementById('taskName').value = task.name;
+            document.getElementById('taskDeadline').value = task.deadline;
+            document.getElementById('taskNotes').value = task.notes || '';
+            document.getElementById('taskPriority').value = task.priority || 'medium';
+            tasks.splice(taskIndex, 1);
+            saveTasks();
+            updateBadge();
+            updateHomeStats();
+            toggleForm(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast('Edit tugas');
+            break;
+          case 'delete':
+            if (confirm('Apakah Anda yakin ingin menghapus tugas ini?')) {
+              tasks.splice(taskIndex, 1);
+              saveTasks();
+              renderTasks();
+              updateBadge();
+              updateHomeStats();
+              showToast('Tugas dihapus');
+            }
+            break;
+        }
+      }
+      
+      // Handle schedule actions (edit, delete)
+      function handleScheduleAction(scheduleId, action) {
+        const scheduleIndex = schedules.findIndex(s => s.id == scheduleId);
+        if (scheduleIndex === -1) return;
+        
+        const schedule = schedules[scheduleIndex];
+        switch(action) {
+          case 'edit':
+            document.getElementById('scheduleSubject').value = schedule.subject;
+            document.getElementById('scheduleDay').value = schedule.day;
+            document.getElementById('scheduleTime').value = schedule.time;
+            schedules.splice(scheduleIndex, 1);
+            saveSchedules();
+            toggleScheduleForm(true);
+            document.getElementById('scheduleSubject').scrollIntoView({ behavior: 'smooth' });
+            showToast('Edit jadwal');
+            break;
+          case 'delete':
+            if (confirm('Apakah Anda yakin ingin menghapus jadwal ini?')) {
+              schedules.splice(scheduleIndex, 1);
+              saveSchedules();
+              renderSchedules();
+              showToast('Jadwal dihapus');
+            }
+            break;
+        }
+      }
+      
+      // Handle note actions (edit, delete)
+      function handleNoteAction(noteId, action) {
+        const noteIndex = notes.findIndex(n => n.id == noteId);
+        if (noteIndex === -1) return;
+        
+        const note = notes[noteIndex];
+        switch(action) {
+          case 'edit':
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            notes.splice(noteIndex, 1);
+            saveNotes();
+            toggleNoteForm(true);
+            document.getElementById('noteTitle').scrollIntoView({ behavior: 'smooth' });
+            showToast('Edit catatan');
+            break;
+          case 'delete':
+            if (confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
+              notes.splice(noteIndex, 1);
+              saveNotes();
+              renderNotes();
+              showToast('Catatan dihapus');
+            }
+            break;
+        }
+      }
+      
+      // Load tasks from localStorage
+      function loadTasks() {
+        try {
+          const storedTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
+          tasks = storedTasks ? JSON.parse(storedTasks) : [];
+        } catch (error) {
+          console.error('Error loading tasks:', error);
+          tasks = [];
+          showToast('Gagal memuat tugas');
+        }
+        updateBadge();
+        updateNotifBadge();
+        updateHomeStats();
+        renderTasks();
+      }
+      
+      // Load schedules from localStorage
+      function loadSchedules() {
+        try {
+          const storedSchedules = localStorage.getItem(STORAGE_KEYS.SCHEDULES);
+          schedules = storedSchedules ? JSON.parse(storedSchedules) : [];
+        } catch (error) {
+          console.error('Error loading schedules:', error);
+          schedules = [];
+          showToast('Gagal memuat jadwal');
+        }
+        renderSchedules();
+      }
+      
+      // Load notes from localStorage
+      function loadNotes() {
+        try {
+          const storedNotes = localStorage.getItem(STORAGE_KEYS.NOTES);
+          notes = storedNotes ? JSON.parse(storedNotes) : [];
+        } catch (error) {
+          console.error('Error loading notes:', error);
+          notes = [];
+          showToast('Gagal memuat catatan');
+        }
+        renderNotes();
+      }
+      
+      // Save tasks to localStorage
+      function saveTasks() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
+        } catch (error) {
+          console.error('Error saving tasks:', error);
+          showToast('Gagal menyimpan tugas');
+        }
+      }
+      
+      // Save schedules to localStorage
+      function saveSchedules() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.SCHEDULES, JSON.stringify(schedules));
+        } catch (error) {
+          console.error('Error saving schedules:', error);
+          showToast('Gagal menyimpan jadwal');
+        }
+      }
+      
+      // Save notes to localStorage
+      function saveNotes() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+        } catch (error) {
+          console.error('Error saving notes:', error);
+          showToast('Gagal menyimpan catatan');
+        }
+      }
+      
+      // Show toast notification
+      let toastTimeout = null;
+      function showToast(message, duration = 3000) {
+        if (!settings.notifications) return;
+        
+        if (toastTimeout) {
+          clearTimeout(toastTimeout);
+        }
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        toastTimeout = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, duration);
+      }
+      
+      // Generate unique ID
+      function generateId() {
+        return Date.now() + Math.floor(Math.random() * 1000);
+      }
+      
+      // Show stats modal
+      function showStatsModal() {
+        updateStats();
+        statsModal.classList.add('show');
+        setTimeout(() => {
+          createOrUpdateCharts();
+        }, 80);
+      }
+      
+      // Close stats modal
+      function closeStatsModalFunc() {
+        statsModal.classList.remove('show');
+      }
+      
+      // Initialize event listeners
+      function initEventListeners() {
+        // Task form submission
+        taskForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const subject = document.getElementById('taskSubject').value.trim();
+          const name = document.getElementById('taskName').value.trim();
+          const deadline = document.getElementById('taskDeadline').value;
+          const notesText = document.getElementById('taskNotes').value.trim();
+          const priority = document.getElementById('taskPriority').value;
+          
+          if (!subject || !name || !deadline) {
+            showToast('Harap isi semua bidang yang wajib');
+            return;
+          }
+          
+          const task = {
+            id: generateId(),
+            subject,
+            name,
+            deadline,
+            notes: notesText,
+            priority,
+            status: 'new',
+            createdAt: Date.now()
+          };
+          
+          tasks.push(task);
+          saveTasks();
+          renderTasks();
+          toggleForm(false);
+          showToast('Tugas ditambahkan');
+        });
+        
+        // Schedule form submission
+        scheduleForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const subject = document.getElementById('scheduleSubject').value.trim();
+          const day = document.getElementById('scheduleDay').value;
+          const time = document.getElementById('scheduleTime').value;
+          
+          if (!subject || !day || !time) {
+            showToast('Harap isi semua bidang yang wajib');
+            return;
+          }
+          
+          const schedule = {
+            id: generateId(),
+            subject,
+            day,
+            time,
+            createdAt: Date.now()
+          };
+          
+          schedules.push(schedule);
+          saveSchedules();
+          renderSchedules();
+          toggleScheduleForm(false);
+          showToast('Jadwal ditambahkan');
+        });
+        
+        // Note form submission
+        noteForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const title = document.getElementById('noteTitle').value.trim();
+          const content = document.getElementById('noteContent').value.trim();
+          
+          if (!title || !content) {
+            showToast('Harap isi semua bidang yang wajib');
+            return;
+          }
+          
+          const note = {
+            id: generateId(),
+            title,
+            content,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          };
+          
+          notes.push(note);
+          saveNotes();
+          renderNotes();
+          toggleNoteForm(false);
+          showToast('Catatan ditambahkan');
+        });
+        
+        // Form toggle buttons
+        openFormBtn.addEventListener('click', () => toggleForm(true));
+        cancelFormBtn.addEventListener('click', () => toggleForm(false));
+        addScheduleBtn.addEventListener('click', () => toggleScheduleForm(true));
+        cancelScheduleFormBtn.addEventListener('click', () => toggleScheduleForm(false));
+        addNoteBtn.addEventListener('click', () => toggleNoteForm(true));
+        cancelNoteFormBtn.addEventListener('click', () => toggleNoteForm(false));
+        
+        // Clear all tasks
+        clearAllBtn.addEventListener('click', function() {
+          if (tasks.length === 0) {
+            showToast('Tidak ada tugas untuk dihapus');
+            return;
+          }
+          if (confirm('Apakah Anda yakin ingin menghapus semua tugas?')) {
+            tasks = [];
+            saveTasks();
+            renderTasks();
+            showToast('Semua tugas dihapus');
+          }
+        });
+        
+        // Filter buttons
+        filterButtons.forEach(btn => {
+          btn.addEventListener('click', function() {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            renderTasks();
+          });
+        });
+        
+        // Tab buttons
+        tabButtons.forEach(btn => {
+          btn.addEventListener('click', function() {
+            switchTab(this.dataset.tab);
+          });
+        });
+        
+        // FAB button
+        fab.addEventListener('click', function() {
+          switch(currentTab) {
+            case 'tasks':
+              toggleForm(true);
+              break;
+            case 'schedule':
+              toggleScheduleForm(true);
+              break;
+            case 'notes':
+              toggleNoteForm(true);
+              break;
+          }
+        });
+        
+        // Menu button
+        menuBtn.addEventListener('click', () => toggleMenuDrawer(true));
+        menuClose.addEventListener('click', () => toggleMenuDrawer(false));
+        document.addEventListener('click', closeMenuDrawer);
+        
+        // Menu items
+        menuItems.forEach(item => {
+          item.addEventListener('click', () => {
+            const action = item.dataset.action;
+            handleMenuAction(action);
+          });
+        });
+        
+        // Stats button
+        statsBtn.addEventListener('click', showStatsModal);
+        closeStatsModal.addEventListener('click', closeStatsModalFunc);
+        
+        // About modal
+        closeAboutModal.addEventListener('click', closeAboutModalFunc);
+        
+        // Theme modal
+        closeThemeModal.addEventListener('click', closeThemeModalFunc);
+        themeOptions.forEach(option => {
+          option.addEventListener('click', () => {
+            const theme = option.dataset.theme;
+            setTheme(theme);
+            closeThemeModalFunc();
+          });
+        });
+        
+        // Tips modal
+        closeTipsModal.addEventListener('click', closeTipsModalFunc);
+        
+        // Import/Export modal
+        closeImportExportModal.addEventListener('click', closeImportExportModalFunc);
+        exportDataBtn.addEventListener('click', exportData);
+        importDataBtn.addEventListener('click', importData);
+        cancelImportBtn.addEventListener('click', () => closeImportExportModalFunc());
+        
+        // Profile modal
+        closeProfileModal.addEventListener('click', closeProfileModalFunc);
+        saveProfileBtn.addEventListener('click', saveProfileFunc);
+        resetProfileBtn.addEventListener('click', resetProfileFunc);
+        uploadAvatarBtn.addEventListener('click', () => avatarUpload.click());
+        avatarUpload.addEventListener('change', handleAvatarUpload);
+        avatarOptions.forEach(option => {
+          option.addEventListener('click', function() {
+            avatarOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+          });
+        });
+        
+        // Profile section in menu
+        profileSection.addEventListener('click', showProfileModal);
+        
+        // Crop modal
+        closeCropModal.addEventListener('click', closeCropModalFunc);
+        applyCropBtn.addEventListener('click', applyCrop);
+        cancelCropBtn.addEventListener('click', closeCropModalFunc);
+        
+        // Settings modal
+        closeSettingsModal.addEventListener('click', closeSettingsModalFunc);
+        saveSettingsBtn.addEventListener('click', saveSettingsFunc);
+        
+        // Scroll optimization - disable blur during scroll for performance
+        window.addEventListener('scroll', function() {
+          header.classList.add('header-scrolling');
+          
+          if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+          }
+          
+          scrollTimeout = setTimeout(function() {
+            header.classList.remove('header-scrolling');
+          }, 100);
+        });
+      }
+      
+      // Initialize the app
+      function initApp() {
+        initTheme();
+        setMinDeadline();
+        loadSettings();
+        loadProfile();
+        loadTasks();
+        loadSchedules();
+        loadNotes();
+        initEventListeners();
+        renderTasks();
+        renderSchedules();
+        renderNotes();
+        updateHomeStats();
+        updateNotifBadge();
+        showToast('TugasKu3 dimuat!', 2000);
+      }
+      
+      // Make functions available globally for inline handlers
+      window.handleTaskAction = handleTaskAction;
+      window.handleScheduleAction = handleScheduleAction;
+      window.handleNoteAction = handleNoteAction;
+      
+      // Initialize when DOM is loaded
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+      } else {
+        initApp();
+      }
+    })();
+  </script>
+</body>
+</html>
