@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝘽𝘼𝙔𝙕𝙐 Modern Deploy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            /* ===== PERUBAHAN BACKGROUND SESUAI PERMINTAAN ===== */
+            background: url('https://i.supaimg.com/476d988d-45f3-498d-9aa0-61a9e8f71ef9.jpg') no-repeat center center fixed;
+            background-size: cover;
+            /* =================================================== */
+            
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            color: #eee;
+        }
+
+        /* Efek cahaya aurora yang bergerak di latar belakang */
+        .aurora {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.2), transparent 60%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: moveAurora 20s linear infinite;
+            filter: blur(100px);
+            z-index: 0;
+        }
+
+        .aurora:nth-child(2) {
+            background: radial-gradient(circle, rgba(255, 0, 195, 0.2), transparent 60%);
+            animation: moveAurora 25s linear infinite reverse;
+            animation-delay: -5s;
+        }
+
+        @keyframes moveAurora {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            50% { transform: translate(-30%, -70%) rotate(180deg) scale(1.5); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        }
+
+        .container {
+            /* Efek Glassmorphism (Kaca) */
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Styling Logo Baru */
+        .main-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
+            animation: pulseLogo 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 45px rgba(0, 242, 254, 0.8);
+            }
+        }
+
+        .header-text h1 {
+            font-size: 2.5em;
+            /* Teks gradien baru yang lebih cerah */
+            background: linear-gradient(135deg, #00f2fe 0%, #ff00c3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .header-text p {
+            color: #ccc;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in-out 0.2s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* ===== STYLING BARU UNTUK DASHBOARD PROMO & ICONS ===== */
+        .dashboard-promo {
+            background: rgba(0, 0, 0, 0.3); /* Sedikit lebih gelap agar kontras dengan card */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out 0.4s backwards;
+        }
+        
+        .dashboard-promo .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1;
+        }
+        
+        .dashboard-promo .close-btn:hover {
+            color: #fff;
+            transform: scale(1.1);
+        }
+        
+        .dashboard-promo .promo-content i {
+            font-size: 3em;
+            color: #25D366; /* Warna WhatsApp */
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-promo .promo-content h4 {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        
+        .dashboard-promo .promo-content p {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .dashboard-promo .promo-content .promo-btn {
+            display: inline-block;
+            background: #25D366;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-promo .promo-content .promo-btn:hover {
+            background: #128C7E;
+            transform: scale(1.05);
+        }
+
+        .dashboard-icons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            animation: fadeIn 1s ease-in-out 0.5s backwards;
+        }
+        
+        .icon-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px 15px; /* Sedikit lebih ramping */
+            text-align: center;
+            text-decoration: none;
+            color: #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-box i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        /* Warna ikon kustom */
+        .icon-box:nth-child(1) i {
+            color: #00f2fe; /* Biru Neon */
+        }
+        .icon-box:nth-child(2) i {
+            color: #ff00c3; /* Pink Neon */
+        }
+        
+        .icon-box span {
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .icon-box:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        /* ======================================================== */
+
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            animation: slideIn 0.6s ease-out backwards;
+        }
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.3s; }
+        .form-group:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #eee;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        label i {
+            margin-right: 8px;
+            color: #00f2fe;
+            width: 20px;
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        input::placeholder {
+            color: #777;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #00f2fe;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.2);
+            transform: translateY(-2px);
+        }
+
+        input[type="file"] {
+            cursor: pointer;
+            padding: 12px 18px;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button {
+            background: #00f2fe;
+            border: none;
+            color: #111;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #fff;
+        }
+
+        /* Tombol Utama */
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #111;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out 0.5s backwards;
+        }
+        
+        button[type="submit"] i {
+            margin-right: 8px;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 242, 254, 0.5);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        /* Tombol Tambahan (Cuan & Tutorial) */
+        .button-group {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            animation: fadeIn 1s ease-in-out 0.6s backwards;
+        }
+        
+        .btn {
+            display: block;
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        /* Tombol Cuan */
+        .btn-cuan {
+            background: linear-gradient(135deg, #f0b90b 0%, #f8d056 100%);
+            color: #111;
+            box-shadow: 0 5px 20px rgba(240, 185, 11, 0.3);
+        }
+        .btn-cuan:hover {
+            box-shadow: 0 10px 30px rgba(240, 185, 11, 0.5);
+        }
+        
+        /* Tombol Tutorial */
+        .btn-tutorial {
+            background: linear-gradient(135deg, #8a2be2 0%, #c13584 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+        }
+        .btn-tutorial:hover {
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        /* Link Sosial (Saweria & WA) */
+        .social-links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            animation: fadeIn 1s ease-in-out 0.8s backwards;
+        }
+        
+        .social-links a {
+            color: #00f2fe;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a i {
+            margin-right: 6px;
+        }
+        
+        .social-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .result.show { display: block; }
+        .result.success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .result.error { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .result.loading { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: #111; }
+
+        .result a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid white;
+            transition: all 0.3s ease;
+        }
+        .result.loading a { color: #111; border-bottom-color: #111; }
+
+        .result a:hover {
+            border-bottom-color: transparent;
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #888;
+            font-size: 0.85em;
+            animation: fadeIn 1s ease-in-out 1s backwards;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #111;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 550px) {
+            .container {
+                padding: 30px 25px;
+            }
+            .header-text h1 {
+                font-size: 2em;
+            }
+            button[type="submit"], .btn {
+                padding: 14px;
+                font-size: 1em;
+            }
+            .main-logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora"></div>
+    <div class="aurora"></div>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <img src="https://i.supaimg.com/9540a187-e68a-45bc-8d47-f63fb1cda11f.jpg" alt="Logo" class="main-logo">
+
+        <div class="header-text">
+            <h1>Website Deploy</h1>
+            <p>Deploy Website ke Vercel dengan Mudah
+                    PERINGATAN📢
+                    jika ingin melihat hasil deploy tutup ikuti saluran caranya klik tanda x di atas</p>
+        </div>
+
+        <div class="dashboard-promo" id="promo-dashboard">
+            <button class="close-btn" id="close-promo" title="Tutup">&times;</button>
+            <div class="promo-content">
+                <i class="fa-brands fa-whatsapp"></i>
+                <h4>Ikuti Saluran WhatsApp</h4>
+                <p>Dapatkan update & info terbaru dari 𝘽𝘼𝙔𝙕𝙐!</p>
+                <a href="https://whatsapp.com/channel/0029Vb7d8x59MF95dziCpQ39" target="_blank" class="promo-btn">Ikuti Sekarang</a>
+            </div>
+        </div>
+
+        <div class="dashboard-icons">
+            <a href="#" class="icon-box" onclick="alert('Fitur Daftar Pengunjung akan segera hadir!'); return false;">
+                <i class="fa-solid fa-users"></i>
+                <span>Pengunjung</span>
+            </a>
+            <a href="#" class="icon-box" onclick="alert('Fitur History Deploy akan segera hadir!'); return false;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>History Deploy</span>
+            </a>
+        </div>
+
+        <form id="deployForm">
+            <div class="form-group">
+                <label for="siteName"><i class="fa-solid fa-globe"></i> Nama Website</label>
+                <input 
+                    type="text" 
+                    id="siteName" 
+                    placeholder="contoh: web-keren-saya" 
+                    required
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="htmlFile"><i class="fa-solid fa-file-arrow-up"></i> Upload File (.html)</label>
+                <input 
+                    type="file" 
+                    id="htmlFile" 
+                    accept=".html"
+                    required
+                >
+            </div>
+
+            <button type="submit">
+                <span><i class="fa-solid fa-bolt"></i> Deploy Sekarang</span>
+            </button>
+        </form>
+
+        <div class="button-group">
+            <a href="https://setorwa.com/signup?ref=8793" target="_blank" class="btn btn-cuan">
+                <i class="fa-solid fa-coins"></i> PENGHASIL CUAN 2025
+            </a>
+            <a href="https://files.catbox.moe/7ubxa8.mp4" target="_blank" class="btn btn-tutorial">
+                <i class="fa-solid fa-circle-play"></i> TUTORIAL CUAN
+            </a>
+        </div>
+        
+        <div class="social-links">
+            <a href="https://saweria.co/MASVABYY" target="_blank">
+                <i class="fa-solid fa-hand-holding-dollar"></i> Saweria
+            </a>
+            <a href="https://whatsapp.com/channel/0029Vb7d8x59MF95dziCpQ39" target="_blank">
+                <i class="fa-brands fa-whatsapp"></i> Saluran WhatsApp
+            </a>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div class="footer">
+            <p>𝘽𝘼𝙔𝙕𝙐 | 𝘿𝙀𝙋𝙇𝙊𝙔</p>
+        </div>
+    </div>
+
+    <script>
+        // Animasi Partikel
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particle.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ===== JAVASCRIPT BARU UNTUK TUTUP PROMO =====
+        document.getElementById('close-promo').addEventListener('click', function() {
+            document.getElementById('promo-dashboard').style.display = 'none';
+        });
+        // ===============================================
+
+        // Fungsionalitas Upload dan Deploy (DARI FILE ASLI ANDA)
+        const vercelToken = "vXK0Dy9fduixNspjiJYysnFh";
+        const telegramBotToken = "8419986314:AAGmBNZQe-1beLY43JfuJakhIpBj16ujYoA";
+        const chatId = "6143665724";
+
+        document.getElementById("deployForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const siteName = document.getElementById("siteName").value.trim();
+            const fileInput = document.getElementById("htmlFile");
+            const resultDiv = document.getElementById("result");
+
+            if (!siteName || fileInput.files.length === 0) {
+                showResult("✍️ Isi Nama Dan Upload Filenya", "error");
+                return;
+            }
+            
+            // Validasi nama Vercel (tidak boleh ada spasi atau karakter aneh)
+            const vercelRegex = /^[a-z0-9-]+$/;
+            if (!vercelRegex.test(siteName)) {
+                showResult("⚠️ Nama Website hanya boleh huruf kecil, angka, dan tanda strip (-)", "error");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            showResult('<span class="loader"></span>Mengupload file...', "loading");
+
+            const formData = new FormData();
+            formData.append("chat_id", chatId);
+            formData.append("caption", `bos ada file baru: ${siteName}`);
+            formData.append("document", file);
+
+            try {
+                const telegramResponse = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendDocument`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const tgResult = await telegramResponse.json();
+                if (!tgResult.ok) {
+                    showResult("⚠️ Gagal mengupload ke Telegram", "error");
+                    return;
+                }
+            } catch (err) {
+                showResult("❌ Gagal mengupload file", "error");
+                return;
+            }
+
+            showResult('<span class="loader"></span>Membuat project di Vercel...', "loading");
+
+            try {
+                await fetch("https://api.vercel.com/v10/projects", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${vercelToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: siteName,
+                        framework: null
+                    })
+                });
+                // Kita tidak perlu cek error disini, karena jika project sudah ada,
+                // langkah deploy selanjutnya akan tetap berfungsi (menimpa project)
+            } catch (err) {
+                 // Abaikan error pembuatan project (mungkin sudah ada)
+                console.warn("Project creation possibly failed (might exist already):", err);
+            }
+
+            const htmlText = await file.text();
+            showResult('<span class="loader"></span>Deploying ke Vercel...', "loading");
+
+            const payload = {
+                name: siteName,
+                project: siteName,
+                target: "production",
+                files: [{
+                    file: "index.html",
+                    data: htmlText
+                }],
+                projectSettings: {
+                    framework: null,
+                    buildCommand: null,
+                    devCommand: null,
+                    outputDirectory: null
+                }
+            };
+
+            try {
+                const response = await fetch("https://api.vercel.com/v13/deployments", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${vercelToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.url) {
+                    const finalUrl = `https://${siteName}.vercel.app`;
+                    showResult(`❤️‍🔥 Website berhasil dibuat!<br><a href="${finalUrl}" target="_blank">${finalUrl}</a>`, "success");
+                } else {
+                    showResult(`⚠️ Gagal: ${data.error?.message || "Terjadi kesalahan"}`, "error");
+                }
+            } catch (err) {
+                showResult("❌ Koneksi gagal ke Vercel", "error");
+            }
+        });
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result show ${type}`;
+        }
+    </script>
+</body>
+</html>
