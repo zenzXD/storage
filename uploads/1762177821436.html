@@ -1,0 +1,6211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>TugasKu3 BETA - Manajemen Tugas dengan AI</title>
+  <meta name="app-version" content="6.0.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="my-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <style>
+    /* CSS Variables & Base Styles - DIPERBARUI */
+    :root {
+      --primary: #8B5CF6;
+      --primary-600: #7C3AED;
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --card: #1e293b;
+      --muted: #94a3b8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --glass: rgba(30, 41, 59, 0.6);
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+      --priority-high: #ef4444;
+      --priority-medium: #f59e0b;
+      --priority-low: #10b981;
+      --toast-bg: #1e293b;
+      --toast-text: #ffffff;
+      --gradient-primary: linear-gradient(135deg, #8B5CF6, #EC4899);
+      --ai-primary: #10b981;
+      --ai-gradient: linear-gradient(135deg, #10b981, #059669);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* TEMA TERANG NORMAL */
+    .light-mode {
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --glass: rgba(255,255,255,0.7);
+      --toast-bg: #ffffff;
+      --toast-text: #1f2937;
+      --gradient-primary: linear-gradient(135deg, #3B82F6, #2563EB);
+      --ai-primary: #059669;
+      --ai-gradient: linear-gradient(135deg, #059669, #047857);
+      color-scheme: light;
+      color: #0f1724;
+    }
+    
+    /* TEMA AI MODE */
+    .ai-mode {
+      --primary: #10b981;
+      --primary-600: #059669;
+      --bg: linear-gradient(135deg, #0a1a14, #0f2a1f);
+      --bg-card: #1a3a2a;
+      --card: #1a3a2a;
+      --muted: #9ca3af;
+      --glass: rgba(26, 58, 42, 0.7);
+      --toast-bg: #1a3a2a;
+      --toast-text: #e8edf2;
+      --gradient-primary: linear-gradient(135deg, #10b981, #059669);
+      --ai-primary: #10b981;
+      --ai-gradient: linear-gradient(135deg, #10b981, #059669);
+      color: #e8edf2;
+      --shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    /* TEMA GELAP PROFESIONAL */
+    .dark-pro-mode {
+      --primary: #00c8ff;
+      --primary-600: #00a8d6;
+      --bg: linear-gradient(180deg, #0b0f16, #121821);
+      --bg-card: #1c2430;
+      --card: #1c2430;
+      --muted: #a0aec0;
+      --glass: rgba(28, 36, 48, 0.7);
+      --toast-bg: #1c2430;
+      --toast-text: #e8edf2;
+      --gradient-primary: linear-gradient(135deg, #00c8ff, #0095ff);
+      --ai-primary: #00c8ff;
+      --ai-gradient: linear-gradient(135deg, #00c8ff, #0095ff);
+      color: #e8edf2;
+      --shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    /* TEMA GELAP PROFESIONAL SHIFT */
+    .dark-pro-shift-mode {
+      --primary: #8B5CF6;
+      --primary-600: #7C3AED;
+      --bg: linear-gradient(135deg, #0f172a, #1e1b4b);
+      --bg-card: #1e293b;
+      --card: #1e293b;
+      --muted: #94a3b8;
+      --glass: rgba(30, 41, 59, 0.6);
+      --toast-bg: #1e293b;
+      --toast-text: #e8edf2;
+      --gradient-primary: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      --ai-primary: #8B5CF6;
+      --ai-gradient: linear-gradient(135deg, #8B5CF6, #7C3AED);
+      color: #e8edf2;
+      --shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    /* TEMA MIDNIGHT TECH */
+    .midnight-tech-mode {
+      --primary: #38bdf8;
+      --primary-600: #0ea5e9;
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --card: #1e293b;
+      --muted: #94a3b8;
+      --glass: rgba(30, 41, 59, 0.6);
+      --toast-bg: #1e293b;
+      --toast-text: #f8fafc;
+      --gradient-primary: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      --ai-primary: #38bdf8;
+      --ai-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #f8fafc;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* TEMA CARBON BLUE */
+    .carbon-blue-mode {
+      --primary: #3b82f6;
+      --primary-600: #2563eb;
+      --bg: #1e293b;
+      --bg-card: #334155;
+      --card: #334155;
+      --muted: #cbd5e1;
+      --glass: rgba(51, 65, 85, 0.6);
+      --toast-bg: #334155;
+      --toast-text: #f1f5f9;
+      --gradient-primary: linear-gradient(135deg, #3b82f6, #2563eb);
+      --ai-primary: #3b82f6;
+      --ai-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #f1f5f9;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* TEMA CYBER GRAY */
+    .cyber-gray-mode {
+      --primary: #22d3ee;
+      --primary-600: #06b6d4;
+      --bg: #111827;
+      --bg-card: #1f2937;
+      --card: #1f2937;
+      --muted: #9ca3af;
+      --glass: rgba(31, 41, 55, 0.6);
+      --toast-bg: #1f2937;
+      --toast-text: #e2e8f0;
+      --gradient-primary: linear-gradient(135deg, #22d3ee, #06b6d4);
+      --ai-primary: #22d3ee;
+      --ai-gradient: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #e2e8f0;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* TEMA BLUE MIST */
+    .blue-mist-mode {
+      --primary: #64ffda;
+      --primary-600: #48cae4;
+      --bg: #0a192f;
+      --bg-card: #112240;
+      --card: #112240;
+      --muted: #8892b0;
+      --glass: rgba(17, 34, 64, 0.6);
+      --toast-bg: #112240;
+      --toast-text: #e0fbfc;
+      --gradient-primary: linear-gradient(135deg, #64ffda, #48cae4);
+      --ai-primary: #64ffda;
+      --ai-gradient: linear-gradient(135deg, #64ffda, #48cae4);
+      color: #e0fbfc;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* TEMA PINK ELEGAN */
+    .pink-elegant-mode {
+      --primary: #ec4899;
+      --primary-600: #db2777;
+      --bg: linear-gradient(135deg, #1f1b2e, #2d1b3e);
+      --bg-card: #2d1b3e;
+      --card: #2d1b3e;
+      --muted: #c4b5fd;
+      --glass: rgba(45, 27, 62, 0.6);
+      --toast-bg: #2d1b3e;
+      --toast-text: #fdf2f8;
+      --gradient-primary: linear-gradient(135deg, #ec4899, #db2777);
+      --ai-primary: #ec4899;
+      --ai-gradient: linear-gradient(135deg, #ec4899, #db2777);
+      color: #fdf2f8;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* TEMA PRO GOLD */
+    .pro-gold-mode {
+      --primary: #FFD700;
+      --primary-600: #D4AF37;
+      --bg: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      --bg-card: #2d2d2d;
+      --card: #2d2d2d;
+      --muted: #b0b0b0;
+      --glass: rgba(45, 45, 45, 0.7);
+      --toast-bg: #2d2d2d;
+      --toast-text: #f8f8f8;
+      --gradient-primary: linear-gradient(135deg, #FFD700, #D4AF37);
+      --ai-primary: #FFD700;
+      --ai-gradient: linear-gradient(135deg, #FFD700, #D4AF37);
+      color: #f8f8f8;
+      --shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    /* TEMA PRO DEEP OCEAN */
+    .pro-deep-ocean-mode {
+      --primary: #00B4D8;
+      --primary-600: #0077B6;
+      --bg: linear-gradient(135deg, #001219, #005f73);
+      --bg-card: #0a9396;
+      --card: #0a9396;
+      --muted: #94d2bd;
+      --glass: rgba(10, 147, 150, 0.6);
+      --toast-bg: #0a9396;
+      --toast-text: #e9d8a6;
+      --gradient-primary: linear-gradient(135deg, #00B4D8, #0077B6);
+      --ai-primary: #00B4D8;
+      --ai-gradient: linear-gradient(135deg, #00B4D8, #0077B6);
+      color: #e9d8a6;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* TEMA PRO FOREST */
+    .pro-forest-mode {
+      --primary: #2A9D8F;
+      --primary-600: #264653;
+      --bg: linear-gradient(135deg, #1a2f1a, #2d4a2d);
+      --bg-card: #2d4a2d;
+      --card: #2d4a2d;
+      --muted: #a3b18a;
+      --glass: rgba(45, 74, 45, 0.6);
+      --toast-bg: #2d4a2d;
+      --toast-text: #dad7cd;
+      --gradient-primary: linear-gradient(135deg, #2A9D8F, #264653);
+      --ai-primary: #2A9D8F;
+      --ai-gradient: linear-gradient(135deg, #2A9D8F, #264653);
+      color: #dad7cd;
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* STYLING KHUSUS AI MODE */
+    .ai-mode .logo {
+      background: var(--ai-gradient);
+    }
+    
+    .ai-mode .fab {
+      background: var(--ai-gradient);
+    }
+    
+    .ai-mode .btn {
+      background: var(--ai-gradient);
+    }
+    
+    .ai-mode .tab-btn.active {
+      background: var(--ai-primary);
+    }
+    
+    .ai-mode .filter-btn.active {
+      background: var(--ai-primary);
+    }
+    
+    .ai-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .ai-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--ai-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+    
+    .ai-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .ai-feature-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .ai-feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    
+    .ai-feature-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: var(--ai-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+    
+    .ai-feature-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    
+    .ai-feature-desc {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    
+    /* AI Chat Interface */
+    .ai-chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    .ai-chat-header {
+      padding: 15px 20px;
+      background: var(--ai-gradient);
+      color: white;
+      font-weight: 600;
+    }
+    
+    .ai-chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .ai-message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .ai-message.user {
+      align-self: flex-end;
+      background: var(--ai-primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .ai-message.bot {
+      align-self: flex-start;
+      background: var(--bg);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+    
+    .ai-chat-input-container {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: var(--card);
+    }
+    
+    .ai-chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg);
+      color: inherit;
+      font-family: inherit;
+      outline: none;
+    }
+    
+    .ai-chat-send {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--ai-gradient);
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .ai-chat-send:hover {
+      transform: scale(1.05);
+    }
+    
+    /* AI Image Upload */
+    .ai-upload-area {
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    .ai-upload-area:hover {
+      border-color: var(--ai-primary);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    
+    .ai-upload-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--muted);
+    }
+    
+    .ai-upload-text {
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    
+    .ai-upload-btn {
+      background: var(--ai-gradient);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .ai-preview-container {
+      display: none;
+      margin-bottom: 20px;
+    }
+    
+    .ai-preview-image {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .ai-processing {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .ai-processing-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid var(--ai-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    .ai-results {
+      display: none;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .ai-schedule-item {
+      background: var(--card);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .ai-schedule-time {
+      font-weight: 600;
+      color: var(--ai-primary);
+    }
+    
+    .ai-schedule-subject {
+      flex: 1;
+      margin: 0 15px;
+    }
+    
+    .ai-schedule-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .ai-api-key-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .ai-api-key-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg);
+      color: inherit;
+      font-family: inherit;
+      margin-bottom: 15px;
+    }
+    
+    /* Animasi tambahan */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Efek Glow untuk Prioritas Tinggi */
+    .priority-high-indicator {
+      box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.7);
+      animation: pulse-high 2s infinite;
+    }
+    
+    @keyframes pulse-high {
+      0% {
+        box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.7);
+      }
+      50% {
+        box-shadow: 0 0 12px 4px rgba(239, 68, 68, 0.9);
+      }
+      100% {
+        box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.7);
+      }
+    }
+    
+    /* Efek untuk tema premium */
+    .pro-gold-mode .card,
+    .pro-gold-mode .task-card,
+    .pro-gold-mode .schedule-item,
+    .pro-gold-mode .note-card,
+    .pro-gold-mode .stat-card,
+    .pro-gold-mode .form-section,
+    .pro-gold-mode .about-section,
+    .pro-gold-mode .stats-section,
+    .pro-gold-mode header,
+    .pro-gold-mode .calendar-day,
+    .pro-gold-mode .productivity-card {
+      box-shadow: 
+        0 0 10px rgba(255,215,0,0.15),
+        inset 0 0 5px rgba(255,215,0,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .pro-gold-mode .card:hover,
+    .pro-gold-mode .task-card:hover,
+    .pro-gold-mode .schedule-item:hover,
+    .pro-gold-mode .note-card:hover,
+    .pro-gold-mode .stat-card:hover,
+    .pro-gold-mode .form-section:hover,
+    .pro-gold-mode .about-section:hover,
+    .pro-gold-mode .stats-section:hover,
+    .pro-gold-mode header:hover,
+    .pro-gold-mode .calendar-day:hover,
+    .pro-gold-mode .productivity-card:hover {
+      box-shadow: 
+        0 0 20px rgba(255,215,0,0.3),
+        inset 0 0 10px rgba(255,215,0,0.1);
+    }
+    
+    .pro-gold-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(255,215,0,0.4),
+        0 0 15px rgba(255,215,0,0.2);
+    }
+    
+    .pro-gold-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(255,215,0,0.6),
+        0 0 20px rgba(255,215,0,0.3);
+    }
+    
+    .pro-gold-mode .btn,
+    .pro-gold-mode .filter-btn.active,
+    .pro-gold-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(255,215,0,0.3);
+    }
+    
+    .pro-gold-mode .btn:hover,
+    .pro-gold-mode .filter-btn.active:hover,
+    .pro-gold-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(255,215,0,0.4);
+    }
+    
+    .pro-gold-mode .brand h1 {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Efek untuk tema Deep Ocean */
+    .pro-deep-ocean-mode .card,
+    .pro-deep-ocean-mode .task-card,
+    .pro-deep-ocean-mode .schedule-item,
+    .pro-deep-ocean-mode .note-card,
+    .pro-deep-ocean-mode .stat-card,
+    .pro-deep-ocean-mode .form-section,
+    .pro-deep-ocean-mode .about-section,
+    .pro-deep-ocean-mode .stats-section,
+    .pro-deep-ocean-mode header,
+    .pro-deep-ocean-mode .calendar-day,
+    .pro-deep-ocean-mode .productivity-card {
+      box-shadow: 
+        0 0 10px rgba(0,180,216,0.15),
+        inset 0 0 5px rgba(0,180,216,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .pro-deep-ocean-mode .card:hover,
+    .pro-deep-ocean-mode .task-card:hover,
+    .pro-deep-ocean-mode .schedule-item:hover,
+    .pro-deep-ocean-mode .note-card:hover,
+    .pro-deep-ocean-mode .stat-card:hover,
+    .pro-deep-ocean-mode .form-section:hover,
+    .pro-deep-ocean-mode .about-section:hover,
+    .pro-deep-ocean-mode .stats-section:hover,
+    .pro-deep-ocean-mode header:hover,
+    .pro-deep-ocean-mode .calendar-day:hover,
+    .pro-deep-ocean-mode .productivity-card:hover {
+      box-shadow: 
+        0 0 20px rgba(0,180,216,0.3),
+        inset 0 0 10px rgba(0,180,216,0.1);
+    }
+    
+    .pro-deep-ocean-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(0,180,216,0.4),
+        0 0 15px rgba(0,180,216,0.2);
+    }
+    
+    .pro-deep-ocean-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(0,180,216,0.6),
+        0 0 20px rgba(0,180,216,0.3);
+    }
+    
+    .pro-deep-ocean-mode .btn,
+    .pro-deep-ocean-mode .filter-btn.active,
+    .pro-deep-ocean-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(0,180,216,0.3);
+    }
+    
+    .pro-deep-ocean-mode .btn:hover,
+    .pro-deep-ocean-mode .filter-btn.active:hover,
+    .pro-deep-ocean-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(0,180,216,0.4);
+    }
+    
+    .pro-deep-ocean-mode .brand h1 {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Efek untuk tema Forest */
+    .pro-forest-mode .card,
+    .pro-forest-mode .task-card,
+    .pro-forest-mode .schedule-item,
+    .pro-forest-mode .note-card,
+    .pro-forest-mode .stat-card,
+    .pro-forest-mode .form-section,
+    .pro-forest-mode .about-section,
+    .pro-forest-mode .stats-section,
+    .pro-forest-mode header,
+    .pro-forest-mode .calendar-day,
+    .pro-forest-mode .productivity-card {
+      box-shadow: 
+        0 0 10px rgba(42,157,143,0.15),
+        inset 0 0 5px rgba(42,157,143,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .pro-forest-mode .card:hover,
+    .pro-forest-mode .task-card:hover,
+    .pro-forest-mode .schedule-item:hover,
+    .pro-forest-mode .note-card:hover,
+    .pro-forest-mode .stat-card:hover,
+    .pro-forest-mode .form-section:hover,
+    .pro-forest-mode .about-section:hover,
+    .pro-forest-mode .stats-section:hover,
+    .pro-forest-mode header:hover,
+    .pro-forest-mode .calendar-day:hover,
+    .pro-forest-mode .productivity-card:hover {
+      box-shadow: 
+        0 0 20px rgba(42,157,143,0.3),
+        inset 0 0 10px rgba(42,157,143,0.1);
+    }
+    
+    .pro-forest-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(42,157,143,0.4),
+        0 0 15px rgba(42,157,143,0.2);
+    }
+    
+    .pro-forest-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(42,157,143,0.6),
+        0 0 20px rgba(42,157,143,0.3);
+    }
+    
+    .pro-forest-mode .btn,
+    .pro-forest-mode .filter-btn.active,
+    .pro-forest-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(42,157,143,0.3);
+    }
+    
+    .pro-forest-mode .btn:hover,
+    .pro-forest-mode .filter-btn.active:hover,
+    .pro-forest-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(42,157,143,0.4);
+    }
+    
+    .pro-forest-mode .brand h1 {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Efek Glow untuk Tema Gelap Profesional */
+    .dark-pro-mode .card,
+    .dark-pro-mode .task-card,
+    .dark-pro-mode .schedule-item,
+    .dark-pro-mode .note-card,
+    .dark-pro-mode .stat-card,
+    .dark-pro-mode .form-section,
+    .dark-pro-mode .about-section,
+    .dark-pro-mode .stats-section,
+    .dark-pro-mode header,
+    .dark-pro-mode .calendar-day,
+    .dark-pro-mode .productivity-card {
+      box-shadow: 
+        0 0 10px rgba(0,200,255,0.15),
+        inset 0 0 5px rgba(0,200,255,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .dark-pro-mode .card:hover,
+    .dark-pro-mode .task-card:hover,
+    .dark-pro-mode .schedule-item:hover,
+    .dark-pro-mode .note-card:hover,
+    .dark-pro-mode .stat-card:hover,
+    .dark-pro-mode .form-section:hover,
+    .dark-pro-mode .about-section:hover,
+    .dark-pro-mode .stats-section:hover,
+    .dark-pro-mode header:hover,
+    .dark-pro-mode .calendar-day:hover,
+    .dark-pro-mode .productivity-card:hover {
+      box-shadow: 
+        0 0 20px rgba(0,200,255,0.3),
+        inset 0 0 10px rgba(0,200,255,0.1);
+    }
+    
+    .dark-pro-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(0,200,255,0.4),
+        0 0 15px rgba(0,200,255,0.2);
+    }
+    
+    .dark-pro-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(0,200,255,0.6),
+        0 0 20px rgba(0,200,255,0.3);
+    }
+    
+    .dark-pro-mode .btn,
+    .dark-pro-mode .filter-btn.active,
+    .dark-pro-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(0,200,255,0.3);
+    }
+    
+    .dark-pro-mode .btn:hover,
+    .dark-pro-mode .filter-btn.active:hover,
+    .dark-pro-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(0,200,255,0.4);
+    }
+    
+    /* Efek Glow untuk Tema Gelap Profesional Shift */
+    .dark-pro-shift-mode .card,
+    .dark-pro-shift-mode .task-card,
+    .dark-pro-shift-mode .schedule-item,
+    .dark-pro-shift-mode .note-card,
+    .dark-pro-shift-mode .stat-card,
+    .dark-pro-shift-mode .form-section,
+    .dark-pro-shift-mode .about-section,
+    .dark-pro-shift-mode .stats-section,
+    .dark-pro-shift-mode header,
+    .dark-pro-shift-mode .calendar-day,
+    .dark-pro-shift-mode .productivity-card {
+      box-shadow: 
+        0 0 10px rgba(139,92,246,0.15),
+        inset 0 0 5px rgba(139,92,246,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .dark-pro-shift-mode .card:hover,
+    .dark-pro-shift-mode .task-card:hover,
+    .dark-pro-shift-mode .schedule-item:hover,
+    .dark-pro-shift-mode .note-card:hover,
+    .dark-pro-shift-mode .stat-card:hover,
+    .dark-pro-shift-mode .form-section:hover,
+    .dark-pro-shift-mode .about-section:hover,
+    .dark-pro-shift-mode .stats-section:hover,
+    .dark-pro-shift-mode header:hover,
+    .dark-pro-shift-mode .calendar-day:hover,
+    .dark-pro-shift-mode .productivity-card:hover {
+      box-shadow: 
+        0 0 20px rgba(139,92,246,0.3),
+        inset 0 0 10px rgba(139,92,246,0.1);
+    }
+    
+    .dark-pro-shift-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(139,92,246,0.4),
+        0 0 15px rgba(139,92,246,0.2);
+    }
+    
+    .dark-pro-shift-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(139,92,246,0.6),
+        0 0 20px rgba(139,92,246,0.3);
+    }
+    
+    .dark-pro-shift-mode .btn,
+    .dark-pro-shift-mode .filter-btn.active,
+    .dark-pro-shift-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    
+    .dark-pro-shift-mode .btn:hover,
+    .dark-pro-shift-mode .filter-btn.active:hover,
+    .dark-pro-shift-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(139,92,246,0.4);
+    }
+    
+    /* Efek untuk Tema Midnight Tech */
+    .midnight-tech-mode .fab,
+    .midnight-tech-mode .btn,
+    .midnight-tech-mode .filter-btn.active,
+    .midnight-tech-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(56,189,248,0.3);
+    }
+    
+    .midnight-tech-mode .fab:hover,
+    .midnight-tech-mode .btn:hover,
+    .midnight-tech-mode .filter-btn.active:hover,
+    .midnight-tech-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(56,189,248,0.4);
+    }
+    
+    /* Efek untuk Tema Carbon Blue */
+    .carbon-blue-mode .fab,
+    .carbon-blue-mode .btn,
+    .carbon-blue-mode .filter-btn.active,
+    .carbon-blue-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+    }
+    
+    .carbon-blue-mode .fab:hover,
+    .carbon-blue-mode .btn:hover,
+    .carbon-blue-mode .filter-btn.active:hover,
+    .carbon-blue-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(59,130,246,0.4);
+    }
+    
+    /* Efek untuk Tema Cyber Gray */
+    .cyber-gray-mode .fab,
+    .cyber-gray-mode .btn,
+    .cyber-gray-mode .filter-btn.active,
+    .cyber-gray-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(34,211,238,0.3);
+    }
+    
+    .cyber-gray-mode .fab:hover,
+    .cyber-gray-mode .btn:hover,
+    .cyber-gray-mode .filter-btn.active:hover,
+    .cyber-gray-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(34,211,238,0.4);
+    }
+    
+    /* Efek untuk Tema Blue Mist */
+    .blue-mist-mode .fab,
+    .blue-mist-mode .btn,
+    .blue-mist-mode .filter-btn.active,
+    .blue-mist-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(100,255,218,0.3);
+    }
+    
+    .blue-mist-mode .fab:hover,
+    .blue-mist-mode .btn:hover,
+    .blue-mist-mode .filter-btn.active:hover,
+    .blue-mist-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(100,255,218,0.4);
+    }
+    
+    /* Efek untuk Tema Pink Elegant */
+    .pink-elegant-mode .card,
+    .pink-elegant-mode .task-card,
+    .pink-elegant-mode .schedule-item,
+    .pink-elegant-mode .note-card,
+    .pink-elegant-mode .stat-card,
+    .pink-elegant-mode .form-section,
+    .pink-elegant-mode .about-section,
+    .pink-elegant-mode .stats-section,
+    .pink-elegant-mode header,
+    .pink-elegant-mode .calendar-day,
+    .pink-elegant-mode .productivity-card {
+      box-shadow: 
+        0 0 10px rgba(236,72,153,0.15),
+        inset 0 0 5px rgba(236,72,153,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .pink-elegant-mode .card:hover,
+    .pink-elegant-mode .task-card:hover,
+    .pink-elegant-mode .schedule-item:hover,
+    .pink-elegant-mode .note-card:hover,
+    .pink-elegant-mode .stat-card:hover,
+    .pink-elegant-mode .form-section:hover,
+    .pink-elegant-mode .about-section:hover,
+    .pink-elegant-mode .stats-section:hover,
+    .pink-elegant-mode header:hover,
+    .pink-elegant-mode .calendar-day:hover,
+    .pink-elegant-mode .productivity-card:hover {
+      box-shadow: 
+        0 0 20px rgba(236,72,153,0.3),
+        inset 0 0 10px rgba(236,72,153,0.1);
+    }
+    
+    .pink-elegant-mode .fab {
+      box-shadow: 
+        0 18px 40px rgba(236,72,153,0.4),
+        0 0 15px rgba(236,72,153,0.2);
+    }
+    
+    .pink-elegant-mode .fab:hover {
+      box-shadow: 
+        0 20px 45px rgba(236,72,153,0.6),
+        0 0 20px rgba(236,72,153,0.3);
+    }
+    
+    .pink-elegant-mode .btn,
+    .pink-elegant-mode .filter-btn.active,
+    .pink-elegant-mode .filter-btn:hover {
+      box-shadow: 0 4px 12px rgba(236,72,153,0.3);
+    }
+    
+    .pink-elegant-mode .btn:hover,
+    .pink-elegant-mode .filter-btn.active:hover,
+    .pink-elegant-mode .filter-btn:hover {
+      box-shadow: 0 6px 15px rgba(236,72,153,0.4);
+    }
+    
+    /* Logo baru dengan efek neon */
+    .logo-neon {
+      background: var(--gradient-primary);
+      box-shadow: 0 0 10px rgba(0,200,255,0.5);
+      animation: neon-pulse 3s infinite;
+    }
+    
+    @keyframes neon-pulse {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(0,200,255,0.5);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(0,200,255,0.8), 0 0 30px rgba(0,200,255,0.6);
+      }
+    }
+    
+    /* Transisi halus untuk semua elemen */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.4s, color 0.4s, box-shadow 0.4s, border-color 0.4s;
+    }
+    
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+    
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      color: #e6eef8;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .light-mode input,
+    .light-mode textarea,
+    .light-mode select {
+      color: #0f1724;
+      border-color: rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.02);
+    }
+    
+    /* Container */
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 12px;
+      width: 100%;
+      flex: 1;
+      padding-bottom: 80px;
+    }
+    
+    /* Header Styles dengan Optimasi Blur */
+    header {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      margin-bottom: 18px;
+      background: linear-gradient(180deg, rgba(30,41,59,0.85), rgba(30,41,59,0.70));
+      backdrop-filter: blur(12px) saturate(180%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+      animation: slideDown 0.5s ease-out;
+      transition: backdrop-filter 0.3s ease;
+    }
+    
+    .header-scrolling {
+      backdrop-filter: none;
+    }
+    
+    .light-mode header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.70));
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+    
+    .logo .app-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+    
+    .brand h1 {
+      font-size: 20px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .light-mode .icon-btn {
+      border-color: rgba(0,0,0,0.08);
+      background: var(--card);
+    }
+    
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+    
+    /* Menu Drawer */
+    .menu-drawer {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 85%;
+      max-width: 320px;
+      height: 100%;
+      background: var(--bg-card);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+      backdrop-filter: blur(10px);
+    }
+    
+    .menu-drawer.open {
+      right: 0;
+      animation: slideInRight 0.3s ease-out;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        right: -100%;
+        opacity: 0;
+      }
+      to {
+        right: 0;
+        opacity: 1;
+      }
+    }
+    
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .light-mode .menu-header {
+      border-bottom-color: rgba(0,0,0,0.1);
+    }
+    
+    .menu-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 8px;
+      font-weight: 500;
+      animation: fadeIn 0.5s ease-out;
+      animation-fill-mode: both;
+    }
+    
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.15s; }
+    .menu-item:nth-child(3) { animation-delay: 0.2s; }
+    .menu-item:nth-child(4) { animation-delay: 0.25s; }
+    .menu-item:nth-child(5) { animation-delay: 0.3s; }
+    .menu-item:nth-child(6) { animation-delay: 0.35s; }
+    .menu-item:nth-child(7) { animation-delay: 0.4s; }
+    .menu-item:nth-child(8) { animation-delay: 0.45s; }
+    .menu-item:nth-child(9) { animation-delay: 0.5s; }
+    
+    .menu-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .light-mode .menu-item:hover {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    /* Menu Item untuk Web Utama (Lebih Mencolok) */
+    .menu-item-highlight {
+      background: var(--gradient-primary);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
+    }
+    
+    .menu-item-highlight:hover {
+      background: linear-gradient(135deg, var(--primary-600), var(--primary));
+      box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.6);
+    }
+    
+    .menu-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 16px 0;
+    }
+    
+    .light-mode .menu-divider {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    /* Profile Section in Menu */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 20px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .light-mode .profile-section {
+      background: rgba(0,0,0,0.05);
+      border-bottom-color: rgba(0,0,0,0.1);
+    }
+    
+    .profile-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .profile-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    /* Tab Navigation */
+    .tab-navigation {
+      display: flex;
+      background: rgba(255,255,255,0.05);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .light-mode .tab-navigation {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      color: var(--muted);
+    }
+    
+    .tab-btn.active {
+      background: var(--card);
+      box-shadow: var(--shadow);
+      color: white;
+    }
+    
+    .light-mode .tab-btn.active {
+      color: #0f1724;
+    }
+    
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    /* Form & Field Styles */
+    .form-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(10px);
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .field {
+      margin-bottom: 16px;
+      position: relative;
+    }
+    
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--glass);
+      font-family: inherit;
+      font-size: 15px;
+      outline: 0;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: inherit;
+    }
+    
+    .light-mode .field input,
+    .light-mode .field textarea,
+    .light-mode .field select {
+      border-color: rgba(0,0,0,0.1);
+    }
+    
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+    }
+    
+    /* Filter Section */
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .filter-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--muted);
+    }
+    
+    .light-mode .filter-btn {
+      border-color: rgba(0,0,0,0.1);
+    }
+    
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    
+    /* Task Card */
+    .task-card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      position: relative;
+      border-left: 4px solid transparent;
+      transition: all 0.2s ease;
+      overflow: hidden;
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(5px);
+      cursor: move;
+    }
+    
+    .task-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    }
+    
+    .task-card.dragging {
+      opacity: 0.5;
+      transform: rotate(5deg);
+    }
+    
+    .task-title {
+      font-weight: 700;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    
+    /* Priority indicator (new) */
+    .priority-indicator {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      margin-right: 8px;
+      line-height: 14px;
+      text-align: center;
+      font-size: 12px;
+    }
+    
+    .priority-high-indicator { 
+      background: var(--priority-high); 
+    }
+    .priority-medium-indicator { background: var(--priority-medium); }
+    .priority-low-indicator { background: var(--priority-low); }
+    
+    .task-title .title-text {
+      display: inline-block;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+      flex: 1;
+    }
+    
+    .task-detail {
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    
+    .task-detail .long-text {
+      max-height: 120px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .light-mode .task-actions {
+      border-top-color: rgba(0,0,0,0.05);
+    }
+    
+    .status-pill {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 12px;
+      z-index: 30;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    
+    /* Priority and deadline classes */
+    .priority-high { border-left-color: var(--priority-high); }
+    .priority-medium { border-left-color: var(--priority-medium); }
+    .priority-low { border-left-color: var(--priority-low); }
+    .dl-ok { border-left-color: var(--success); }
+    .dl-soon { border-left-color: var(--warning); }
+    .dl-urgent { border-left-color: var(--danger); }
+    .dl-overdue { border-left-color: #6b7280; opacity: 0.85; }
+    
+    /* Priority badge kept for compatibility but not used visually by default */
+    .priority-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: auto;
+    }
+    
+    .priority-high-badge { background-color: var(--priority-high); color: white; }
+    .priority-medium-badge { background-color: var(--priority-medium); color: white; }
+    .priority-low-badge { background-color: var(--priority-low); color: white; }
+    
+    /* FAB */
+    .fab {
+      position: fixed;
+      right: 20px;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+      box-shadow: 0 18px 40px rgba(var(--primary-rgb), 0.3);
+      cursor: pointer;
+      border: 0;
+      z-index: 60;
+      transition: all 0.2s ease;
+      animation: pulse 2s infinite;
+    }
+    
+    .fab:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 45px rgba(var(--primary-rgb), 0.4);
+    }
+    
+    .fab:active {
+      transform: scale(0.95);
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 100px;
+      background: var(--toast-bg);
+      color: var(--toast-text);
+      padding: 12px 18px;
+      border-radius: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+      z-index: 80;
+      font-size: 14px;
+      text-align: center;
+      max-width: 80%;
+      box-shadow: var(--shadow);
+    }
+    
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    /* Watermark */
+    .watermark {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 70;
+      background: transparent;
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+    
+    .light-mode .watermark {
+      opacity: 0.18;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .empty-state h3 {
+      margin-bottom: 8px;
+    }
+    
+    /* Button Styles */
+    .btn {
+      background: var(--gradient-primary);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 0;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.4);
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+    }
+    
+    /* Schedule styles */
+    .schedule-day {
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .schedule-header {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .light-mode .schedule-header {
+      border-bottom-color: rgba(0,0,0,0.06);
+    }
+    
+    .schedule-item {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    
+    .schedule-item:hover {
+      transform: translateY(-2px);
+    }
+    
+    .schedule-time {
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 80px;
+    }
+    
+    .schedule-subject {
+      font-weight: 600;
+      flex: 1;
+      margin: 0 12px;
+    }
+    
+    /* About page styles */
+    .about-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    
+    .about-logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .about-logo .logo {
+      width: 80px;
+      height: 80px;
+      font-size: 36px;
+      margin: 0 auto 16px;
+      padding: 6px;
+    }
+    
+    .about-logo .logo .app-icon {
+      border-radius: 12px;
+    }
+    
+    .feature-list {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
+    
+    .feature-list li {
+      margin-bottom: 8px;
+    }
+    
+    .version-info {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .light-mode .version-info {
+      border-top-color: rgba(0,0,0,0.06);
+    }
+    
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 90%;
+      width: 400px;
+      max-height: 80%;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      animation: modalSlideIn 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: transform 0.2s;
+    }
+    
+    .modal-close:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Badge for task count - PERBAIKAN POSISI */
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: var(--danger);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(239,68,68,0.3);
+      z-index: 10;
+    }
+    
+    /* Theme Selection Modal */
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+    
+    .theme-option:hover {
+      background: rgba(255,255,255,0.05);
+      transform: translateX(5px);
+    }
+    
+    .light-mode .theme-option:hover {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .theme-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    
+    /* Notes styles */
+    .note-card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .note-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    }
+    
+    .note-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    
+    .note-content {
+      font-size: 14px;
+      margin-bottom: 12px;
+      word-break: break-word;
+      white-space: pre-wrap;
+      color: var(--muted);
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    
+    .note-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    
+    .note-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
+    /* Stats Modal Styles - DIPERBAIKI */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+      backdrop-filter: blur(5px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    /* Chart container - DIPERBAIKI */
+    .chart-wrap {
+      margin-top: 20px;
+      background: transparent;
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--bg-card);
+    }
+    
+    .chart-container {
+      width: 100%;
+      height: 220px;
+      position: relative;
+    }
+    
+    /* Stats Section on Home - DIPERBAIKI */
+    .stats-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(5px);
+    }
+    
+    .stats-section h3 {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Profile Modal Styles - DIPERBAIKI */
+    .profile-modal .avatar-options {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    
+    .avatar-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    
+    .avatar-option:hover {
+      transform: scale(1.1);
+    }
+    
+    .avatar-option.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+    }
+    
+    .profile-modal .upload-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 16px 0;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .light-mode .profile-modal .upload-btn {
+      background: rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.2);
+    }
+    
+    .profile-modal .upload-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .light-mode .profile-modal .upload-btn:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    .profile-modal .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .profile-modal .actions .btn {
+      flex: 1;
+    }
+    
+    /* Crop Modal Styles - Redesigned untuk crop 1:1 */
+    .crop-modal .crop-container {
+      width: 100%;
+      height: 300px;
+      margin: 16px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .crop-modal .crop-area {
+      position: absolute;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      cursor: move;
+      z-index: 10;
+    }
+    
+    .crop-modal .crop-handle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--primary);
+      border-radius: 50%;
+      z-index: 11;
+    }
+    
+    .crop-modal .crop-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+    .crop-modal .crop-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+    .crop-modal .crop-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+    .crop-modal .crop-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+    
+    .crop-modal .crop-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 16px auto;
+      overflow: hidden;
+      border: 2px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .crop-modal .crop-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .crop-modal .crop-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    
+    .crop-modal .crop-controls .btn {
+      flex: 1;
+    }
+    
+    .crop-modal .crop-size-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    .crop-modal .size-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.1);
+      outline: none;
+    }
+    
+    .crop-modal .size-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+    }
+    
+    .crop-modal .size-value {
+      min-width: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* Profile Card Styles - DIPERBAIKI */
+    .profile-card {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .avatar-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    
+    .avatar-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
+    }
+    
+    .avatar-change-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    
+    .avatar-change-btn:hover {
+      transform: scale(1.1);
+      background: var(--primary-600);
+    }
+    
+    .profile-display-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .profile-display-bio {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    /* Mode Lite untuk perangkat rendah */
+    .lite-mode * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .lite-mode .logo-neon {
+      animation: none !important;
+    }
+
+    .lite-mode header {
+      backdrop-filter: none !important;
+      background: linear-gradient(180deg, rgba(30,41,59,0.95), rgba(30,41,59,0.90)) !important;
+    }
+
+    .lite-mode .modal {
+      backdrop-filter: none !important;
+    }
+
+    .lite-mode .menu-drawer {
+      backdrop-filter: none !important;
+    }
+
+    .lite-mode .form-section,
+    .lite-mode .stats-section,
+    .lite-mode .about-section {
+      backdrop-filter: none !important;
+    }
+
+    .lite-mode .task-card,
+    .lite-mode .schedule-item,
+    .lite-mode .note-card,
+    .lite-mode .stat-card {
+      backdrop-filter: none !important;
+    }
+
+    /* Untuk tema terang */
+    .lite-mode.light-mode header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.90)) !important;
+    }
+
+    /* Calendar Styles */
+    .calendar-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      padding: 4px;
+    }
+    
+    .calendar-day:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .calendar-day.today {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 10px var(--primary);
+    }
+    
+    .calendar-day.has-task::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+    
+    .calendar-day.has-overdue::after {
+      background: var(--danger);
+    }
+    
+    .calendar-day-header {
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+    
+    /* Productivity Card Styles */
+    .productivity-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .pomodoro-timer {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .timer-display {
+      font-size: 48px;
+      font-weight: 700;
+      margin: 20px 0;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    
+    .timer-mode {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 4px;
+      margin: 16px 0;
+    }
+    
+    .timer-mode-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .timer-mode-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Timer Settings Styles */
+    .timer-settings {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .timer-settings h4 {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .timer-settings .field {
+      margin-bottom: 12px;
+    }
+    
+    .timer-settings .field label {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .timer-settings .field input {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    
+    /* Search Section */
+    .search-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--glass);
+      font-family: inherit;
+      font-size: 15px;
+      outline: 0;
+      color: inherit;
+    }
+    
+    /* Progress Bar */
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-card);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    /* Animations */
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translate(-50%, 20px);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
+      }
+    }
+
+    /* Settings Modal Styles */
+    .setting-group {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .setting-group h4 {
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    
+    .setting-group .field {
+      margin-bottom: 12px;
+    }
+    
+    .setting-group .field label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    
+    .setting-group .field input[type="checkbox"] {
+      width: auto;
+    }
+    
+    /* Tips Modal Styles */
+    .tips-content {
+      line-height: 1.6;
+    }
+    
+    .tip-item {
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .tip-item h4 {
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    
+    /* Note Color Styles */
+    .note-red { border-left: 4px solid #ef4444; }
+    .note-blue { border-left: 4px solid #3b82f6; }
+    .note-green { border-left: 4px solid #10b981; }
+    .note-yellow { border-left: 4px solid #f59e0b; }
+    .note-purple { border-left: 4px solid #8b5cf6; }
+    
+    /* Notification Modal Styles */
+    .notification-item {
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .notification-item.unread {
+      background: rgba(var(--primary-rgb), 0.1);
+      border-left: 3px solid var(--primary);
+    }
+    
+    .notification-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    
+    .notification-content {
+      flex: 1;
+    }
+    
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .notification-time {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    /* PRO Dashboard Styles */
+    .pro-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .pro-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.5s ease-out;
+      backdrop-filter: blur(5px);
+    }
+    
+    .pro-card h3 {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .pro-badge {
+      background: var(--gradient-primary);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+    
+    /* Habit Tracker Styles */
+    .habit-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .habit-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .habit-day.completed {
+      background: var(--success);
+      color: white;
+    }
+    
+    .habit-day.skipped {
+      background: var(--muted);
+      opacity: 0.5;
+    }
+    
+    /* Voice Notes Styles */
+    .voice-note-card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+      animation: fadeUp 0.5s ease-out;
+    }
+    
+    .voice-note-player {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+    }
+    
+    .voice-play-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .voice-play-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .voice-progress {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-card);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .voice-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      transition: width 0.1s;
+    }
+    
+    .voice-duration {
+      font-size: 12px;
+      color: var(--muted);
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-actions {
+        position: relative;
+      }
+      
+      .brand h1 {
+        font-size: 18px;
+      }
+      
+      .logo {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .btn, .filter-btn {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      
+      .task-title {
+        font-size: 16px;
+      }
+      
+      .task-detail {
+        font-size: 13px;
+      }
+      
+      .fab {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+        bottom: 80px;
+      }
+      
+      .priority-badge {
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+      
+      .task-actions {
+        flex-wrap: wrap;
+      }
+      
+      .menu-drawer {
+        width: 85%;
+      }
+      
+      .timer-display {
+        font-size: 36px;
+      }
+      
+      .ai-feature-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .ai-chat-container {
+        height: 400px;
+      }
+      
+      .ai-message {
+        max-width: 90%;
+      }
+
+      /* Mobile optimization - reduce blur effects */
+      header {
+        backdrop-filter: none !important;
+        background: linear-gradient(180deg, rgba(30,41,59,0.95), rgba(30,41,59,0.90)) !important;
+      }
+
+      .light-mode header {
+        background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.90)) !important;
+      }
+
+      .modal {
+        backdrop-filter: none !important;
+      }
+
+      .menu-drawer {
+        backdrop-filter: none !important;
+      }
+
+      .form-section,
+      .stats-section,
+      .about-section {
+        backdrop-filter: none !important;
+      }
+
+      .task-card,
+      .schedule-item,
+      .note-card,
+      .stat-card {
+        backdrop-filter: none !important;
+      }
+
+      /* Tab navigation scrollable on mobile */
+      .tab-navigation {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+      }
+      
+      .tab-navigation::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+      }
+      
+      .tab-btn {
+        flex: none;
+        min-width: 100px;
+      }
+      
+      .pro-dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .brand {
+        gap: 8px;
+      }
+      
+      .header-actions {
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 8px;
+      }
+      
+      .controls {
+        justify-content: space-between;
+        width: 100%;
+      }
+      
+      .filter-section {
+        gap: 6px;
+      }
+      
+      .filter-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+      
+      .schedule-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .schedule-time {
+        min-width: auto;
+      }
+      
+      .task-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      
+      .priority-badge {
+        margin-left: 0;
+      }
+      
+      .task-detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      
+      .note-title, .note-content {
+        word-break: break-word;
+      }
+      
+      .chart-container {
+        height: 180px !important;
+      }
+      
+      .menu-drawer {
+        width: 90%;
+      }
+
+      .avatar-img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .profile-display-name {
+        font-size: 20px;
+      }
+
+      .profile-display-bio {
+        font-size: 14px;
+      }
+      
+      .calendar-grid {
+        gap: 4px;
+      }
+      
+      .timer-display {
+        font-size: 32px;
+      }
+      
+      .voice-note-player {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .voice-progress {
+        width: 100%;
+      }
+      
+      .ai-chat-container {
+        height: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div id="splash" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;">
+    <img src="splash.png" alt="Splash" style="width:100%;height:100%;object-fit:cover;">
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainContent" style="display:none;">
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <div class="logo logo-neon">
+            <img src="my-icon.png" alt="App Icon" class="app-icon">
+          </div>
+          <h1>TugasKu3 <span class="pro-badge">BETA</span></h1>
+        </div>
+        <div class="header-actions">
+          <!-- Notifikasi - DIPERBAIKI -->
+          <button class="icon-btn" id="notifBtn" title="Notifikasi" aria-label="Notifikasi" style="position:relative;">
+            🔔
+            <span class="badge" id="notifBadge" style="display:none;">0</span>
+          </button>
+          <!-- Statistik -->
+          <button class="icon-btn" id="statsBtn" title="Statistik" aria-label="Statistik">📊</button>
+          <!-- Menu Hamburger -->
+          <button class="icon-btn" id="menuBtn" title="Menu" aria-label="Menu">
+            <svg width="24" height="24" stroke="currentColor" fill="none">
+              <path d="M3 6h18M3 12h18M3 18h18"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+      
+      <!-- Menu Drawer -->
+      <div class="menu-drawer" id="menuDrawer">
+        <div class="menu-header">
+          <h3>Menu BETA</h3>
+          <button class="menu-close" id="menuClose">&times;</button>
+        </div>
+        
+        <!-- Profile Section -->
+        <div class="profile-section" id="profileSection">
+          <div class="profile-avatar" id="profileAvatar">👤</div>
+          <div class="profile-info">
+            <div class="profile-name" id="profileName">Pengguna TugasKu</div>
+            <div class="profile-desc" id="profileDesc">Pelajar Aktif</div>
+          </div>
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <!-- Menu Items - Web Utama dipindah ke sini dengan gaya mencolok -->
+        <div class="menu-item menu-item-highlight" data-action="portfolio" title="Kunjungi Portofolio Rahmat">
+          <span>&lt;/&gt;</span> Kunjungi Web Utama
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-item" data-action="profile">
+          <span>👤</span> Profil Saya
+        </div>
+        <div class="menu-item" data-action="settings">
+          <span>⚙️</span> Pengaturan
+        </div>
+        <div class="menu-item" data-action="tips">
+          <span>💡</span> Tips & Panduan
+        </div>
+        <div class="menu-item" data-action="focus">
+          <span>🎯</span> Mode Fokus
+        </div>
+        <div class="menu-item" data-action="backup">
+          <span>☁️</span> Cadangan Otomatis
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-item" data-action="export">
+          <span>📤</span> Ekspor Data
+        </div>
+        <div class="menu-item" data-action="import">
+          <span>📥</span> Impor Data
+        </div>
+        
+        <div class="menu-divider"></div>
+        
+        <div class="menu-item" data-action="theme">
+          <span>🎨</span> Pilih Tema
+        </div>
+        <div class="menu-item" data-action="about">
+          <span>ℹ️</span> Tentang Aplikasi
+        </div>
+        <div class="menu-item" data-action="reset">
+          <span>🔄</span> Reset Data
+        </div>
+      </div>
+      
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="tasks">Tugas</button>
+        <button class="tab-btn" data-tab="schedule">Jadwal</button>
+        <button class="tab-btn" data-tab="notes">Catatan</button>
+        <button class="tab-btn" data-tab="calendar">Kalender</button>
+        <button class="tab-btn" data-tab="productivity">Produktivitas</button>
+        <button class="tab-btn" data-tab="ai">AI Assistant</button>
+      </div>
+      
+      <!-- Tab Content: Dashboard BETA -->
+      <div class="tab-content active" id="dashboardTab">
+        <div class="pro-dashboard">
+          <!-- Statistik Cepat -->
+          <div class="pro-card">
+            <h3>📊 Ringkasan Produktivitas</h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value" id="dashboardTotalTasks">0</div>
+                <div class="stat-label">Total Tugas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="dashboardCompleted">0</div>
+                <div class="stat-label">Selesai</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="dashboardFocusTime">0</div>
+                <div class="stat-label">Jam Fokus</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="dashboardProductivity">0%</div>
+                <div class="stat-label">Produktivitas</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tugas Mendesak -->
+          <div class="pro-card">
+            <h3>🚨 Tugas Mendesak</h3>
+            <div id="urgentTasksList">
+              <div class="empty-state">
+                <p>Tidak ada tugas mendesak</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Aktivitas Terbaru -->
+          <div class="pro-card">
+            <h3>📈 Aktivitas Terbaru</h3>
+            <div class="chart-wrap">
+              <div class="chart-container">
+                <canvas id="dashboardActivityChart"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Pencapaian -->
+          <div class="pro-card">
+            <h3>🏆 Pencapaian</h3>
+            <div id="achievementsList">
+              <div class="empty-state">
+                <p>Belum ada pencapaian</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: Tugas -->
+      <div class="tab-content" id="tasksTab">
+        <!-- Stats Section - DIPERBAIKI -->
+        <section class="stats-section">
+          <h3>📊 Statistik Tugas</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalTasksHome">0</div>
+              <div class="stat-label">Total Tugas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="completedTasksHome">0</div>
+              <div class="stat-label">Selesai</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="pendingTasksHome">0</div>
+              <div class="stat-label">Belum Selesai</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="overdueTasksHome">0</div>
+              <div class="stat-label">Terlambat</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-container">
+              <canvas id="homeTaskChart"></canvas>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="pending">Belum Selesai</button>
+          <button class="filter-btn" data-filter="completed">Selesai</button>
+          <button class="filter-btn" data-filter="overdue">Terlambat</button>
+          <button class="filter-btn" data-filter="high">Prioritas Tinggi</button>
+          <button class="filter-btn" data-filter="today">Hari Ini</button>
+        </div>
+        
+        <!-- Search Section -->
+        <div class="search-section">
+          <input type="text" class="search-input" id="taskSearch" placeholder="Cari tugas...">
+        </div>
+        
+        <!-- Tasks List -->
+        <div id="tasksList">
+          <div class="empty-state">
+            <h3>Belum ada tugas</h3>
+            <p>Tambahkan tugas pertama Anda dengan tombol + di bawah</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: Jadwal -->
+      <div class="tab-content" id="scheduleTab">
+        <div class="form-section">
+          <h3>Tambah Jadwal</h3>
+          <div class="field">
+            <label>Hari</label>
+            <select id="scheduleDay">
+              <option value="senin">Senin</option>
+              <option value="selasa">Selasa</option>
+              <option value="rabu">Rabu</option>
+              <option value="kamis">Kamis</option>
+              <option value="jumat">Jumat</option>
+              <option value="sabtu">Sabtu</option>
+              <option value="minggu">Minggu</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Waktu</label>
+            <input type="time" id="scheduleTime">
+          </div>
+          <div class="field">
+            <label>Mata Pelajaran/Kegiatan</label>
+            <input type="text" id="scheduleSubject" placeholder="Contoh: Matematika">
+          </div>
+          <div class="field">
+            <label>Deskripsi</label>
+            <textarea id="scheduleDesc" rows="2" placeholder="Opsional"></textarea>
+          </div>
+          <div class="controls">
+            <button class="btn" id="addScheduleBtn">Tambah Jadwal</button>
+          </div>
+        </div>
+        
+        <div id="scheduleList">
+          <div class="empty-state">
+            <h3>Belum ada jadwal</h3>
+            <p>Tambahkan jadwal mingguan Anda</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: Catatan -->
+      <div class="tab-content" id="notesTab">
+        <div class="form-section">
+          <h3>Tambah Catatan</h3>
+          <div class="field">
+            <label>Judul</label>
+            <input type="text" id="noteTitle" placeholder="Judul catatan">
+          </div>
+          <div class="field">
+            <label>Isi</label>
+            <textarea id="noteContent" rows="5" placeholder="Tulis catatan Anda di sini..."></textarea>
+          </div>
+          <div class="field">
+            <label>Warna</label>
+            <select id="noteColor">
+              <option value="">Default</option>
+              <option value="red">Merah</option>
+              <option value="blue">Biru</option>
+              <option value="green">Hijau</option>
+              <option value="yellow">Kuning</option>
+              <option value="purple">Ungu</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="notePinned"> Pin catatan (tampilkan di atas)
+            </label>
+          </div>
+          <div class="controls">
+            <button class="btn" id="addNoteBtn">Tambah Catatan</button>
+          </div>
+        </div>
+        
+        <div id="notesList">
+          <div class="empty-state">
+            <h3>Belum ada catatan</h3>
+            <p>Tambahkan catatan pertama Anda</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: Kalender -->
+      <div class="tab-content" id="calendarTab">
+        <div class="calendar-section">
+          <div class="calendar-header">
+            <button class="icon-btn" id="prevMonth">◀</button>
+            <h3 id="currentMonth">Januari 2023</h3>
+            <button class="icon-btn" id="nextMonth">▶</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Calendar will be generated by JavaScript -->
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Tugas untuk <span id="selectedDate">-</span></h3>
+          <div id="selectedDateTasks">
+            <p>Pilih tanggal untuk melihat tugas</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: Produktivitas -->
+      <div class="tab-content" id="productivityTab">
+        <div class="productivity-card">
+          <h3>⏱️ Fokus Timer BETA</h3>
+          <div class="timer-mode">
+            <button class="timer-mode-btn active" data-mode="focus">Fokus</button>
+            <button class="timer-mode-btn" data-mode="short">Istirahat Pendek</button>
+            <button class="timer-mode-btn" data-mode="long">Istirahat Panjang</button>
+          </div>
+          <div class="pomodoro-timer">
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-controls">
+              <button class="btn" id="startTimer">Mulai</button>
+              <button class="btn" id="pauseTimer">Jeda</button>
+              <button class="btn" id="resetTimer">Reset</button>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="timerProgress" style="width: 0%"></div>
+          </div>
+          
+          <!-- Pengaturan Timer Langsung -->
+          <div class="timer-settings">
+            <h4>⚙️ Pengaturan Timer</h4>
+            <div class="field">
+              <label>Durasi Fokus (menit):</label>
+              <input type="number" id="focusDurationSetting" min="1" placeholder="Masukkan menit">
+            </div>
+            <div class="field">
+              <label>Durasi Istirahat Pendek (menit):</label>
+              <input type="number" id="shortBreakDurationSetting" min="1" placeholder="Masukkan menit">
+            </div>
+            <div class="field">
+              <label>Durasi Istirahat Panjang (menit):</label>
+              <input type="number" id="longBreakDurationSetting" min="1" placeholder="Masukkan menit">
+            </div>
+            <button class="btn" id="saveTimerSettings">Simpan Pengaturan Timer</button>
+          </div>
+        </div>
+        
+        <div class="stats-section">
+          <h3>📈 Statistik Produktivitas BETA</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="todayPomodoros">0</div>
+              <div class="stat-label">Fokus Hari Ini</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="weekPomodoros">0</div>
+              <div class="stat-label">Fokus Minggu Ini</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="totalPomodoros">0</div>
+              <div class="stat-label">Total Fokus</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="focusTime">0</div>
+              <div class="stat-label">Jam Fokus</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-container">
+              <canvas id="productivityChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: AI Assistant -->
+      <div class="tab-content" id="aiTab">
+        <div class="ai-section">
+          <div class="ai-header">
+            <div class="ai-logo">🤖</div>
+            <div>
+              <h2>AI Assistant BETA</h2>
+              <p>Manfaatkan kecerdasan buatan untuk meningkatkan produktivitas Anda</p>
+            </div>
+          </div>
+          
+          <div class="ai-feature-grid">
+            <div class="ai-feature-card" data-feature="schedule-analyzer">
+              <div class="ai-feature-icon">📅</div>
+              <div class="ai-feature-title">Analisis Jadwal Otomatis</div>
+              <div class="ai-feature-desc">Unggah gambar jadwal Anda dan biarkan AI menganalisis dan menambahkannya secara otomatis</div>
+            </div>
+            
+            <div class="ai-feature-card" data-feature="task-suggester">
+              <div class="ai-feature-icon">💡</div>
+              <div class="ai-feature-title">Saran Tugas Cerdas</div>
+              <div class="ai-feature-desc">Dapatkan rekomendasi tugas berdasarkan pola produktivitas dan deadline Anda</div>
+            </div>
+            
+            <div class="ai-feature-card" data-feature="productivity-analyzer">
+              <div class="ai-feature-icon">📊</div>
+              <div class="ai-feature-title">Analisis Produktivitas</div>
+              <div class="ai-feature-desc">Analisis pola kerja Anda dan dapatkan saran untuk meningkatkan efisiensi</div>
+            </div>
+            
+            <div class="ai-feature-card" data-feature="ai-chat">
+              <div class="ai-feature-icon">💬</div>
+              <div class="ai-feature-title">Chat Assistant</div>
+              <div class="ai-feature-desc">Tanya apa saja tentang manajemen tugas dan produktivitas kepada AI Assistant</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- AI Schedule Analyzer -->
+        <div class="ai-section" id="scheduleAnalyzer">
+          <h3>📅 Analisis Jadwal Otomatis</h3>
+          <p>Unggah gambar jadwal pelajaran atau kegiatan Anda, dan AI akan menganalisis serta menambahkannya ke jadwal Anda.</p>
+          
+          <div class="ai-upload-area" id="uploadArea">
+            <div class="ai-upload-icon">📁</div>
+            <div class="ai-upload-text">Seret dan lepas gambar jadwal di sini atau klik untuk memilih</div>
+            <button class="ai-upload-btn">Pilih Gambar</button>
+            <input type="file" id="scheduleImage" accept="image/*" style="display: none;">
+          </div>
+          
+          <div class="ai-preview-container" id="previewContainer">
+            <h4>Pratinjau Gambar</h4>
+            <img id="previewImage" class="ai-preview-image" src="" alt="Preview">
+            <div class="controls" style="margin-top: 15px;">
+              <button class="btn" id="analyzeImageBtn">Analisis dengan AI</button>
+              <button class="btn" id="changeImageBtn">Ganti Gambar</button>
+            </div>
+          </div>
+          
+          <div class="ai-processing" id="processingContainer">
+            <div class="ai-processing-spinner"></div>
+            <p>Menganalisis gambar dengan AI...</p>
+            <p id="processingStatus">Menggunakan Tesseract OCR untuk mengekstrak teks...</p>
+          </div>
+          
+          <div class="ai-results" id="resultsContainer">
+            <h4>Hasil Analisis</h4>
+            <p>AI telah menemukan jadwal berikut dalam gambar Anda. Tinjau dan simpan ke jadwal Anda.</p>
+            
+            <div id="extractedSchedules">
+              <!-- Hasil analisis akan ditampilkan di sini -->
+            </div>
+            
+            <div class="controls" style="margin-top: 15px;">
+              <button class="btn" id="saveAllSchedulesBtn">Simpan Semua Jadwal</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- AI Chat Interface -->
+        <div class="ai-section">
+          <h3>💬 Chat dengan AI Assistant</h3>
+          <p>Tanya apa saja tentang manajemen tugas, produktivitas, atau minta saran untuk meningkatkan efisiensi kerja Anda.</p>
+          
+          <div class="ai-api-key-section">
+            <h4>Konfigurasi API Key</h4>
+            <p>Masukkan API key OpenAI atau Google Gemini untuk menggunakan fitur chat AI.</p>
+            <input type="text" class="ai-api-key-input" id="aiApiKey" placeholder="Masukkan API Key di sini...">
+            <button class="btn" id="saveApiKeyBtn">Simpan API Key</button>
+          </div>
+          
+          <div class="ai-chat-container">
+            <div class="ai-chat-header">
+              AI Assistant - Siap membantu Anda
+            </div>
+            <div class="ai-chat-messages" id="aiChatMessages">
+              <div class="ai-message bot">
+                Halo! Saya AI Assistant TugasKu3. Saya siap membantu Anda dengan manajemen tugas, jadwal, dan produktivitas. Apa yang bisa saya bantu?
+              </div>
+            </div>
+            <div class="ai-chat-input-container">
+              <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ketik pesan Anda di sini...">
+              <button class="ai-chat-send" id="aiChatSend">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FAB -->
+    <button class="fab" id="addTaskBtn">+</button>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- Watermark -->
+    <div class="watermark">TugasKu3 BETA v6.0.0</div>
+  </div>
+  
+  <!-- Task Modal -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="taskModalTitle">Tambah Tugas Baru</h3>
+        <button class="modal-close" id="taskModalClose">&times;</button>
+      </div>
+      <form id="taskForm">
+        <div class="field">
+          <label>Judul Tugas</label>
+          <input type="text" id="taskTitle" required placeholder="Contoh: Mengerjakan PR Matematika">
+        </div>
+        <div class="field">
+          <label>Deskripsi</label>
+          <textarea id="taskDesc" rows="3" placeholder="Detail tugas (opsional)"></textarea>
+        </div>
+        <div class="field">
+          <label>Deadline</label>
+          <input type="date" id="taskDeadline">
+        </div>
+        <div class="field">
+          <label>Prioritas</label>
+          <select id="taskPriority">
+            <option value="low">Rendah</option>
+            <option value="medium" selected>Sedang</option>
+            <option value="high">Tinggi</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Kategori</label>
+          <input type="text" id="taskCategory" placeholder="Contoh: Sekolah, Pribadi">
+        </div>
+        <div class="controls">
+          <button type="button" class="btn" id="cancelTaskBtn">Batal</button>
+          <button type="submit" class="btn" id="saveTaskBtn">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Stats Modal -->
+  <div class="modal-overlay" id="statsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Statistik Lengkap BETA</h3>
+        <button class="modal-close" id="statsModalClose">&times;</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalTasks">0</div>
+          <div class="stat-label">Total Tugas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="completedTasks">0</div>
+          <div class="stat-label">Selesai</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="pendingTasks">0</div>
+          <div class="stat-label">Belum Selesai</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="overdueTasks">0</div>
+          <div class="stat-label">Terlambat</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="todayTasks">0</div>
+          <div class="stat-label">Tugas Hari Ini</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="weekTasks">0</div>
+          <div class="stat-label">Tugas Minggu Ini</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-container">
+          <canvas id="taskChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-container">
+          <canvas id="priorityChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Theme Modal -->
+  <div class="modal-overlay" id="themeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Pilih Tema BETA</h3>
+        <button class="modal-close" id="themeModalClose">&times;</button>
+      </div>
+      <div class="theme-option" data-theme="dark">
+        <div class="theme-preview" style="background: #1e293b; color: white;">🌙</div>
+        <div>
+          <div>Gelap Standar</div>
+          <small>Tema gelap dengan aksen ungu</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="light">
+        <div class="theme-preview" style="background: #ffffff; color: #333;">☀️</div>
+        <div>
+          <div>Terang</div>
+          <small>Tema terang yang nyaman di mata</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="ai">
+        <div class="theme-preview" style="background: #0a1a14; color: #10b981;">🤖</div>
+        <div>
+          <div>AI Mode</div>
+          <small>Tema khusus untuk pengalaman AI</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="dark-pro">
+        <div class="theme-preview" style="background: #0b0f16; color: #00c8ff;">💎</div>
+        <div>
+          <div>Gelap Profesional</div>
+          <small>Tema gelap dengan aksen biru neon</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="dark-pro-shift">
+        <div class="theme-preview" style="background: #0f172a; color: #8B5CF6;">🔮</div>
+        <div>
+          <div>Gelap Profesional Shift</div>
+          <small>Tema gelap dengan aksen ungu neon</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="midnight-tech">
+        <div class="theme-preview" style="background: #0f172a; color: #38bdf8;">🌃</div>
+        <div>
+          <div>Midnight Tech</div>
+          <small>Tema gelap dengan aksen biru techy</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="carbon-blue">
+        <div class="theme-preview" style="background: #1e293b; color: #3b82f6;">💼</div>
+        <div>
+          <div>Carbon Blue</div>
+          <small>Tema gelap dengan aksen biru elegan</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="cyber-gray">
+        <div class="theme-preview" style="background: #111827; color: #22d3ee;">💀</div>
+        <div>
+          <div>Cyber Gray</div>
+          <small>Tema futuristic dengan aksen cyan</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="blue-mist">
+        <div class="theme-preview" style="background: #0a192f; color: #64ffda;">🧩</div>
+        <div>
+          <div>Blue Mist</div>
+          <small>Tema gelap dengan aksen hijau kebiruan</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="pink-elegant">
+        <div class="theme-preview" style="background: #2d1b3e; color: #ec4899;">🌸</div>
+        <div>
+          <div>Pink Elegant</div>
+          <small>Tema elegan dengan aksen pink untuk wanita</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="pro-gold">
+        <div class="theme-preview" style="background: #2d2d2d; color: #FFD700;">⭐</div>
+        <div>
+          <div>BETA Gold</div>
+          <small>Tema premium dengan aksen emas</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="pro-deep-ocean">
+        <div class="theme-preview" style="background: #001219; color: #00B4D8;">🌊</div>
+        <div>
+          <div>BETA Deep Ocean</div>
+          <small>Tema dalam laut dengan aksen biru</small>
+        </div>
+      </div>
+      <div class="theme-option" data-theme="pro-forest">
+        <div class="theme-preview" style="background: #1a2f1a; color: #2A9D8F;">🌲</div>
+        <div>
+          <div>BETA Forest</div>
+          <small>Tema hutan dengan aksen hijau</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Profile Modal -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal profile-modal">
+      <div class="modal-header">
+        <h3>Profil Saya BETA</h3>
+        <button class="modal-close" id="profileModalClose">&times;</button>
+      </div>
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <img src="" alt="Avatar" class="avatar-img" id="profileAvatarImg">
+          <button class="avatar-change-btn" id="changeAvatarBtn">📷</button>
+        </div>
+        <div class="profile-display-name" id="profileDisplayName">Nama Pengguna</div>
+        <div class="profile-display-bio" id="profileDisplayBio">Bio Pengguna</div>
+      </div>
+      <div class="field">
+        <label>Nama</label>
+        <input type="text" id="profileNameInput" placeholder="Nama Anda">
+      </div>
+      <div class="field">
+        <label>Bio</label>
+        <textarea id="profileBioInput" rows="3" placeholder="Ceritakan tentang diri Anda"></textarea>
+      </div>
+      <div class="avatar-options">
+        <div class="avatar-option" data-avatar="👤">👤</div>
+        <div class="avatar-option" data-avatar="👨">👨</div>
+        <div class="avatar-option" data-avatar="👩">👩</div>
+        <div class="avatar-option" data-avatar="🧑">🧑</div>
+        <div class="avatar-option" data-avatar="👦">👦</div>
+        <div class="avatar-option" data-avatar="👧">👧</div>
+      </div>
+      <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+      <div class="actions">
+        <button class="btn" id="saveProfileBtn">Simpan</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Crop Modal -->
+  <div class="modal-overlay" id="cropModal">
+    <div class="modal crop-modal">
+      <div class="modal-header">
+        <h3>Potong Foto</h3>
+        <button class="modal-close" id="cropModalClose">&times;</button>
+      </div>
+      <div class="crop-container">
+        <canvas id="cropCanvas"></canvas>
+        <div class="crop-area" id="cropArea" style="display: none;">
+          <div class="crop-handle nw"></div>
+          <div class="crop-handle ne"></div>
+          <div class="crop-handle sw"></div>
+          <div class="crop-handle se"></div>
+        </div>
+      </div>
+      <div class="crop-preview">
+        <img id="cropPreview" src="" alt="Preview">
+      </div>
+      <div class="crop-size-controls">
+        <label>Ukuran:</label>
+        <input type="range" id="cropSizeSlider" min="50" max="200" value="100" class="size-slider">
+        <span id="cropSizeValue">100%</span>
+      </div>
+      <div class="crop-controls">
+        <button class="btn" id="cancelCropBtn">Batal</button>
+        <button class="btn" id="applyCropBtn">Terapkan</button>
+      </div>
+      <p style="text-align: center; font-size: 12px; color: var(--muted);">Geser area crop dan atur ukuran sesuai keinginan</p>
+    </div>
+  </div>
+  
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Pengaturan BETA</h3>
+        <button class="modal-close" id="settingsModalClose">&times;</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-group">
+          <h4>Notifikasi</h4>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="notificationsEnabled"> Aktifkan Notifikasi
+            </label>
+          </div>
+          <div class="field">
+            <label>Peringatkan sebelum (hari):</label>
+            <select id="notificationLeadDays">
+              <option value="1">1 hari</option>
+              <option value="2">2 hari</option>
+              <option value="3">3 hari</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="useBrowserNotification"> Gunakan Notifikasi Browser
+            </label>
+          </div>
+        </div>
+        
+        <div class="setting-group">
+          <h4>Fitur Baru BETA</h4>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="autoSaveEnabled"> Simpan Otomatis
+            </label>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="quickActionsEnabled"> Tampilkan Aksi Cepat
+            </label>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="darkReaderEnabled"> Mode Baca Gelap
+            </label>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="aiFeaturesEnabled"> Aktifkan Fitur AI
+            </label>
+          </div>
+        </div>
+        
+        <div class="setting-group">
+          <h4>Tampilan</h4>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="liteMode"> Mode Ringan (nonaktifkan animasi)
+            </label>
+          </div>
+        </div>
+        
+        <div class="actions">
+          <button class="btn" id="saveSettingsBtn">Simpan Pengaturan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tips Modal -->
+  <div class="modal-overlay" id="tipsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tips & Panduan BETA</h3>
+        <button class="modal-close" id="tipsModalClose">&times;</button>
+      </div>
+      <div class="tips-content">
+        <div class="tip-item">
+          <h4>🤖 Manfaatkan AI Assistant</h4>
+          <p>Gunakan fitur AI untuk menganalisis jadwal dari gambar, mendapatkan saran tugas, dan chat dengan asisten cerdas untuk meningkatkan produktivitas.</p>
+        </div>
+        <div class="tip-item">
+          <h4>📝 Kelola Tugas dengan Efisien</h4>
+          <p>Gunakan fitur prioritas untuk mengurutkan tugas berdasarkan tingkat kepentingan. Tugas dengan prioritas tinggi akan ditandai dengan warna merah.</p>
+        </div>
+        <div class="tip-item">
+          <h4>⏰ Manfaatkan Fokus Timer BETA</h4>
+          <p>Gunakan timer fokus untuk meningkatkan produktivitas. Atur durasi sesuai kebutuhan dan istirahat sejenak setelah sesi fokus selesai.</p>
+        </div>
+        <div class="tip-item">
+          <h4>📅 Pantau Deadline dengan Kalender</h4>
+          <p>Gunakan kalender untuk melihat tugas berdasarkan tanggal. Titik warna pada tanggal menandakan ada tugas yang harus diselesaikan.</p>
+        </div>
+        <div class="tip-item">
+          <h4>🎨 Personalisasi Tampilan</h4>
+          <p>Ubah tema aplikasi sesuai preferensi Anda. Tersedia berbagai tema gelap dan terang yang dapat disesuaikan.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notifications Modal -->
+  <div class="modal-overlay" id="notificationsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Notifikasi BETA</h3>
+        <button class="modal-close" id="notificationsModalClose">&times;</button>
+      </div>
+      <div id="notificationsList">
+        <div class="empty-state">
+          <p>Tidak ada notifikasi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =============================
+    // INITIALIZATION & VARIABLES
+    // =============================
+    // Data Storage
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    let schedule = JSON.parse(localStorage.getItem('schedule')) || [];
+    let notes = JSON.parse(localStorage.getItem('notes')) || [];
+    let profile = JSON.parse(localStorage.getItem('profile')) || {
+      name: 'Pengguna TugasKu',
+      bio: 'Pelajar Aktif',
+      avatar: '👤'
+    };
+    let settings = JSON.parse(localStorage.getItem('settings')) || {
+      theme: 'dark',
+      notifications: true,
+      notificationLeadDays: 2,
+      autoSave: true,
+      quickActions: true,
+      darkReader: false,
+      aiFeatures: true,
+      liteMode: false,
+      timerSettings: {
+        focus: 25,
+        shortBreak: 5,
+        longBreak: 15
+      }
+    };
+    let pomodoroStats = JSON.parse(localStorage.getItem('pomodoroStats')) || {
+      today: 0,
+      week: 0,
+      total: 0,
+      focusTime: 0,
+      history: []
+    };
+    let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    let aiApiKey = localStorage.getItem('aiApiKey') || '';
+
+    // DOM Elements - DIPERBAIKI: Gunakan selector yang lebih spesifik
+    const splashScreen = document.getElementById('splash');
+    const mainContent = document.getElementById('mainContent');
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDrawer = document.getElementById('menuDrawer');
+    const menuClose = document.getElementById('menuClose');
+    const profileSection = document.getElementById('profileSection');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskModal = document.getElementById('taskModal');
+    const taskModalClose = document.getElementById('taskModalClose');
+    const cancelTaskBtn = document.getElementById('cancelTaskBtn');
+    const taskForm = document.getElementById('taskForm');
+    const tasksList = document.getElementById('tasksList');
+    const taskSearch = document.getElementById('taskSearch');
+    const statsBtn = document.getElementById('statsBtn');
+    const statsModal = document.getElementById('statsModal');
+    const statsModalClose = document.getElementById('statsModalClose');
+    const themeModal = document.getElementById('themeModal');
+    const themeModalClose = document.getElementById('themeModalClose');
+    const profileModal = document.getElementById('profileModal');
+    const profileModalClose = document.getElementById('profileModalClose');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const cropModal = document.getElementById('cropModal');
+    const cropModalClose = document.getElementById('cropModalClose');
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsModalClose = document.getElementById('settingsModalClose');
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    const tipsModal = document.getElementById('tipsModal');
+    const tipsModalClose = document.getElementById('tipsModalClose');
+    const notificationsModal = document.getElementById('notificationsModal');
+    const notificationsModalClose = document.getElementById('notificationsModalClose');
+    const notifBtn = document.getElementById('notifBtn');
+    const notifBadge = document.getElementById('notifBadge');
+    const toast = document.getElementById('toast');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    // Timer Elements
+    const timerDisplay = document.getElementById('timerDisplay');
+    const startTimerBtn = document.getElementById('startTimer');
+    const pauseTimerBtn = document.getElementById('pauseTimer');
+    const resetTimerBtn = document.getElementById('resetTimer');
+    const timerProgress = document.getElementById('timerProgress');
+    const timerModeBtns = document.querySelectorAll('.timer-mode-btn');
+
+    // Timer Settings Elements
+    const focusDurationSetting = document.getElementById('focusDurationSetting');
+    const shortBreakDurationSetting = document.getElementById('shortBreakDurationSetting');
+    const longBreakDurationSetting = document.getElementById('longBreakDurationSetting');
+    const saveTimerSettingsBtn = document.getElementById('saveTimerSettings');
+
+    // AI Elements
+    const scheduleImage = document.getElementById('scheduleImage');
+    const uploadArea = document.getElementById('uploadArea');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const processingContainer = document.getElementById('processingContainer');
+    const processingStatus = document.getElementById('processingStatus');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const extractedSchedules = document.getElementById('extractedSchedules');
+    const analyzeImageBtn = document.getElementById('analyzeImageBtn');
+    const changeImageBtn = document.getElementById('changeImageBtn');
+    const saveAllSchedulesBtn = document.getElementById('saveAllSchedulesBtn');
+    const aiApiKeyInput = document.getElementById('aiApiKey');
+    const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+    const aiChatMessages = document.getElementById('aiChatMessages');
+    const aiChatInput = document.getElementById('aiChatInput');
+    const aiChatSend = document.getElementById('aiChatSend');
+
+    // Timer Variables
+    let timerInterval;
+    let timerMode = 'focus'; // focus, short, long
+    let timerSeconds = settings.timerSettings.focus * 60;
+    let isTimerRunning = false;
+    let currentTimerMode = 'focus';
+
+    // Crop Variables
+    let cropImage = null;
+    let cropCanvas = document.getElementById('cropCanvas');
+    let cropCtx = cropCanvas.getContext('2d');
+    let cropArea = document.getElementById('cropArea');
+    let cropPreview = document.getElementById('cropPreview');
+    let cropSizeSlider = document.getElementById('cropSizeSlider');
+    let cropSizeValue = document.getElementById('cropSizeValue');
+    let cropData = {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    };
+
+    // Chart Variables
+    let homeTaskChart, taskChart, priorityChart, dashboardActivityChart, productivityChart;
+
+    // =============================
+    // INITIALIZATION FUNCTION - DIPERBAIKI
+    // =============================
+    function init() {
+      console.log('Initializing TugasKu3 BETA...');
+      
+      // Sembunyikan splash screen setelah 2 detik
+      setTimeout(() => {
+        try {
+          splashScreen.style.display = 'none';
+          mainContent.style.display = 'block';
+          
+          // Terapkan pengaturan
+          applySettings();
+          
+          // Perbarui UI
+          updateAllUI();
+          
+          // Periksa notifikasi
+          checkNotifications();
+          
+          // Mulai auto-save
+          startAutoSave();
+          
+          console.log('TugasKu3 BETA initialized successfully!');
+        } catch (error) {
+          console.error('Error during initialization:', error);
+          // Fallback: tetap sembunyikan splash screen meski ada error
+          splashScreen.style.display = 'none';
+          mainContent.style.display = 'block';
+          showToast('Aplikasi dimuat dengan beberapa masalah', 'warning');
+        }
+      }, 2000);
+      
+      // Inisialisasi event listeners
+      initEventListeners();
+      
+      // Inisialisasi charts
+      initCharts();
+      
+      // Terapkan tema
+      applyTheme(settings.theme);
+    }
+
+    // =============================
+    // EVENT LISTENERS - DIPERBAIKI
+    // =============================
+    function initEventListeners() {
+      console.log('Initializing event listeners...');
+      
+      // Menu & Navigation
+      menuBtn.addEventListener('click', toggleMenu);
+      menuClose.addEventListener('click', toggleMenu);
+      
+      // Tabs
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+      
+      // Filter tasks
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterTasks(btn.dataset.filter);
+        });
+      });
+      
+      // Menu items
+      menuItems.forEach(item => {
+        item.addEventListener('click', () => handleMenuAction(item.dataset.action));
+      });
+      
+      // Task management
+      addTaskBtn.addEventListener('click', () => openTaskModal());
+      taskModalClose.addEventListener('click', () => closeTaskModal());
+      cancelTaskBtn.addEventListener('click', () => closeTaskModal());
+      taskForm.addEventListener('submit', saveTask);
+      taskSearch.addEventListener('input', searchTasks);
+      
+      // Modals
+      statsBtn.addEventListener('click', () => statsModal.classList.add('show'));
+      statsModalClose.addEventListener('click', () => statsModal.classList.remove('show'));
+      profileSection.addEventListener('click', () => profileModal.classList.add('show'));
+      profileModalClose.addEventListener('click', () => profileModal.classList.remove('show'));
+      saveProfileBtn.addEventListener('click', saveProfile);
+      themeModalClose.addEventListener('click', () => themeModal.classList.remove('show'));
+      settingsModalClose.addEventListener('click', () => settingsModal.classList.remove('show'));
+      saveSettingsBtn.addEventListener('click', saveSettings);
+      tipsModalClose.addEventListener('click', () => tipsModal.classList.remove('show'));
+      notificationsModalClose.addEventListener('click', () => notificationsModal.classList.remove('show'));
+      notifBtn.addEventListener('click', () => notificationsModal.classList.add('show'));
+      
+      // Timer
+      startTimerBtn.addEventListener('click', startTimer);
+      pauseTimerBtn.addEventListener('click', pauseTimer);
+      resetTimerBtn.addEventListener('click', resetTimer);
+      timerModeBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchTimerMode(btn.dataset.mode));
+      });
+      
+      // Timer Settings
+      saveTimerSettingsBtn.addEventListener('click', saveTimerSettings);
+      
+      // AI Features
+      uploadArea.addEventListener('click', () => scheduleImage.click());
+      scheduleImage.addEventListener('change', handleImageUpload);
+      analyzeImageBtn.addEventListener('click', analyzeImageWithAI);
+      changeImageBtn.addEventListener('click', () => {
+        previewContainer.style.display = 'none';
+        uploadArea.style.display = 'block';
+      });
+      saveAllSchedulesBtn.addEventListener('click', saveAllExtractedSchedules);
+      saveApiKeyBtn.addEventListener('click', saveApiKey);
+      aiChatSend.addEventListener('click', sendAiMessage);
+      aiChatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendAiMessage();
+      });
+      
+      // Crop functionality
+      cropModalClose.addEventListener('click', () => cropModal.classList.remove('show'));
+      cancelCropBtn.addEventListener('click', () => cropModal.classList.remove('show'));
+      applyCropBtn.addEventListener('click', applyCrop);
+      cropSizeSlider.addEventListener('input', updateCropSize);
+      
+      // Profile avatar change
+      changeAvatarBtn.addEventListener('click', () => avatarUpload.click());
+      avatarUpload.addEventListener('change', handleAvatarUpload);
+      
+      // Avatar options
+      document.querySelectorAll('.avatar-option').forEach(option => {
+        option.addEventListener('click', () => {
+          document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+          option.classList.add('selected');
+          profile.avatar = option.dataset.avatar;
+          updateProfileUI();
+        });
+      });
+      
+      // Close modals on overlay click
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            overlay.classList.remove('show');
+          }
+        });
+      });
+      
+      // Drag and drop for image upload
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--ai-primary)';
+        uploadArea.style.background = 'rgba(16, 185, 129, 0.1)';
+      });
+      
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
+        uploadArea.style.background = 'transparent';
+      });
+      
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'rgba(255,255,255,0.2)';
+        uploadArea.style.background = 'transparent';
+        
+        if (e.dataTransfer.files.length) {
+          scheduleImage.files = e.dataTransfer.files;
+          handleImageUpload();
+        }
+      });
+      
+      console.log('Event listeners initialized successfully!');
+    }
+
+    // =============================
+    // UI FUNCTIONS
+    // =============================
+    function toggleMenu() {
+      menuDrawer.classList.toggle('open');
+    }
+
+    function switchTab(tabName) {
+      // Update tab buttons
+      tabBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      });
+      
+      // Update tab contents
+      tabContents.forEach(content => {
+        content.classList.toggle('active', content.id === `${tabName}Tab`);
+      });
+      
+      // Update charts if needed
+      if (tabName === 'dashboard') {
+        updateDashboardCharts();
+      } else if (tabName === 'productivity') {
+        updateProductivityChart();
+      }
+    }
+
+    function handleMenuAction(action) {
+      toggleMenu();
+      
+      switch(action) {
+        case 'portfolio':
+          window.open('https://rahmat.vercel.app', '_blank');
+          break;
+        case 'profile':
+          profileModal.classList.add('show');
+          break;
+        case 'settings':
+          settingsModal.classList.add('show');
+          break;
+        case 'tips':
+          tipsModal.classList.add('show');
+          break;
+        case 'focus':
+          switchTab('productivity');
+          break;
+        case 'backup':
+          backupData();
+          break;
+        case 'export':
+          exportData();
+          break;
+        case 'import':
+          importData();
+          break;
+        case 'theme':
+          themeModal.classList.add('show');
+          break;
+        case 'about':
+          showAboutInfo();
+          break;
+        case 'reset':
+          resetData();
+          break;
+      }
+    }
+
+    function openTaskModal(task = null) {
+      const modal = document.getElementById('taskModal');
+      const title = document.getElementById('taskModalTitle');
+      const form = document.getElementById('taskForm');
+      
+      if (task) {
+        // Edit mode
+        title.textContent = 'Edit Tugas';
+        document.getElementById('taskTitle').value = task.title;
+        document.getElementById('taskDesc').value = task.description || '';
+        document.getElementById('taskDeadline').value = task.deadline || '';
+        document.getElementById('taskPriority').value = task.priority || 'medium';
+        document.getElementById('taskCategory').value = task.category || '';
+        form.dataset.editId = task.id;
+      } else {
+        // Add mode
+        title.textContent = 'Tambah Tugas Baru';
+        form.reset();
+        delete form.dataset.editId;
+      }
+      
+      modal.classList.add('show');
+    }
+
+    function closeTaskModal() {
+      taskModal.classList.remove('show');
+    }
+
+    function saveTask(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const taskData = {
+        id: form.dataset.editId || Date.now().toString(),
+        title: document.getElementById('taskTitle').value.trim(),
+        description: document.getElementById('taskDesc').value.trim(),
+        deadline: document.getElementById('taskDeadline').value,
+        priority: document.getElementById('taskPriority').value,
+        category: document.getElementById('taskCategory').value.trim(),
+        completed: false,
+        createdAt: form.dataset.editId ? 
+          tasks.find(t => t.id === form.dataset.editId)?.createdAt || new Date().toISOString() : 
+          new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      if (!taskData.title) {
+        showToast('Judul tugas tidak boleh kosong', 'error');
+        return;
+      }
+      
+      if (form.dataset.editId) {
+        // Update existing task
+        const index = tasks.findIndex(t => t.id === form.dataset.editId);
+        if (index !== -1) {
+          tasks[index] = { ...tasks[index], ...taskData };
+          showToast('Tugas berhasil diperbarui');
+        }
+      } else {
+        // Add new task
+        tasks.push(taskData);
+        showToast('Tugas berhasil ditambahkan');
+      }
+      
+      saveData();
+      updateTasksUI();
+      closeTaskModal();
+    }
+
+    function updateTasksUI(filter = 'all', searchTerm = '') {
+      let filteredTasks = [...tasks];
+      
+      // Apply filter
+      switch(filter) {
+        case 'pending':
+          filteredTasks = filteredTasks.filter(task => !task.completed);
+          break;
+        case 'completed':
+          filteredTasks = filteredTasks.filter(task => task.completed);
+          break;
+        case 'overdue':
+          filteredTasks = filteredTasks.filter(task => isTaskOverdue(task) && !task.completed);
+          break;
+        case 'high':
+          filteredTasks = filteredTasks.filter(task => task.priority === 'high' && !task.completed);
+          break;
+        case 'today':
+          filteredTasks = filteredTasks.filter(task => isTaskDueToday(task) && !task.completed);
+          break;
+      }
+      
+      // Apply search
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        filteredTasks = filteredTasks.filter(task => 
+          task.title.toLowerCase().includes(term) || 
+          (task.description && task.description.toLowerCase().includes(term)) ||
+          (task.category && task.category.toLowerCase().includes(term))
+        );
+      }
+      
+      // Sort tasks: overdue first, then by priority, then by deadline
+      filteredTasks.sort((a, b) => {
+        // Completed tasks go to bottom
+        if (a.completed && !b.completed) return 1;
+        if (!a.completed && b.completed) return -1;
+        
+        // Among incomplete tasks, sort by overdue status
+        const aOverdue = isTaskOverdue(a);
+        const bOverdue = isTaskOverdue(b);
+        if (aOverdue && !bOverdue) return -1;
+        if (!aOverdue && bOverdue) return 1;
+        
+        // Then by priority (high > medium > low)
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        if (priorityOrder[a.priority] > priorityOrder[b.priority]) return -1;
+        if (priorityOrder[a.priority] < priorityOrder[b.priority]) return 1;
+        
+        // Then by deadline (sooner first)
+        if (a.deadline && b.deadline) {
+          return new Date(a.deadline) - new Date(b.deadline);
+        }
+        if (a.deadline) return -1;
+        if (b.deadline) return 1;
+        
+        // Finally by creation date (newer first)
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+      
+      // Render tasks
+      if (filteredTasks.length === 0) {
+        tasksList.innerHTML = `
+          <div class="empty-state">
+            <h3>Tidak ada tugas</h3>
+            <p>${searchTerm ? 'Coba gunakan kata kunci lain' : 'Tambahkan tugas baru dengan tombol + di bawah'}</p>
+          </div>
+        `;
+      } else {
+        tasksList.innerHTML = filteredTasks.map(task => `
+          <div class="task-card ${task.priority ? 'priority-' + task.priority : ''} ${getDeadlineClass(task)}" data-id="${task.id}">
+            <div class="task-title">
+              <span class="priority-indicator priority-${task.priority}-indicator" title="Prioritas ${task.priority}"></span>
+              <span class="title-text">${escapeHtml(task.title)}</span>
+              ${task.completed ? '<span class="status-pill" style="background: var(--success);">SELESAI</span>' : ''}
+              ${isTaskOverdue(task) && !task.completed ? '<span class="status-pill" style="background: var(--danger);">TERLAMBAT</span>' : ''}
+            </div>
+            ${task.description ? `
+              <div class="task-detail">
+                <span class="long-text">${escapeHtml(task.description)}</span>
+              </div>
+            ` : ''}
+            <div class="task-detail">
+              ${task.deadline ? `
+                <span>📅 ${formatDate(task.deadline)}</span>
+              ` : ''}
+              ${task.category ? `
+                <span>🏷️ ${escapeHtml(task.category)}</span>
+              ` : ''}
+              <span class="priority-badge priority-${task.priority}-badge">${getPriorityText(task.priority)}</span>
+            </div>
+            <div class="task-actions">
+              <button class="icon-btn complete-btn" title="${task.completed ? 'Tandai belum selesai' : 'Tandai selesai'}">
+                ${task.completed ? '↶' : '✓'}
+              </button>
+              <button class="icon-btn edit-btn" title="Edit">✏️</button>
+              <button class="icon-btn delete-btn" title="Hapus">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+        
+        // Add event listeners to task buttons
+        tasksList.querySelectorAll('.complete-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const taskId = btn.closest('.task-card').dataset.id;
+            toggleTaskComplete(taskId);
+          });
+        });
+        
+        tasksList.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const taskId = btn.closest('.task-card').dataset.id;
+            const task = tasks.find(t => t.id === taskId);
+            if (task) openTaskModal(task);
+          });
+        });
+        
+        tasksList.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const taskId = btn.closest('.task-card').dataset.id;
+            deleteTask(taskId);
+          });
+        });
+      }
+      
+      // Update stats
+      updateTaskStats();
+    }
+
+    function filterTasks(filter) {
+      updateTasksUI(filter, taskSearch.value);
+    }
+
+    function searchTasks() {
+      updateTasksUI(
+        document.querySelector('.filter-btn.active').dataset.filter,
+        taskSearch.value
+      );
+    }
+
+    function toggleTaskComplete(taskId) {
+      const task = tasks.find(t => t.id === taskId);
+      if (task) {
+        task.completed = !task.completed;
+        task.updatedAt = new Date().toISOString();
+        saveData();
+        updateTasksUI();
+        showToast(`Tugas "${task.title}" ${task.completed ? 'diselesaikan' : 'dibatalkan'}`);
+        
+        // Add notification
+        if (task.completed) {
+          addNotification({
+            id: Date.now().toString(),
+            title: 'Tugas Selesai',
+            message: `Anda menyelesaikan: ${task.title}`,
+            type: 'success',
+            timestamp: new Date().toISOString(),
+            read: false
+          });
+        }
+      }
+    }
+
+    function deleteTask(taskId) {
+      const task = tasks.find(t => t.id === taskId);
+      if (task && confirm(`Hapus tugas "${task.title}"?`)) {
+        tasks = tasks.filter(t => t.id !== taskId);
+        saveData();
+        updateTasksUI();
+        showToast('Tugas berhasil dihapus');
+      }
+    }
+
+    function updateTaskStats() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const pending = total - completed;
+      const overdue = tasks.filter(t => isTaskOverdue(t) && !t.completed).length;
+      const today = tasks.filter(t => isTaskDueToday(t) && !t.completed).length;
+      const week = tasks.filter(t => isTaskDueThisWeek(t) && !t.completed).length;
+      
+      // Update home stats
+      document.getElementById('totalTasksHome').textContent = total;
+      document.getElementById('completedTasksHome').textContent = completed;
+      document.getElementById('pendingTasksHome').textContent = pending;
+      document.getElementById('overdueTasksHome').textContent = overdue;
+      
+      // Update stats modal
+      document.getElementById('totalTasks').textContent = total;
+      document.getElementById('completedTasks').textContent = completed;
+      document.getElementById('pendingTasks').textContent = pending;
+      document.getElementById('overdueTasks').textContent = overdue;
+      document.getElementById('todayTasks').textContent = today;
+      document.getElementById('weekTasks').textContent = week;
+      
+      // Update dashboard
+      document.getElementById('dashboardTotalTasks').textContent = total;
+      document.getElementById('dashboardCompleted').textContent = completed;
+      document.getElementById('dashboardFocusTime').textContent = Math.floor(pomodoroStats.focusTime / 60);
+      document.getElementById('dashboardProductivity').textContent = total > 0 ? Math.round((completed / total) * 100) + '%' : '0%';
+    }
+
+    // =============================
+    // SCHEDULE FUNCTIONS
+    // =============================
+    function addSchedule() {
+      const day = document.getElementById('scheduleDay').value;
+      const time = document.getElementById('scheduleTime').value;
+      const subject = document.getElementById('scheduleSubject').value.trim();
+      const description = document.getElementById('scheduleDesc').value.trim();
+      
+      if (!time || !subject) {
+        showToast('Waktu dan mata pelajaran harus diisi', 'error');
+        return;
+      }
+      
+      const scheduleItem = {
+        id: Date.now().toString(),
+        day,
+        time,
+        subject,
+        description,
+        createdAt: new Date().toISOString()
+      };
+      
+      schedule.push(scheduleItem);
+      saveData();
+      updateScheduleUI();
+      showToast('Jadwal berhasil ditambahkan');
+      
+      // Reset form
+      document.getElementById('scheduleSubject').value = '';
+      document.getElementById('scheduleDesc').value = '';
+    }
+
+    function updateScheduleUI() {
+      const scheduleList = document.getElementById('scheduleList');
+      const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
+      
+      if (schedule.length === 0) {
+        scheduleList.innerHTML = `
+          <div class="empty-state">
+            <h3>Belum ada jadwal</h3>
+            <p>Tambahkan jadwal mingguan Anda</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      days.forEach(day => {
+        const daySchedules = schedule.filter(s => s.day === day);
+        if (daySchedules.length === 0) return;
+        
+        // Sort by time
+        daySchedules.sort((a, b) => a.time.localeCompare(b.time));
+        
+        html += `
+          <div class="schedule-day">
+            <div class="schedule-header">${capitalizeFirst(day)}</div>
+            ${daySchedules.map(item => `
+              <div class="schedule-item" data-id="${item.id}">
+                <div class="schedule-time">${formatTime(item.time)}</div>
+                <div class="schedule-subject">${escapeHtml(item.subject)}</div>
+                ${item.description ? `<div class="schedule-desc">${escapeHtml(item.description)}</div>` : ''}
+                <div class="schedule-actions">
+                  <button class="icon-btn delete-schedule-btn" title="Hapus">🗑️</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      });
+      
+      scheduleList.innerHTML = html;
+      
+      // Add event listeners to delete buttons
+      scheduleList.querySelectorAll('.delete-schedule-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const scheduleId = btn.closest('.schedule-item').dataset.id;
+          deleteSchedule(scheduleId);
+        });
+      });
+    }
+
+    function deleteSchedule(scheduleId) {
+      const scheduleItem = schedule.find(s => s.id === scheduleId);
+      if (scheduleItem && confirm(`Hapus jadwal "${scheduleItem.subject}"?`)) {
+        schedule = schedule.filter(s => s.id !== scheduleId);
+        saveData();
+        updateScheduleUI();
+        showToast('Jadwal berhasil dihapus');
+      }
+    }
+
+    // =============================
+    // NOTES FUNCTIONS
+    // =============================
+    function addNote() {
+      const title = document.getElementById('noteTitle').value.trim();
+      const content = document.getElementById('noteContent').value.trim();
+      const color = document.getElementById('noteColor').value;
+      const pinned = document.getElementById('notePinned').checked;
+      
+      if (!title || !content) {
+        showToast('Judul dan isi catatan harus diisi', 'error');
+        return;
+      }
+      
+      const note = {
+        id: Date.now().toString(),
+        title,
+        content,
+        color,
+        pinned,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      notes.push(note);
+      saveData();
+      updateNotesUI();
+      showToast('Catatan berhasil ditambahkan');
+      
+      // Reset form
+      document.getElementById('noteTitle').value = '';
+      document.getElementById('noteContent').value = '';
+      document.getElementById('noteColor').value = '';
+      document.getElementById('notePinned').checked = false;
+    }
+
+    function updateNotesUI() {
+      const notesList = document.getElementById('notesList');
+      
+      if (notes.length === 0) {
+        notesList.innerHTML = `
+          <div class="empty-state">
+            <h3>Belum ada catatan</h3>
+            <p>Tambahkan catatan pertama Anda</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Sort notes: pinned first, then by update time
+      const sortedNotes = [...notes].sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      });
+      
+      notesList.innerHTML = sortedNotes.map(note => `
+        <div class="note-card ${note.color ? 'note-' + note.color : ''}" data-id="${note.id}">
+          ${note.pinned ? '<div style="position: absolute; top: 10px; right: 10px;">📌</div>' : ''}
+          <div class="note-title">${escapeHtml(note.title)}</div>
+          <div class="note-content">${escapeHtml(note.content)}</div>
+          <div class="note-meta">
+            Dibuat: ${formatDateTime(note.createdAt)}${note.updatedAt !== note.createdAt ? ` • Diperbarui: ${formatDateTime(note.updatedAt)}` : ''}
+          </div>
+          <div class="note-actions">
+            <button class="icon-btn edit-note-btn" title="Edit">✏️</button>
+            <button class="icon-btn delete-note-btn" title="Hapus">🗑️</button>
+            <button class="icon-btn pin-note-btn" title="${note.pinned ? 'Lepas pin' : 'Pin'}">
+              ${note.pinned ? '📌' : '📍'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add event listeners
+      notesList.querySelectorAll('.edit-note-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const noteId = btn.closest('.note-card').dataset.id;
+          editNote(noteId);
+        });
+      });
+      
+      notesList.querySelectorAll('.delete-note-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const noteId = btn.closest('.note-card').dataset.id;
+          deleteNote(noteId);
+        });
+      });
+      
+      notesList.querySelectorAll('.pin-note-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const noteId = btn.closest('.note-card').dataset.id;
+          toggleNotePin(noteId);
+        });
+      });
+    }
+
+    function editNote(noteId) {
+      const note = notes.find(n => n.id === noteId);
+      if (!note) return;
+      
+      document.getElementById('noteTitle').value = note.title;
+      document.getElementById('noteContent').value = note.content;
+      document.getElementById('noteColor').value = note.color || '';
+      document.getElementById('notePinned').checked = note.pinned;
+      
+      // Remove the note being edited
+      notes = notes.filter(n => n.id !== noteId);
+      saveData();
+      updateNotesUI();
+      showToast('Edit catatan - silakan simpan perubahan');
+    }
+
+    function deleteNote(noteId) {
+      const note = notes.find(n => n.id === noteId);
+      if (note && confirm(`Hapus catatan "${note.title}"?`)) {
+        notes = notes.filter(n => n.id !== noteId);
+        saveData();
+        updateNotesUI();
+        showToast('Catatan berhasil dihapus');
+      }
+    }
+
+    function toggleNotePin(noteId) {
+      const note = notes.find(n => n.id === noteId);
+      if (note) {
+        note.pinned = !note.pinned;
+        note.updatedAt = new Date().toISOString();
+        saveData();
+        updateNotesUI();
+        showToast(`Catatan "${note.title}" ${note.pinned ? 'dipin' : 'dilepas'}`);
+      }
+    }
+
+    // =============================
+    // TIMER FUNCTIONS
+    // =============================
+    function switchTimerMode(mode) {
+      timerModeBtns.forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+      
+      currentTimerMode = mode;
+      resetTimer();
+    }
+
+    function startTimer() {
+      if (isTimerRunning) return;
+      
+      isTimerRunning = true;
+      startTimerBtn.disabled = true;
+      pauseTimerBtn.disabled = false;
+      
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        
+        updateTimerDisplay();
+        
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          timerComplete();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (!isTimerRunning) return;
+      
+      isTimerRunning = false;
+      startTimerBtn.disabled = false;
+      pauseTimerBtn.disabled = true;
+      
+      clearInterval(timerInterval);
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      
+      const durations = {
+        focus: settings.timerSettings.focus * 60,
+        short: settings.timerSettings.shortBreak * 60,
+        long: settings.timerSettings.longBreak * 60
+      };
+      
+      timerSeconds = durations[currentTimerMode] || durations.focus;
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      // Update progress bar
+      const totalSeconds = {
+        focus: settings.timerSettings.focus * 60,
+        short: settings.timerSettings.shortBreak * 60,
+        long: settings.timerSettings.longBreak * 60
+      }[currentTimerMode];
+      
+      const progress = ((totalSeconds - timerSeconds) / totalSeconds) * 100;
+      timerProgress.style.width = `${progress}%`;
+    }
+
+    function timerComplete() {
+      isTimerRunning = false;
+      startTimerBtn.disabled = false;
+      pauseTimerBtn.disabled = true;
+      
+      // Update stats
+      if (currentTimerMode === 'focus') {
+        pomodoroStats.today++;
+        pomodoroStats.week++;
+        pomodoroStats.total++;
+        pomodoroStats.focusTime += settings.timerSettings.focus;
+        
+        // Add to history
+        pomodoroStats.history.push({
+          date: new Date().toISOString().split('T')[0],
+          count: 1
+        });
+        
+        // Keep only last 30 days
+        if (pomodoroStats.history.length > 30) {
+          pomodoroStats.history.shift();
+        }
+        
+        saveData();
+        updateProductivityStats();
+        
+        showToast('Sesi fokus selesai! Istirahat sejenak.', 'success');
+        
+        // Add notification
+        addNotification({
+          id: Date.now().toString(),
+          title: 'Sesi Fokus Selesai',
+          message: `Anda menyelesaikan 1 sesi fokus ${settings.timerSettings.focus} menit`,
+          type: 'success',
+          timestamp: new Date().toISOString(),
+          read: false
+        });
+      } else {
+        showToast('Waktu istirahat selesai! Siap untuk fokus lagi.', 'info');
+      }
+      
+      // Play sound if available
+      playNotificationSound();
+    }
+
+    function saveTimerSettings() {
+      const focus = parseInt(focusDurationSetting.value) || settings.timerSettings.focus;
+      const shortBreak = parseInt(shortBreakDurationSetting.value) || settings.timerSettings.shortBreak;
+      const longBreak = parseInt(longBreakDurationSetting.value) || settings.timerSettings.longBreak;
+      
+      if (focus < 1 || shortBreak < 1 || longBreak < 1) {
+        showToast('Durasi timer harus minimal 1 menit', 'error');
+        return;
+      }
+      
+      settings.timerSettings = {
+        focus,
+        shortBreak,
+        longBreak
+      };
+      
+      saveData();
+      resetTimer();
+      showToast('Pengaturan timer berhasil disimpan');
+    }
+
+    function updateProductivityStats() {
+      document.getElementById('todayPomodoros').textContent = pomodoroStats.today;
+      document.getElementById('weekPomodoros').textContent = pomodoroStats.week;
+      document.getElementById('totalPomodoros').textContent = pomodoroStats.total;
+      document.getElementById('focusTime').textContent = Math.floor(pomodoroStats.focusTime / 60);
+    }
+
+    // =============================
+    // AI FUNCTIONS
+    // =============================
+    function handleImageUpload() {
+      const file = scheduleImage.files[0];
+      if (!file) return;
+      
+      if (!file.type.startsWith('image/')) {
+        showToast('Silakan pilih file gambar', 'error');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        uploadArea.style.display = 'none';
+        previewContainer.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function analyzeImageWithAI() {
+      if (!previewImage.src) {
+        showToast('Silakan pilih gambar terlebih dahulu', 'error');
+        return;
+      }
+      
+      previewContainer.style.display = 'none';
+      processingContainer.style.display = 'block';
+      resultsContainer.style.display = 'none';
+      
+      // Use Tesseract.js for OCR
+      processingStatus.textContent = 'Menggunakan Tesseract OCR untuk mengekstrak teks...';
+      
+      Tesseract.recognize(
+        previewImage.src,
+        'eng+ind', // English and Indonesian
+        { 
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              processingStatus.textContent = `Mengekstrak teks... ${Math.round(m.progress * 100)}%`;
+            }
+          }
+        }
+      ).then(({ data: { text } }) => {
+        processingStatus.textContent = 'Menganalisis teks dengan AI...';
+        
+        // Simulate AI analysis (in a real app, you would send to an AI API)
+        setTimeout(() => {
+          processExtractedText(text);
+        }, 2000);
+      }).catch(error => {
+        console.error('OCR Error:', error);
+        processingContainer.style.display = 'none';
+        previewContainer.style.display = 'block';
+        showToast('Gagal menganalisis gambar', 'error');
+      });
+    }
+
+    function processExtractedText(text) {
+      processingContainer.style.display = 'none';
+      resultsContainer.style.display = 'block';
+      
+      // Simple text processing to extract schedule information
+      const lines = text.split('\n').filter(line => line.trim());
+      const extracted = [];
+      
+      // Simple pattern matching for schedule extraction
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        
+        // Look for time patterns (e.g., "07:00", "7:00", "07.00", "7.00")
+        const timeMatch = trimmed.match(/(\d{1,2})[:.](\d{2})/);
+        if (timeMatch) {
+          const time = `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`;
+          let subject = '';
+          
+          // Look for subject in current or next line
+          for (let i = index; i < Math.min(index + 3, lines.length); i++) {
+            const candidate = lines[i].trim();
+            if (candidate && !candidate.match(/(\d{1,2})[:.](\d{2})/) && 
+                !candidate.match(/(senin|selasa|rabu|kamis|jumat|sabtu|minggu)/i)) {
+              subject = candidate;
+              break;
+            }
+          }
+          
+          if (subject) {
+            extracted.push({
+              time,
+              subject,
+              day: 'senin' // Default day, user can edit
+            });
+          }
+        }
+      });
+      
+      if (extracted.length === 0) {
+        extractedSchedules.innerHTML = `
+          <div class="empty-state">
+            <p>AI tidak dapat menemukan jadwal dalam gambar ini.</p>
+            <p>Pastikan gambar jelas dan berisi jadwal dengan format waktu yang terbaca.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      extractedSchedules.innerHTML = extracted.map((item, index) => `
+        <div class="ai-schedule-item" data-index="${index}">
+          <div class="ai-schedule-time">
+            <select class="schedule-day-select">
+              <option value="senin" ${item.day === 'senin' ? 'selected' : ''}>Senin</option>
+              <option value="selasa" ${item.day === 'selasa' ? 'selected' : ''}>Selasa</option>
+              <option value="rabu" ${item.day === 'rabu' ? 'selected' : ''}>Rabu</option>
+              <option value="kamis" ${item.day === 'kamis' ? 'selected' : ''}>Kamis</option>
+              <option value="jumat" ${item.day === 'jumat' ? 'selected' : ''}>Jumat</option>
+              <option value="sabtu" ${item.day === 'sabtu' ? 'selected' : ''}>Sabtu</option>
+              <option value="minggu" ${item.day === 'minggu' ? 'selected' : ''}>Minggu</option>
+            </select>
+            <input type="time" class="schedule-time-input" value="${item.time}">
+          </div>
+          <div class="ai-schedule-subject">
+            <input type="text" class="schedule-subject-input" value="${escapeHtml(item.subject)}" placeholder="Mata pelajaran/kegiatan">
+          </div>
+          <div class="ai-schedule-actions">
+            <button class="icon-btn remove-schedule-btn" title="Hapus">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add event listeners to remove buttons
+      extractedSchedules.querySelectorAll('.remove-schedule-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const index = parseInt(btn.closest('.ai-schedule-item').dataset.index);
+          btn.closest('.ai-schedule-item').remove();
+        });
+      });
+    }
+
+    function saveAllExtractedSchedules() {
+      const scheduleItems = extractedSchedules.querySelectorAll('.ai-schedule-item');
+      let savedCount = 0;
+      
+      scheduleItems.forEach(item => {
+        const day = item.querySelector('.schedule-day-select').value;
+        const time = item.querySelector('.schedule-time-input').value;
+        const subject = item.querySelector('.schedule-subject-input').value.trim();
+        
+        if (time && subject) {
+          const scheduleItem = {
+            id: Date.now().toString() + savedCount,
+            day,
+            time,
+            subject,
+            description: 'Ditambahkan secara otomatis oleh AI',
+            createdAt: new Date().toISOString()
+          };
+          
+          schedule.push(scheduleItem);
+          savedCount++;
+        }
+      });
+      
+      if (savedCount > 0) {
+        saveData();
+        updateScheduleUI();
+        showToast(`${savedCount} jadwal berhasil ditambahkan oleh AI`);
+        
+        // Reset AI section
+        previewContainer.style.display = 'none';
+        uploadArea.style.display = 'block';
+        resultsContainer.style.display = 'none';
+        scheduleImage.value = '';
+      } else {
+        showToast('Tidak ada jadwal yang valid untuk disimpan', 'warning');
+      }
+    }
+
+    function saveApiKey() {
+      const key = aiApiKeyInput.value.trim();
+      if (!key) {
+        showToast('API Key tidak boleh kosong', 'error');
+        return;
+      }
+      
+      aiApiKey = key;
+      localStorage.setItem('aiApiKey', key);
+      showToast('API Key berhasil disimpan');
+    }
+
+    function sendAiMessage() {
+      const message = aiChatInput.value.trim();
+      if (!message) return;
+      
+      if (!aiApiKey) {
+        showToast('Silakan masukkan API Key terlebih dahulu', 'error');
+        return;
+      }
+      
+      // Add user message to chat
+      addChatMessage(message, 'user');
+      aiChatInput.value = '';
+      
+      // Show typing indicator
+      const typingIndicator = addChatMessage('AI sedang mengetik...', 'bot');
+      
+      // Simulate AI response (in a real app, you would call an AI API)
+      setTimeout(() => {
+        typingIndicator.remove();
+        
+        // Simple rule-based responses for demo
+        let response = generateAiResponse(message);
+        addChatMessage(response, 'bot');
+      }, 2000);
+    }
+
+    function addChatMessage(message, sender) {
+      const messageEl = document.createElement('div');
+      messageEl.className = `ai-message ${sender}`;
+      messageEl.textContent = message;
+      aiChatMessages.appendChild(messageEl);
+      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+      return messageEl;
+    }
+
+    function generateAiResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      if (lowerMessage.includes('tugas') || lowerMessage.includes('task')) {
+        const pendingTasks = tasks.filter(t => !t.completed).length;
+        const overdueTasks = tasks.filter(t => isTaskOverdue(t) && !t.completed).length;
+        
+        if (overdueTasks > 0) {
+          return `Anda memiliki ${pendingTasks} tugas yang belum selesai, dengan ${overdueTasks} tugas yang sudah terlambat. Saya sarankan untuk fokus pada tugas yang terlambat terlebih dahulu.`;
+        } else if (pendingTasks > 0) {
+          return `Anda memiliki ${pendingTasks} tugas yang belum selesai. Bagus! Tidak ada yang terlambat. Tetap semangat!`;
+        } else {
+          return 'Selamat! Anda tidak memiliki tugas yang belum selesai. Ini waktu yang tepat untuk menambah tugas baru atau beristirahat.';
+        }
+      } else if (lowerMessage.includes('jadwal') || lowerMessage.includes('schedule')) {
+        const today = new Date().toLocaleDateString('id-ID', { weekday: 'long' }).toLowerCase();
+        const todaySchedules = schedule.filter(s => s.day === today);
+        
+        if (todaySchedules.length > 0) {
+          let response = `Hari ini (${capitalizeFirst(today)}) Anda memiliki ${todaySchedules.length} jadwal:\n`;
+          todaySchedules.forEach(item => {
+            response += `• ${formatTime(item.time)} - ${item.subject}\n`;
+          });
+          return response;
+        } else {
+          return `Hari ini (${capitalizeFirst(today)}) Anda tidak memiliki jadwal. Waktu yang tepat untuk fokus pada tugas atau beristirahat.`;
+        }
+      } else if (lowerMessage.includes('produktivitas') || lowerMessage.includes('fokus')) {
+        const focusSessions = pomodoroStats.today;
+        const focusTime = Math.floor(pomodoroStats.focusTime / 60);
+        
+        return `Hari ini Anda telah menyelesaikan ${focusSessions} sesi fokus dengan total ${focusTime} jam. ${focusSessions >= 5 ? 'Produktivitas Anda hari ini sangat baik!' : 'Tetap semangat untuk sesi fokus berikutnya!'}`;
+      } else {
+        return 'Saya adalah AI Assistant TugasKu3. Saya dapat membantu Anda dengan manajemen tugas, jadwal, dan produktivitas. Tanyakan tentang tugas, jadwal, atau minta saran untuk meningkatkan produktivitas Anda.';
+      }
+    }
+
+    // =============================
+    // PROFILE & SETTINGS FUNCTIONS
+    // =============================
+    function saveProfile() {
+      const name = document.getElementById('profileNameInput').value.trim() || 'Pengguna TugasKu';
+      const bio = document.getElementById('profileBioInput').value.trim() || 'Pelajar Aktif';
+      
+      profile.name = name;
+      profile.bio = bio;
+      
+      saveData();
+      updateProfileUI();
+      profileModal.classList.remove('show');
+      showToast('Profil berhasil disimpan');
+    }
+
+    function updateProfileUI() {
+      document.getElementById('profileName').textContent = profile.name;
+      document.getElementById('profileDesc').textContent = profile.bio;
+      document.getElementById('profileAvatar').textContent = profile.avatar;
+      
+      document.getElementById('profileDisplayName').textContent = profile.name;
+      document.getElementById('profileDisplayBio').textContent = profile.bio;
+      document.getElementById('profileAvatarImg').src = profile.avatarImg || '';
+      document.getElementById('profileAvatarImg').alt = profile.name;
+      
+      document.getElementById('profileNameInput').value = profile.name;
+      document.getElementById('profileBioInput').value = profile.bio;
+      
+      // Update selected avatar
+      document.querySelectorAll('.avatar-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.avatar === profile.avatar);
+      });
+    }
+
+    function handleAvatarUpload() {
+      const file = avatarUpload.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        cropImage = new Image();
+        cropImage.onload = () => {
+          initCropTool();
+          cropModal.classList.add('show');
+        };
+        cropImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function initCropTool() {
+      const container = document.querySelector('.crop-container');
+      const width = container.clientWidth;
+      const height = 300; // Fixed height for crop container
+      
+      cropCanvas.width = width;
+      cropCanvas.height = height;
+      
+      // Calculate scale to fit image
+      const scale = Math.min(width / cropImage.width, height / cropImage.height);
+      const drawWidth = cropImage.width * scale;
+      const drawHeight = cropImage.height * scale;
+      const offsetX = (width - drawWidth) / 2;
+      const offsetY = (height - drawHeight) / 2;
+      
+      // Draw image
+      cropCtx.clearRect(0, 0, width, height);
+      cropCtx.drawImage(cropImage, offsetX, offsetY, drawWidth, drawHeight);
+      
+      // Initialize crop area (square for avatar)
+      const cropSize = Math.min(drawWidth, drawHeight) * 0.6;
+      cropData.x = offsetX + (drawWidth - cropSize) / 2;
+      cropData.y = offsetY + (drawHeight - cropSize) / 2;
+      cropData.width = cropSize;
+      cropData.height = cropSize;
+      
+      updateCropArea();
+      updateCropPreview();
+    }
+
+    function updateCropArea() {
+      cropArea.style.display = 'block';
+      cropArea.style.left = `${cropData.x}px`;
+      cropArea.style.top = `${cropData.y}px`;
+      cropArea.style.width = `${cropData.width}px`;
+      cropArea.style.height = `${cropData.height}px`;
+    }
+
+    function updateCropPreview() {
+      const previewSize = 100;
+      const previewCanvas = document.createElement('canvas');
+      previewCanvas.width = previewSize;
+      previewCanvas.height = previewSize;
+      const previewCtx = previewCanvas.getContext('2d');
+      
+      // Draw cropped area to preview
+      previewCtx.drawImage(
+        cropImage,
+        (cropData.x / cropCanvas.width) * cropImage.width,
+        (cropData.y / cropCanvas.height) * cropImage.height,
+        (cropData.width / cropCanvas.width) * cropImage.width,
+        (cropData.height / cropCanvas.height) * cropImage.height,
+        0, 0, previewSize, previewSize
+      );
+      
+      cropPreview.src = previewCanvas.toDataURL();
+    }
+
+    function updateCropSize() {
+      const value = parseInt(cropSizeSlider.value);
+      cropSizeValue.textContent = `${value}%`;
+      
+      const baseSize = Math.min(cropCanvas.width, cropCanvas.height) * 0.6;
+      const newSize = baseSize * (value / 100);
+      
+      cropData.width = newSize;
+      cropData.height = newSize;
+      cropData.x = cropData.x + (cropData.width - newSize) / 2;
+      cropData.y = cropData.y + (cropData.height - newSize) / 2;
+      
+      updateCropArea();
+      updateCropPreview();
+    }
+
+    function applyCrop() {
+      if (!cropImage) return;
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 200;
+      canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      
+      // Draw cropped area to new canvas
+      ctx.drawImage(
+        cropImage,
+        (cropData.x / cropCanvas.width) * cropImage.width,
+        (cropData.y / cropCanvas.height) * cropImage.height,
+        (cropData.width / cropCanvas.width) * cropImage.width,
+        (cropData.height / cropCanvas.height) * cropImage.height,
+        0, 0, 200, 200
+      );
+      
+      profile.avatarImg = canvas.toDataURL();
+      saveData();
+      updateProfileUI();
+      cropModal.classList.remove('show');
+      showToast('Foto profil berhasil diubah');
+    }
+
+    function saveSettings() {
+      settings.notifications = document.getElementById('notificationsEnabled').checked;
+      settings.notificationLeadDays = parseInt(document.getElementById('notificationLeadDays').value) || 2;
+      settings.useBrowserNotification = document.getElementById('useBrowserNotification').checked;
+      settings.autoSave = document.getElementById('autoSaveEnabled').checked;
+      settings.quickActions = document.getElementById('quickActionsEnabled').checked;
+      settings.darkReader = document.getElementById('darkReaderEnabled').checked;
+      settings.aiFeatures = document.getElementById('aiFeaturesEnabled').checked;
+      settings.liteMode = document.getElementById('liteMode').checked;
+      
+      saveData();
+      applySettings();
+      settingsModal.classList.remove('show');
+      showToast('Pengaturan berhasil disimpan');
+    }
+
+    function applySettings() {
+      // Apply theme
+      applyTheme(settings.theme);
+      
+      // Apply lite mode
+      document.body.classList.toggle('lite-mode', settings.liteMode);
+      
+      // Update settings form
+      document.getElementById('notificationsEnabled').checked = settings.notifications;
+      document.getElementById('notificationLeadDays').value = settings.notificationLeadDays;
+      document.getElementById('useBrowserNotification').checked = settings.useBrowserNotification;
+      document.getElementById('autoSaveEnabled').checked = settings.autoSave;
+      document.getElementById('quickActionsEnabled').checked = settings.quickActions;
+      document.getElementById('darkReaderEnabled').checked = settings.darkReader;
+      document.getElementById('aiFeaturesEnabled').checked = settings.aiFeatures;
+      document.getElementById('liteMode').checked = settings.liteMode;
+      
+      // Update timer settings
+      focusDurationSetting.value = settings.timerSettings.focus;
+      shortBreakDurationSetting.value = settings.timerSettings.shortBreak;
+      longBreakDurationSetting.value = settings.timerSettings.longBreak;
+      
+      // Update AI API Key
+      aiApiKeyInput.value = aiApiKey;
+    }
+
+    // =============================
+    // THEME FUNCTIONS
+    // =============================
+    function applyTheme(themeName) {
+      // Remove all theme classes
+      document.body.className = document.body.className.replace(/\b\w+-mode\b/g, '');
+      
+      // Add new theme class
+      document.body.classList.add(themeName + '-mode');
+      
+      // Update settings
+      settings.theme = themeName;
+      saveData();
+      
+      // Update theme options
+      document.querySelectorAll('.theme-option').forEach(option => {
+        option.classList.toggle('selected', option.dataset.theme === themeName);
+      });
+    }
+
+    // =============================
+    // NOTIFICATION FUNCTIONS
+    // =============================
+    function addNotification(notification) {
+      notifications.unshift(notification);
+      if (notifications.length > 50) {
+        notifications = notifications.slice(0, 50);
+      }
+      saveData();
+      updateNotificationBadge();
+    }
+
+    function updateNotificationBadge() {
+      const unreadCount = notifications.filter(n => !n.read).length;
+      if (unreadCount > 0) {
+        notifBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        notifBadge.style.display = 'flex';
+      } else {
+        notifBadge.style.display = 'none';
+      }
+    }
+
+    function checkNotifications() {
+      // Check for overdue tasks
+      const overdueTasks = tasks.filter(task => isTaskOverdue(task) && !task.completed);
+      overdueTasks.forEach(task => {
+        const existingNotification = notifications.find(n => 
+          n.type === 'overdue' && n.relatedId === task.id
+        );
+        
+        if (!existingNotification) {
+          addNotification({
+            id: Date.now().toString(),
+            title: 'Tugas Terlambat',
+            message: `Tugas "${task.title}" sudah melewati deadline`,
+            type: 'overdue',
+            relatedId: task.id,
+            timestamp: new Date().toISOString(),
+            read: false
+          });
+        }
+      });
+      
+      // Check for tasks due today
+      const todayTasks = tasks.filter(task => isTaskDueToday(task) && !task.completed);
+      todayTasks.forEach(task => {
+        const existingNotification = notifications.find(n => 
+          n.type === 'due_today' && n.relatedId === task.id
+        );
+        
+        if (!existingNotification) {
+          addNotification({
+            id: Date.now().toString(),
+            title: 'Tugas Hari Ini',
+            message: `Tugas "${task.title}" harus diselesaikan hari ini`,
+            type: 'due_today',
+            relatedId: task.id,
+            timestamp: new Date().toISOString(),
+            read: false
+          });
+        }
+      });
+      
+      updateNotificationsUI();
+      updateNotificationBadge();
+    }
+
+    function updateNotificationsUI() {
+      const notificationsList = document.getElementById('notificationsList');
+      
+      if (notifications.length === 0) {
+        notificationsList.innerHTML = `
+          <div class="empty-state">
+            <p>Tidak ada notifikasi</p>
+          </div>
+        `;
+        return;
+      }
+      
+      notificationsList.innerHTML = notifications.map(notif => `
+        <div class="notification-item ${notif.read ? '' : 'unread'}" data-id="${notif.id}">
+          <div class="notification-icon" style="background: ${getNotificationColor(notif.type)}">
+            ${getNotificationIcon(notif.type)}
+          </div>
+          <div class="notification-content">
+            <div class="notification-title">${escapeHtml(notif.title)}</div>
+            <div class="notification-message">${escapeHtml(notif.message)}</div>
+            <div class="notification-time">${formatDateTime(notif.timestamp)}</div>
+          </div>
+          ${!notif.read ? `
+            <button class="icon-btn mark-read-btn" title="Tandai sudah dibaca">✓</button>
+          ` : ''}
+        </div>
+      `).join('');
+      
+      // Add event listeners to mark as read buttons
+      notificationsList.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const notifId = btn.closest('.notification-item').dataset.id;
+          markNotificationAsRead(notifId);
+        });
+      });
+      
+      // Mark as read when clicked
+      notificationsList.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const notifId = item.dataset.id;
+          markNotificationAsRead(notifId);
+        });
+      });
+    }
+
+    function markNotificationAsRead(notifId) {
+      const notification = notifications.find(n => n.id === notifId);
+      if (notification && !notification.read) {
+        notification.read = true;
+        saveData();
+        updateNotificationsUI();
+        updateNotificationBadge();
+      }
+    }
+
+    function getNotificationColor(type) {
+      switch(type) {
+        case 'success': return 'var(--success)';
+        case 'warning': return 'var(--warning)';
+        case 'overdue': return 'var(--danger)';
+        case 'due_today': return 'var(--warning)';
+        default: return 'var(--primary)';
+      }
+    }
+
+    function getNotificationIcon(type) {
+      switch(type) {
+        case 'success': return '✓';
+        case 'warning': return '⚠️';
+        case 'overdue': return '⏰';
+        case 'due_today': return '📅';
+        default: return 'ℹ️';
+      }
+    }
+
+    // =============================
+    // CHART FUNCTIONS
+    // =============================
+    function initCharts() {
+      // Initialize all charts when needed
+      updateHomeTaskChart();
+      updateStatsCharts();
+      updateDashboardCharts();
+      updateProductivityChart();
+    }
+
+    function updateHomeTaskChart() {
+      const ctx = document.getElementById('homeTaskChart')?.getContext('2d');
+      if (!ctx) return;
+      
+      if (homeTaskChart) {
+        homeTaskChart.destroy();
+      }
+      
+      const completed = tasks.filter(t => t.completed).length;
+      const pending = tasks.filter(t => !t.completed && !isTaskOverdue(t)).length;
+      const overdue = tasks.filter(t => isTaskOverdue(t) && !t.completed).length;
+      
+      homeTaskChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Selesai', 'Belum Selesai', 'Terlambat'],
+          datasets: [{
+            data: [completed, pending, overdue],
+            backgroundColor: [
+              'var(--success)',
+              'var(--primary)',
+              'var(--danger)'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: 'var(--text)',
+                font: {
+                  size: 12
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw || 0;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                  return `${label}: ${value} (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateStatsCharts() {
+      // Task Chart
+      const taskCtx = document.getElementById('taskChart')?.getContext('2d');
+      if (taskCtx) {
+        if (taskChart) {
+          taskChart.destroy();
+        }
+        
+        // Last 7 days data
+        const last7Days = [...Array(7)].map((_, i) => {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          return date.toISOString().split('T')[0];
+        }).reverse();
+        
+        const completedByDay = last7Days.map(date => 
+          tasks.filter(t => t.completed && t.updatedAt.split('T')[0] === date).length
+        );
+        
+        const createdByDay = last7Days.map(date => 
+          tasks.filter(t => t.createdAt.split('T')[0] === date).length
+        );
+        
+        taskChart = new Chart(taskCtx, {
+          type: 'bar',
+          data: {
+            labels: last7Days.map(date => formatDate(date, 'short')),
+            datasets: [
+              {
+                label: 'Tugas Selesai',
+                data: completedByDay,
+                backgroundColor: 'var(--success)',
+                borderColor: 'var(--success)',
+                borderWidth: 1
+              },
+              {
+                label: 'Tugas Dibuat',
+                data: createdByDay,
+                backgroundColor: 'var(--primary)',
+                borderColor: 'var(--primary)',
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: 'var(--muted)'
+                },
+                grid: {
+                  color: 'rgba(255,255,255,0.1)'
+                }
+              },
+              x: {
+                ticks: {
+                  color: 'var(--muted)'
+                },
+                grid: {
+                  color: 'rgba(255,255,255,0.1)'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: 'var(--text)'
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      // Priority Chart
+      const priorityCtx = document.getElementById('priorityChart')?.getContext('2d');
+      if (priorityCtx) {
+        if (priorityChart) {
+          priorityChart.destroy();
+        }
+        
+        const high = tasks.filter(t => t.priority === 'high').length;
+        const medium = tasks.filter(t => t.priority === 'medium').length;
+        const low = tasks.filter(t => t.priority === 'low').length;
+        
+        priorityChart = new Chart(priorityCtx, {
+          type: 'pie',
+          data: {
+            labels: ['Tinggi', 'Sedang', 'Rendah'],
+            datasets: [{
+              data: [high, medium, low],
+              backgroundColor: [
+                'var(--priority-high)',
+                'var(--priority-medium)',
+                'var(--priority-low)'
+              ],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: 'var(--text)'
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function updateDashboardCharts() {
+      const ctx = document.getElementById('dashboardActivityChart')?.getContext('2d');
+      if (!ctx) return;
+      
+      if (dashboardActivityChart) {
+        dashboardActivityChart.destroy();
+      }
+      
+      // Last 7 days productivity (based on completed tasks)
+      const last7Days = [...Array(7)].map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        return date.toISOString().split('T')[0];
+      }).reverse();
+      
+      const productivityData = last7Days.map(date => {
+        const dayTasks = tasks.filter(t => t.createdAt.split('T')[0] === date);
+        const completed = dayTasks.filter(t => t.completed).length;
+        return dayTasks.length > 0 ? (completed / dayTasks.length) * 100 : 0;
+      });
+      
+      dashboardActivityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: last7Days.map(date => formatDate(date, 'short')),
+          datasets: [{
+            label: 'Produktivitas (%)',
+            data: productivityData,
+            borderColor: 'var(--primary)',
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                color: 'var(--muted)',
+                callback: function(value) {
+                  return value + '%';
+                }
+              },
+              grid: {
+                color: 'rgba(255,255,255,0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: 'var(--muted)'
+              },
+              grid: {
+                color: 'rgba(255,255,255,0.1)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: 'var(--text)'
+              }
+            }
+          }
+        }
+      });
+      
+      // Update urgent tasks
+      updateUrgentTasks();
+    }
+
+    function updateProductivityChart() {
+      const ctx = document.getElementById('productivityChart')?.getContext('2d');
+      if (!ctx) return;
+      
+      if (productivityChart) {
+        productivityChart.destroy();
+      }
+      
+      // Last 7 days pomodoro sessions
+      const last7Days = [...Array(7)].map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        return date.toISOString().split('T')[0];
+      }).reverse();
+      
+      const pomodoroData = last7Days.map(date => {
+        const dayStats = pomodoroStats.history.find(h => h.date === date);
+        return dayStats ? dayStats.count : 0;
+      });
+      
+      productivityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: last7Days.map(date => formatDate(date, 'short')),
+          datasets: [{
+            label: 'Sesi Fokus',
+            data: pomodoroData,
+            backgroundColor: 'var(--primary)',
+            borderColor: 'var(--primary)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: 'var(--muted)',
+                stepSize: 1
+              },
+              grid: {
+                color: 'rgba(255,255,255,0.1)'
+              }
+            },
+            x: {
+              ticks: {
+                color: 'var(--muted)'
+              },
+              grid: {
+                color: 'rgba(255,255,255,0.1)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: 'var(--text)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateUrgentTasks() {
+      const urgentTasksList = document.getElementById('urgentTasksList');
+      const urgentTasks = tasks.filter(task => 
+        (task.priority === 'high' && !task.completed) || 
+        (isTaskOverdue(task) && !task.completed)
+      ).slice(0, 5); // Show max 5 tasks
+      
+      if (urgentTasks.length === 0) {
+        urgentTasksList.innerHTML = `
+          <div class="empty-state">
+            <p>Tidak ada tugas mendesak</p>
+          </div>
+        `;
+        return;
+      }
+      
+      urgentTasksList.innerHTML = urgentTasks.map(task => `
+        <div class="task-card priority-high ${getDeadlineClass(task)}" style="margin-bottom: 10px; padding: 12px;">
+          <div class="task-title" style="font-size: 14px;">
+            <span class="priority-indicator priority-high-indicator"></span>
+            <span class="title-text">${escapeHtml(task.title)}</span>
+          </div>
+          <div class="task-detail" style="font-size: 12px;">
+            ${task.deadline ? `<span>📅 ${formatDate(task.deadline)}</span>` : ''}
+            ${isTaskOverdue(task) ? '<span style="color: var(--danger);">TERLAMBAT</span>' : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // =============================
+    // UTILITY FUNCTIONS
+    // =============================
+    function saveData() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      localStorage.setItem('schedule', JSON.stringify(schedule));
+      localStorage.setItem('notes', JSON.stringify(notes));
+      localStorage.setItem('profile', JSON.stringify(profile));
+      localStorage.setItem('settings', JSON.stringify(settings));
+      localStorage.setItem('pomodoroStats', JSON.stringify(pomodoroStats));
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+    }
+
+    function updateAllUI() {
+      updateTasksUI();
+      updateScheduleUI();
+      updateNotesUI();
+      updateProfileUI();
+      updateTaskStats();
+      updateProductivityStats();
+      updateNotificationBadge();
+      updateNotificationsUI();
+    }
+
+    function showToast(message, type = 'info') {
+      toast.textContent = message;
+      toast.className = 'toast';
+      
+      // Add type class
+      if (type === 'error') {
+        toast.style.background = 'var(--danger)';
+      } else if (type === 'success') {
+        toast.style.background = 'var(--success)';
+      } else if (type === 'warning') {
+        toast.style.background = 'var(--warning)';
+      } else {
+        toast.style.background = 'var(--primary)';
+      }
+      
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatDate(dateString, format = 'long') {
+      if (!dateString) return '';
+      
+      const date = new Date(dateString);
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      if (format === 'short') {
+        return date.toLocaleDateString('id-ID', { 
+          day: 'numeric', 
+          month: 'short' 
+        });
+      }
+      
+      // Check if date is today
+      if (date.toDateString() === today.toDateString()) {
+        return 'Hari ini';
+      }
+      
+      // Check if date is tomorrow
+      if (date.toDateString() === tomorrow.toDateString()) {
+        return 'Besok';
+      }
+      
+      return date.toLocaleDateString('id-ID', { 
+        weekday: 'long',
+        day: 'numeric', 
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    function formatDateTime(dateString) {
+      if (!dateString) return '';
+      
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMins < 1) {
+        return 'Baru saja';
+      } else if (diffMins < 60) {
+        return `${diffMins} menit lalu`;
+      } else if (diffHours < 24) {
+        return `${diffHours} jam lalu`;
+      } else if (diffDays < 7) {
+        return `${diffDays} hari lalu`;
+      } else {
+        return date.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    }
+
+    function formatTime(timeString) {
+      if (!timeString) return '';
+      
+      const [hours, minutes] = timeString.split(':');
+      return `${hours}:${minutes}`;
+    }
+
+    function capitalizeFirst(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function getPriorityText(priority) {
+      switch(priority) {
+        case 'high': return 'Tinggi';
+        case 'medium': return 'Sedang';
+        case 'low': return 'Rendah';
+        default: return 'Sedang';
+      }
+    }
+
+    function isTaskOverdue(task) {
+      if (!task.deadline || task.completed) return false;
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const deadline = new Date(task.deadline);
+      deadline.setHours(0, 0, 0, 0);
+      
+      return deadline < today;
+    }
+
+    function isTaskDueToday(task) {
+      if (!task.deadline || task.completed) return false;
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const deadline = new Date(task.deadline);
+      deadline.setHours(0, 0, 0, 0);
+      
+      return deadline.getTime() === today.getTime();
+    }
+
+    function isTaskDueThisWeek(task) {
+      if (!task.deadline || task.completed) return false;
+      
+      const today = new Date();
+      const nextWeek = new Date(today);
+      nextWeek.setDate(today.getDate() + 7);
+      
+      const deadline = new Date(task.deadline);
+      
+      return deadline >= today && deadline <= nextWeek;
+    }
+
+    function getDeadlineClass(task) {
+      if (task.completed) return 'dl-ok';
+      if (!task.deadline) return '';
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const deadline = new Date(task.deadline);
+      deadline.setHours(0, 0, 0, 0);
+      
+      const diffTime = deadline - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays < 0) return 'dl-overdue';
+      if (diffDays === 0) return 'dl-urgent';
+      if (diffDays <= 2) return 'dl-soon';
+      return 'dl-ok';
+    }
+
+    function playNotificationSound() {
+      // In a real app, you would play a sound file
+      // For now, we'll use the browser's beep (if available)
+      try {
+        // This may not work in all browsers
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      } catch (error) {
+        // Sound not supported, silent fail
+      }
+    }
+
+    function startAutoSave() {
+      if (settings.autoSave) {
+        setInterval(() => {
+          saveData();
+        }, 30000); // Auto-save every 30 seconds
+      }
+    }
+
+    function backupData() {
+      const data = {
+        tasks,
+        schedule,
+        notes,
+        profile,
+        settings,
+        pomodoroStats,
+        notifications,
+        backupDate: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tugasku3-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showToast('Backup data berhasil diunduh');
+    }
+
+    function exportData() {
+      backupData(); // Same as backup for now
+    }
+
+    function importData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            
+            if (confirm('Impor data akan menggantikan semua data saat ini. Lanjutkan?')) {
+              tasks = data.tasks || [];
+              schedule = data.schedule || [];
+              notes = data.notes || [];
+              profile = data.profile || profile;
+              settings = data.settings || settings;
+              pomodoroStats = data.pomodoroStats || pomodoroStats;
+              notifications = data.notifications || [];
+              
+              saveData();
+              updateAllUI();
+              showToast('Data berhasil diimpor');
+            }
+          } catch (error) {
+            showToast('Gagal mengimpor data. File mungkin rusak.', 'error');
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function showAboutInfo() {
+      const version = document.querySelector('meta[name="app-version"]')?.content || '6.0.0';
+      alert(`TugasKu3 BETA v${version}\n\nAplikasi manajemen tugas dengan AI Assistant\nDibuat dengan ❤️ untuk meningkatkan produktivitas\n\nFitur:\n• Manajemen tugas cerdas\n• Jadwal mingguan\n• Catatan dengan pin\n• Timer fokus (Pomodoro)\n• Kalender terintegrasi\n• AI Assistant\n• Berbagai tema kustom\n• Backup & restore data`);
+    }
+
+    function resetData() {
+      if (confirm('RESET DATA: Semua tugas, jadwal, catatan, dan statistik akan dihapus permanen. Tindakan ini tidak dapat dibatalkan. Lanjutkan?')) {
+        if (confirm('SANGAT YAKIN? Tekan OK untuk menghapus semua data.')) {
+          tasks = [];
+          schedule = [];
+          notes = [];
+          pomodoroStats = {
+            today: 0,
+            week: 0,
+            total: 0,
+            focusTime: 0,
+            history: []
+          };
+          notifications = [];
+          
+          saveData();
+          updateAllUI();
+          showToast('Semua data berhasil direset');
+        }
+      }
+    }
+
+    // =============================
+    // CALENDAR FUNCTIONS (Basic Implementation)
+    // =============================
+    function initCalendar() {
+      // This would initialize the calendar view
+      // For now, we'll just show a message
+      document.getElementById('selectedDateTasks').innerHTML = `
+        <p>Fitur kalender sedang dalam pengembangan. Pilih tanggal untuk melihat tugas terkait.</p>
+      `;
+    }
+
+    // =============================
+    // INITIALIZE APPLICATION - DIPERBAIKI
+    // =============================
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM fully loaded, initializing app...');
+      try {
+        init();
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+        // Fallback: show main content even if initialization fails
+        splashScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        showToast('Aplikasi dimuat dengan masalah, beberapa fitur mungkin tidak berfungsi', 'error');
+      }
+    });
+
+    // Add schedule button event listener
+    document.getElementById('addScheduleBtn').addEventListener('click', addSchedule);
+    
+    // Add note button event listener  
+    document.getElementById('addNoteBtn').addEventListener('click', addNote);
+    
+    // Theme selection
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', () => {
+        applyTheme(option.dataset.theme);
+        themeModal.classList.remove('show');
+      });
+    });
+
+    console.log('TugasKu3 BETA JavaScript loaded successfully!');
+  </script>
+</body>
+</html>
